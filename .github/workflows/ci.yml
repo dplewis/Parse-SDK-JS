@@ -44,8 +44,7 @@ jobs:
         node-version: ${{ matrix.NODE_VERSION }}
         cache: 'npm'
     - run: npm ci
-    - run: npm install -g mongodb-runner --loglevel verbose
-    - run: mongodb-runner start
+    - run: npm run start:mongodb
     - run: npm run lint
     - run: npm test -- --maxWorkers=4
     - run: npm run integration

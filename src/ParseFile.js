@@ -296,9 +296,11 @@ class ParseFile {
    */
   cancel() {
     if (this._requestTask && typeof this._requestTask.abort === 'function') {
+      this._requestTask._aborted = true;
       this._requestTask.abort();
     }
     this._requestTask = null;
+    console.log('done aborted');
   }
 
   /**

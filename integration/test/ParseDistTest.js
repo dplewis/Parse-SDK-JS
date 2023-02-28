@@ -40,7 +40,7 @@ for (const fileName of ['parse.js', 'parse.min.js']) {
       expect(obj.id).toEqual(response);
     });
 
-    fit('can cancel save file with uri', async () => {
+    it('can cancel save file with uri', async () => {
       let requestsCount = 0;
       let abortedCount = 0;
       const promise = resolvingPromise();
@@ -61,7 +61,11 @@ for (const fileName of ['parse.js', 'parse.min.js']) {
         const parseLogo =
         'https://raw.githubusercontent.com/parse-community/parse-server/master/.github/parse-server-logo.png';
         const file = new Parse.File('parse-server-logo', { uri: parseLogo });
-        file.save().then(() => {});
+        file.save().then(() => {
+          console.log("saved");
+        }).catch((e) => {
+          console.log('error saving base64', e);
+        });
 
         return new Promise((resolve) => {
           const intervalId = setInterval(() => {
@@ -78,7 +82,7 @@ for (const fileName of ['parse.js', 'parse.min.js']) {
       expect(abortedCount).toBe(1);
     });
 
-    fit('can cancel save file with base64', async () => {
+    it('can cancel save file with base64', async () => {
       let requestsCount = 0;
       let abortedCount = 0;
       const promise = resolvingPromise();

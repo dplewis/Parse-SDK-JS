@@ -70,9 +70,11 @@ for (const fileName of ['parse.js', 'parse.min.js']) {
         return new Promise((resolve) => {
           const intervalId = setInterval(() => {
             if (file._requestTask && typeof file._requestTask.abort === 'function') {
-              file.cancel();
-              clearInterval(intervalId);
-              resolve();
+              setTimeout(() => {
+                file.cancel();
+                clearInterval(intervalId);
+                resolve();
+              }, 20)
             }
           }, 1);
         });

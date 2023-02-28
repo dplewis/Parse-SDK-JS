@@ -1,11 +1,15 @@
 const puppeteer = require('puppeteer');
+const { resolvingPromise } = require('../../lib/node/promiseUtils');
+
 let browser = null;
 let page = null;
 for (const fileName of ['parse.js', 'parse.min.js']) {
   describe(`Parse Dist Test ${fileName}`, () => {
     beforeEach(async () => {
-      browser = await puppeteer.launch();
-      page = await browser.newPage();
+      browser = await puppeteer.launch({ args: ['--disable-web-security'] });
+      const context = await browser.createIncognitoBrowserContext();
+      page = await context.newPage();
+      await page.setCacheEnabled(false);
       await page.goto(`http://localhost:1337/${fileName}`);
     });
 
@@ -34,6 +38,99 @@ for (const fileName of ['parse.js', 'parse.min.js']) {
       expect(response).toBeDefined();
       expect(obj).toBeDefined();
       expect(obj.id).toEqual(response);
+    });
+
+    fit('can cancel save file with uri', async () => {
+      let requestsCount = 0;
+      let abortedCount = 0;
+      const promise = resolvingPromise();
+      await page.setRequestInterception(true);
+      page.on('request', request => {
+        if (!request.url().includes('favicon.ico')) {
+          requestsCount += 1;
+        }
+        request.continue();
+      });
+      page.on('requestfailed', request => {
+        if (request.failure().errorText  === 'net::ERR_ABORTED' && !request.url().includes('favicon.ico')) {
+          abortedCount += 1;
+          promise.resolve();
+        }
+      });
+      await page.evaluate(async () => {
+        const parseLogo =
+        'https://raw.githubusercontent.com/parse-community/parse-server/master/.github/parse-server-logo.png';
+        const file = new Parse.File('parse-server-logo', { uri: parseLogo });
+        file.save().then(() => {});
+
+        return new Promise((resolve) => {
+          const intervalId = setInterval(() => {
+            if (file._requestTask && typeof file._requestTask.abort === 'function') {
+              file.cancel();
+              clearInterval(intervalId);
+              resolve();
+            }
+          }, 1);
+        });
+      });
+      await promise;
+      expect(requestsCount).toBe(1);
+      expect(abortedCount).toBe(1);
+    });
+
+    fit('can cancel save file with base64', async () => {
+      let requestsCount = 0;
+      let abortedCount = 0;
+      const promise = resolvingPromise();
+      await page.setRequestInterception(true);
+      page.on('request', request => {
+        console.log('request', request);
+        console.log(request.url());
+        if (!request.url().includes('favicon.ico')) {
+          requestsCount += 1;
+        }
+        request.continue();
+      });
+      page.on('requestfailed', request => {
+        console.log('requestfailed', request);
+        console.log(request.failure());
+        console.log(request.url());
+        if (request.failure().errorText  === 'net::ERR_ABORTED' && !request.url().includes('favicon.ico')) {
+          abortedCount += 1;
+          promise.resolve();
+        }
+      });
+      page.on('requestfinished', request => {
+        console.log('requestfinished', request);
+        console.log(request.url());
+      });
+      console.log('beforeEvaluation');
+      const result = await page.evaluate(async () => {
+        const parseLogo =
+        'https://raw.githubusercontent.com/parse-community/parse-server/master/.github/parse-server-logo.png';
+        const logo = new Parse.File('parse-server-logo', { uri: parseLogo });
+        await logo.save();
+        const base64 = await logo.getData();
+
+        const file = new Parse.File('parse-base64.txt', { base64 });
+        file.save().then(() => {});
+
+        return new Promise((resolve) => {
+          const intervalId = setInterval(() => {
+            if (file._requestTask && typeof file._requestTask.abort === 'function') {
+              file.cancel();
+              clearInterval(intervalId);
+              resolve('cancelled called');
+            }
+          }, 1);
+        });
+      });
+      console.log('eval', result);
+      console.log('beforePromise');
+      await promise;
+      console.log('afterPromise');
+      expect(requestsCount).toBe(3);
+      expect(abortedCount).toBe(1);
     });
   });
 }

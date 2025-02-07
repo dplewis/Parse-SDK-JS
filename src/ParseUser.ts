@@ -462,7 +462,7 @@ class ParseUser extends ParseObject {
    */
   logIn(options: FullOptions & { context?: AttributeMap } = {}): Promise<ParseUser> {
     const loginOptions = ParseObject._getRequestOptions(options);
-    if (!loginOptions.usePost) {
+    if (!Object.hasOwn(loginOptions, 'usePost')) {
       loginOptions.usePost = true;
     }
     const controller = CoreManager.getUserController();

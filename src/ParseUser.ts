@@ -756,7 +756,6 @@ class ParseUser extends ParseObject {
     const controller = CoreManager.getUserController();
     const meOptions = ParseObject._getRequestOptions(options);
     meOptions.sessionToken = sessionToken;
-    console.log(meOptions);
     const user = new this();
     return controller.me(user, meOptions);
   }

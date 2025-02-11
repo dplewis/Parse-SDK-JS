@@ -1,3 +1,10 @@
+# [5.3.0-alpha.5](https://github.com/parse-community/Parse-SDK-JS/compare/5.3.0-alpha.4...5.3.0-alpha.5) (2025-02-11)
+
+
+### Bug Fixes
+
+* Cannot pass `useMasterKey: false` to `Parse.Cloud.run` ([#2431](https://github.com/parse-community/Parse-SDK-JS/issues/2431)) ([abadac9](https://github.com/parse-community/Parse-SDK-JS/commit/abadac947d8453afdf86f4a008aee189b4a6bfd2))
+
 # [5.3.0-alpha.4](https://github.com/parse-community/Parse-SDK-JS/compare/5.3.0-alpha.3...5.3.0-alpha.4) (2024-10-14)
 
 

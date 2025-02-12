@@ -99,7 +99,7 @@ function handleSelectResult(data: any, select: Array<string>) {
 
   select.forEach(field => {
     const hasSubObjectSelect = field.indexOf('.') !== -1;
-    if (!hasSubObjectSelect && !data.hasOwnProperty(field)) {
+    if (!hasSubObjectSelect && !Object.hasOwn(data, field)) {
       // this field was selected, but is missing from the retrieved data
       data[field] = undefined;
     } else if (hasSubObjectSelect) {
@@ -111,7 +111,7 @@ function handleSelectResult(data: any, select: Array<string>) {
 
       pathComponents.forEach((component, index, arr) => {
         // add keys if the expected data is missing
-        if (obj && !obj.hasOwnProperty(component)) {
+        if (obj && !Object.hasOwn(obj, component)) {
           obj[component] = undefined;
         }
         if (obj && typeof obj === 'object') {
@@ -148,7 +148,7 @@ function copyMissingDataWithMask(src, dest, mask, copyThisLevel) {
   //copy missing elements at this level
   if (copyThisLevel) {
     for (const key in src) {
-      if (src.hasOwnProperty(key) && !dest.hasOwnProperty(key)) {
+      if (Object.hasOwn(src, key) && !Object.hasOwn(dest, key)) {
         dest[key] = src[key];
       }
     }
@@ -580,7 +580,7 @@ class ParseQuery {
     }
 
     for (const key in json) {
-      if (json.hasOwnProperty(key)) {
+      if (Object.hasOwn(json, key)) {
         if (
           [
             'where',
@@ -639,20 +639,7 @@ class ParseQuery {
   get(objectId: string, options?: QueryOptions): Promise<ParseObject> {
     this.equalTo('objectId', objectId);
 
-    const firstOptions: QueryOptions = {};
-    if (options && options.hasOwnProperty('useMasterKey')) {
-      firstOptions.useMasterKey = options.useMasterKey;
-    }
-    if (options && options.hasOwnProperty('sessionToken')) {
-      firstOptions.sessionToken = options.sessionToken;
-    }
-    if (options && options.hasOwnProperty('context') && typeof options.context === 'object') {
-      firstOptions.context = options.context;
-    }
-    if (options && options.hasOwnProperty('json')) {
-      firstOptions.json = options.json;
-    }
-
+    const firstOptions = ParseObject._getRequestOptions(options);
     return this.first(firstOptions).then(response => {
       if (response) {
         return response;
@@ -679,22 +666,10 @@ class ParseQuery {
    * the query completes.
    */
   find(options?: QueryOptions): Promise<Array<ParseObject>> {
-    options = options || {};
-
-    const findOptions: QueryOptions = {};
-    if (options.hasOwnProperty('useMasterKey')) {
-      findOptions.useMasterKey = options.useMasterKey;
-    }
-    if (options.hasOwnProperty('sessionToken')) {
-      findOptions.sessionToken = options.sessionToken;
-    }
-    if (options.hasOwnProperty('context') && typeof options.context === 'object') {
-      findOptions.context = options.context;
-    }
+    const findOptions = ParseObject._getRequestOptions(options);
     this._setRequestTask(findOptions);
 
     const controller = CoreManager.getQueryController();
-
     const select = this._select;
 
     if (this._queriesLocalDatastore) {
@@ -719,7 +694,7 @@ class ParseQuery {
         if (select) {
           handleSelectResult(data, select);
         }
-        if (options.json) {
+        if (findOptions.json) {
           return data;
         } else {
           return ParseObject.fromJSON(data, !select);
@@ -776,13 +751,7 @@ class ParseQuery {
   count(options?: { useMasterKey?: boolean; sessionToken?: string }): Promise<number> {
     options = options || {};
 
-    const findOptions: { useMasterKey?: boolean; sessionToken?: string } = {};
-    if (options.hasOwnProperty('useMasterKey')) {
-      findOptions.useMasterKey = options.useMasterKey;
-    }
-    if (options.hasOwnProperty('sessionToken')) {
-      findOptions.sessionToken = options.sessionToken;
-    }
+    const findOptions = ParseObject._getRequestOptions(options);
     this._setRequestTask(findOptions);
 
     const controller = CoreManager.getQueryController();
@@ -806,12 +775,10 @@ class ParseQuery {
    */
   distinct(key: string, options?: { sessionToken?: string }): Promise<Array<any>> {
     options = options || {};
-
     const distinctOptions: { sessionToken?: string; useMasterKey: boolean } = {
       useMasterKey: true,
     };
-
-    if (options.hasOwnProperty('sessionToken')) {
+    if (Object.hasOwn(options, 'sessionToken')) {
       distinctOptions.sessionToken = options.sessionToken;
     }
     this._setRequestTask(distinctOptions);
@@ -840,8 +807,7 @@ class ParseQuery {
     const aggregateOptions: { sessionToken?: string; useMasterKey: boolean } = {
       useMasterKey: true,
     };
-
-    if (options.hasOwnProperty('sessionToken')) {
+    if (Object.hasOwn(options, 'sessionToken')) {
       aggregateOptions.sessionToken = options.sessionToken;
     }
     this._setRequestTask(aggregateOptions);
@@ -887,16 +853,7 @@ class ParseQuery {
    * the query completes.
    */
   first(options: QueryOptions = {}): Promise<ParseObject | void> {
-    const findOptions: QueryOptions = {};
-    if (options.hasOwnProperty('useMasterKey')) {
-      findOptions.useMasterKey = options.useMasterKey;
-    }
-    if (options.hasOwnProperty('sessionToken')) {
-      findOptions.sessionToken = options.sessionToken;
-    }
-    if (options.hasOwnProperty('context') && typeof options.context === 'object') {
-      findOptions.context = options.context;
-    }
+    const findOptions = ParseObject._getRequestOptions(options);
     this._setRequestTask(findOptions);
 
     const controller = CoreManager.getQueryController();
@@ -930,7 +887,7 @@ class ParseQuery {
       if (select) {
         handleSelectResult(objects[0], select);
       }
-      if (options.json) {
+      if (findOptions.json) {
         return objects[0];
       } else {
         return ParseObject.fromJSON(objects[0], !select);
@@ -995,20 +952,7 @@ class ParseQuery {
 
     query.ascending('objectId');
 
-    const findOptions: BatchOptions = {};
-    if (options.hasOwnProperty('useMasterKey')) {
-      findOptions.useMasterKey = options.useMasterKey;
-    }
-    if (options.hasOwnProperty('sessionToken')) {
-      findOptions.sessionToken = options.sessionToken;
-    }
-    if (options.hasOwnProperty('context') && typeof options.context === 'object') {
-      findOptions.context = options.context;
-    }
-    if (options.hasOwnProperty('json')) {
-      findOptions.json = options.json;
-    }
-
+    const findOptions = ParseObject._getRequestOptions(options);
     let finished = false;
     let previousResults: ParseObject[] = [];
     return continueWhile(

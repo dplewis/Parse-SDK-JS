@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-expressions */
+
 import Parse from 'parse';
 // Parse is a global type, but it can also be imported
 
@@ -2038,20 +2040,20 @@ import Parse from 'parse';
 //   }
 // }
 
-// function testRole() {
-//   function testConstructor(acl: Parse.ACL) {
-//       // $ExpectType Role<Partial<{ example: string; }>>
-//       new Parse.Role<{ example: string }>('TestRole', acl);
-//   }
+function testRole() {
+  function testConstructor(acl: Parse.ACL) {
+    // $ExpectType Role<Partial<{ example: string; }>>
+    new Parse.Role<{ example: string }>('TestRole', acl);
+  }
 
-//   function testAttributes(roleUntyped: Parse.Role, roleTyped: Parse.Role<{ example: number }>) {
-//       // $ExpectType Attributes
-//       roleUntyped.attributes;
+  function testAttributes(roleUntyped: Parse.Role, roleTyped: Parse.Role<{ example: number }>) {
+    // $ExpectType Attributes
+    roleUntyped.attributes;
 
-//       // $ExpectType { example: number; }
-//       roleTyped.attributes;
-//   }
-// }
+    // $ExpectType { example: number; }
+    roleTyped.attributes;
+  }
+}
 
 // $ExpectType ParseSession
 new Parse.Session();
@@ -2065,44 +2067,44 @@ new Parse.Session<{ example: number }>();
 // @ts-expect-error: invalid type
 new Parse.Session<{ example: number }>({ example: 'hello' });
 
-// function testUser() {
-//   function testConstructor() {
-//       // $ExpectType User<Attributes>
-//       new Parse.User();
+function testUser() {
+  function testConstructor() {
+    // $ExpectType User<Attributes>
+    new Parse.User();
 
-//       // $ExpectType User<{ example: number; }>
-//       new Parse.User({ example: 100 });
+    // $ExpectType User<{ example: number; }>
+    new Parse.User({ example: 100 });
 
-//       // @ts-expect-error
-//       new Parse.User<{ example: number }>();
+    // @ts-expect-error
+    new Parse.User<{ example: number }>();
 
-//       // @ts-expect-error
-//       new Parse.User<{ example: number }>({ example: 'hello' });
-//   }
-//   async function testAuthenticationProvider() {
-//       const authProvider: Parse.AuthProvider = {
-//           authenticate: () => {},
-//           getAuthType: () => 'customAuthorizationProvider',
-//           restoreAuthentication: () => false,
-//           deauthenticate: () => {},
-//       };
-//       const authData: Parse.AuthData = {
-//           id: 'some-user-authentication-id',
-//           access_token: 'some-access-token',
-//           expiration_date: new Date().toISOString(),
-//       };
-//       Parse.User._registerAuthenticationProvider(authProvider);
+    // @ts-expect-error
+    new Parse.User<{ example: number }>({ example: 'hello' });
+  }
+  async function testAuthenticationProvider() {
+    const authProvider: Parse.AuthProvider = {
+      authenticate: () => {},
+      getAuthType: () => 'customAuthorizationProvider',
+      restoreAuthentication: () => false,
+      deauthenticate: () => {},
+    };
+    const authData: Parse.AuthData = {
+      id: 'some-user-authentication-id',
+      access_token: 'some-access-token',
+      expiration_date: new Date().toISOString(),
+    };
+    Parse.User._registerAuthenticationProvider(authProvider);
 
-//       const user = await Parse.User.logInWith(
-//           authProvider,
-//           { authData },
-//           { sessionToken: 'some-session-token', useMasterKey: true },
-//       );
-//       const isLinked = user._isLinked(authProvider);
-//       const unlinkedUser = await user._unlinkFrom(authProvider);
-//       const linkedUser = await user.linkWith(authProvider, { authData });
-//   }
-// }
+    const user = await Parse.User.logInWith(
+      authProvider,
+      { authData },
+      { sessionToken: 'some-session-token', useMasterKey: true }
+    );
+    const isLinked = user._isLinked(authProvider);
+    const unlinkedUser = await user._unlinkFrom(authProvider);
+    const linkedUser = await user.linkWith(authProvider, { authData });
+  }
+}
 
 // function testEncryptingUser() {
 //   function testSecretKey() {

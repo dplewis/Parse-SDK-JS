@@ -464,7 +464,7 @@ declare class ParseObject {
    */
   fetchWithInclude(
     keys: string | Array<string | Array<string>>,
-    options: RequestOptions
+    options?: RequestOptions
   ): Promise<any>;
   /**
    * Saves this object to the server at some unspecified time in the future,
@@ -555,14 +555,14 @@ declare class ParseObject {
    * completes.
    */
   save(
-    arg1:
+    arg1?:
       | undefined
       | string
       | {
           [attr: string]: any;
         }
       | null,
-    arg2: SaveOptions | any,
+    arg2?: SaveOptions | any,
     arg3?: SaveOptions
   ): Promise<this>;
   /**

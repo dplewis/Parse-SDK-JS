@@ -8,13 +8,14 @@ import type { AttributeMap } from './ObjectStateMutations';
 import type { RequestOptions, FullOptions } from './RESTController';
 
 export type AuthData = { [key: string]: any };
-export type AuthProviderType = {
+export type AuthProvider = {
   authenticate?(options: {
-    error?: (provider: AuthProviderType, error: string | any) => void;
-    success?: (provider: AuthProviderType, result: AuthData) => void;
+    error?: (provider: AuthProvider, error: string | any) => void;
+    success?: (provider: AuthProvider, result: AuthData) => void;
   }): void;
   restoreAuthentication(authData: any): boolean;
   getAuthType(): string;
+  getAuthData?(): AuthData;
   deauthenticate?(): void;
 };
 const CURRENT_USER_KEY = 'currentUser';
@@ -22,7 +23,7 @@ let canUseCurrentUser = !CoreManager.get('IS_NODE');
 let currentUserCacheMatchesDisk = false;
 let currentUserCache: ParseUser | null = null;
 
-const authProviders: { [key: string]: AuthProviderType } = {};
+const authProviders: { [key: string]: AuthProvider } = {};
 
 /**
  * <p>A Parse.User object is a local representation of a user persisted to the
@@ -81,7 +82,7 @@ class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user is linked
    */
   linkWith(
-    provider: AuthProviderType,
+    provider: AuthProvider,
     options: { authData?: AuthData },
     saveOpts: FullOptions = {}
   ): Promise<ParseUser> {
@@ -166,7 +167,7 @@ class ParseUser extends ParseObject {
    *
    * @param provider
    */
-  _synchronizeAuthData(provider: string | AuthProviderType) {
+  _synchronizeAuthData(provider: string | AuthProvider) {
     if (!this.isCurrent() || !provider) {
       return;
     }
@@ -434,7 +435,7 @@ class ParseUser extends ParseObject {
    *     finishes.
    */
   signUp(
-    attrs: AttributeMap,
+    attrs?: AttributeMap | null,
     options?: FullOptions & { context?: AttributeMap }
   ): Promise<ParseUser> {
     const signupOptions = ParseObject._getRequestOptions(options);
@@ -595,7 +596,7 @@ class ParseUser extends ParseObject {
    * either from memory or localStorage, if necessary.
    *
    * @static
-   * @returns {Parse.Object} The currently logged in Parse.User.
+   * @returns {Parse.User} The currently logged in Parse.User.
    */
   static current(): ParseUser | null {
     if (!canUseCurrentUser) {
@@ -661,7 +662,7 @@ class ParseUser extends ParseObject {
       return Promise.reject(new ParseError(ParseError.OTHER_CAUSE, 'Password must be a string.'));
     }
     const user = new this();
-    user._finishFetch({ username: username, password: password });
+    user._finishFetch({ username, password });
     return user.logIn(options);
   }
 
@@ -694,7 +695,7 @@ class ParseUser extends ParseObject {
       return Promise.reject(new ParseError(ParseError.OTHER_CAUSE, 'Auth must be an object.'));
     }
     const user = new this();
-    user._finishFetch({ username: username, password: password, authData });
+    user._finishFetch({ username, password, authData });
     return user.logIn(options);
   }
 
@@ -1217,7 +1218,7 @@ const DefaultController = {
 
   requestPasswordReset(email: string, options: RequestOptions) {
     const RESTController = CoreManager.getRESTController();
-    return RESTController.request('POST', 'requestPasswordReset', { email: email }, options);
+    return RESTController.request('POST', 'requestPasswordReset', { email }, options);
   },
 
   async upgradeToRevocableSession(user: ParseUser, options: RequestOptions) {
@@ -1263,7 +1264,7 @@ const DefaultController = {
 
   requestEmailVerification(email: string, options: RequestOptions) {
     const RESTController = CoreManager.getRESTController();
-    return RESTController.request('POST', 'verificationEmailRequest', { email: email }, options);
+    return RESTController.request('POST', 'verificationEmailRequest', { email }, options);
   },
 };
 

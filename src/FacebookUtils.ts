@@ -1,11 +1,11 @@
 /* global FB */
 import ParseUser from './ParseUser';
-import type { AuthProviderType } from './ParseUser';
+import type { AuthProvider } from './ParseUser';
 
 let initialized = false;
 let requestedPermissions;
 let initOptions;
-const provider: AuthProviderType = {
+const provider: AuthProvider = {
   authenticate(options) {
     if (typeof FB === 'undefined') {
       options.error(this, 'Facebook SDK not found.');
@@ -227,7 +227,7 @@ const FacebookUtils = {
   },
 
   // Used for testing purposes
-  _getAuthProvider() {
+  _getAuthProvider(): AuthProvider {
     return provider;
   },
 };

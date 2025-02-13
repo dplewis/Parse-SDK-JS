@@ -117,7 +117,7 @@ declare class ParseQuery {
   /**
    * @param {(string | Parse.Object)} objectClass An instance of a subclass of Parse.Object, or a Parse className string.
    */
-  constructor(objectClass: string | ParseObject);
+  constructor(objectClass: string | any);
   /**
    * Adds constraint that at least one of the passed in queries matches.
    *
@@ -577,7 +577,7 @@ declare class ParseQuery {
    * @param {string} modifiers The regular expression mode.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  matches(key: string, regex: RegExp | string, modifiers: string): ParseQuery;
+  matches(key: string, regex: RegExp | string, modifiers?: string): ParseQuery;
   /**
    * Adds a constraint that requires that a key's value matches a Parse.Query
    * constraint.
@@ -677,7 +677,7 @@ declare class ParseQuery {
    * @param {string} modifiers The regular expression mode.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  startsWith(key: string, prefix: string, modifiers: string): ParseQuery;
+  startsWith(key: string, prefix: string, modifiers?: string): ParseQuery;
   /**
    * Adds a constraint for finding string values that end with a provided
    * string.  This will be slow for large datasets.
@@ -687,7 +687,7 @@ declare class ParseQuery {
    * @param {string} modifiers The regular expression mode.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  endsWith(key: string, suffix: string, modifiers: string): ParseQuery;
+  endsWith(key: string, suffix: string, modifiers?: string): ParseQuery;
   /**
    * Adds a proximity based constraint for finding objects with key point
    * values near the point given.
@@ -713,7 +713,7 @@ declare class ParseQuery {
     key: string,
     point: ParseGeoPoint,
     maxDistance: number,
-    sorted: boolean
+    sorted?: boolean
   ): ParseQuery;
   /**
    * Adds a proximity based constraint for finding objects with key point
@@ -910,7 +910,7 @@ declare class ParseQuery {
    * @returns {Promise<LiveQuerySubscription>} Returns the liveQuerySubscription, it's an event emitter
    * which can be used to get liveQuery updates.
    */
-  subscribe(sessionToken?: string): Promise<LiveQuerySubscription>;
+  subscribe(sessionToken?: string | null): Promise<LiveQuerySubscription>;
   /**
    * Constructs a Parse.Query that is the OR of the passed in queries.  For
    * example:

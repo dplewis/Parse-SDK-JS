@@ -1,4 +1,5 @@
 import ParseUser from './ParseUser';
+import type { AuthData, AuthProvider } from './ParseUser';
 import type { RequestOptions } from './RESTController';
 import uuidv4 from './uuid';
 
@@ -90,8 +91,8 @@ const AnonymousUtils = {
     return registered;
   },
 
-  _getAuthProvider() {
-    const provider = {
+  _getAuthProvider(): AuthProvider {
+    const provider: AuthProvider = {
       restoreAuthentication() {
         return true;
       },
@@ -100,7 +101,7 @@ const AnonymousUtils = {
         return 'anonymous';
       },
 
-      getAuthData() {
+      getAuthData(): AuthData {
         return {
           authData: {
             id: uuidv4(),

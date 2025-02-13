@@ -37,7 +37,7 @@ import type { RequestOptions } from './RESTController';
  * @returns {Promise} A promise that will be resolved with the result
  * of the function.
  */
-export function run(name: string, data: any, options: RequestOptions): Promise<any> {
+export function run(name: string, data?: any, options?: RequestOptions): Promise<any> {
   if (typeof name !== 'string' || name.length === 0) {
     throw new TypeError('Cloud function name must be a string.');
   }

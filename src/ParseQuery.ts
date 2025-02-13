@@ -263,7 +263,7 @@ class ParseQuery {
   /**
    * @param {(string | Parse.Object)} objectClass An instance of a subclass of Parse.Object, or a Parse className string.
    */
-  constructor(objectClass: string | ParseObject) {
+  constructor(objectClass: string | any) {
     if (typeof objectClass === 'string') {
       if (objectClass === 'User' && CoreManager.get('PERFORM_USER_REWRITE')) {
         this.className = '_User';
@@ -1349,7 +1349,7 @@ class ParseQuery {
    * @param {string} modifiers The regular expression mode.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  matches(key: string, regex: RegExp | string, modifiers: string): ParseQuery {
+  matches(key: string, regex: RegExp | string, modifiers?: string): ParseQuery {
     this._addCondition(key, '$regex', regex);
     if (!modifiers) {
       modifiers = '';
@@ -1543,7 +1543,7 @@ class ParseQuery {
    * @param {string} modifiers The regular expression mode.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  startsWith(key: string, prefix: string, modifiers: string): ParseQuery {
+  startsWith(key: string, prefix: string, modifiers?: string): ParseQuery {
     if (typeof prefix !== 'string') {
       throw new Error('The value being searched for must be a string.');
     }
@@ -1559,7 +1559,7 @@ class ParseQuery {
    * @param {string} modifiers The regular expression mode.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  endsWith(key: string, suffix: string, modifiers: string): ParseQuery {
+  endsWith(key: string, suffix: string, modifiers?: string): ParseQuery {
     if (typeof suffix !== 'string') {
       throw new Error('The value being searched for must be a string.');
     }
@@ -1598,7 +1598,7 @@ class ParseQuery {
     key: string,
     point: ParseGeoPoint,
     maxDistance: number,
-    sorted: boolean
+    sorted?: boolean
   ): ParseQuery {
     if (sorted || sorted === undefined) {
       this.near(key, point);
@@ -1944,7 +1944,7 @@ class ParseQuery {
    * @returns {Promise<LiveQuerySubscription>} Returns the liveQuerySubscription, it's an event emitter
    * which can be used to get liveQuery updates.
    */
-  async subscribe(sessionToken?: string): Promise<LiveQuerySubscription> {
+  async subscribe(sessionToken?: string | null): Promise<LiveQuerySubscription> {
     const currentUser = await CoreManager.getUserController().currentUserAsync();
     if (!sessionToken) {
       sessionToken = currentUser ? currentUser.getSessionToken() || undefined : undefined;

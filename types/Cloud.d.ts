@@ -30,7 +30,7 @@ import type { RequestOptions } from './RESTController';
  * @returns {Promise} A promise that will be resolved with the result
  * of the function.
  */
-export declare function run(name: string, data: any, options: RequestOptions): Promise<any>;
+export declare function run(name: string, data?: any, options?: RequestOptions): Promise<any>;
 /**
  * Gets data for the current set of cloud jobs.
  *

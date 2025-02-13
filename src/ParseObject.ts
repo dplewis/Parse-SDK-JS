@@ -209,7 +209,7 @@ class ParseObject {
         id = this._getId();
       }
       return {
-        id: id,
+        id,
         className: this.className,
       };
     } else {
@@ -1214,7 +1214,7 @@ class ParseObject {
    */
   fetchWithInclude(
     keys: string | Array<string | Array<string>>,
-    options: RequestOptions
+    options?: RequestOptions
   ): Promise<any> {
     options = options || {};
     options.include = keys;
@@ -1321,8 +1321,8 @@ class ParseObject {
    * completes.
    */
   save(
-    arg1: undefined | string | { [attr: string]: any } | null,
-    arg2: SaveOptions | any,
+    arg1?: undefined | string | { [attr: string]: any } | null,
+    arg2?: SaveOptions | any,
     arg3?: SaveOptions
   ): Promise<this> {
     let attrs;

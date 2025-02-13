@@ -106,13 +106,17 @@ declare class ParseFile {
    *
    * @returns {object}
    */
-  metadata(): object;
+  metadata(): {
+    [key: string]: any;
+  };
   /**
    * Gets the tags of the file.
    *
    * @returns {object}
    */
-  tags(): object;
+  tags(): {
+    [key: string]: any;
+  };
   /**
    * Saves the file to the Parse cloud.
    *

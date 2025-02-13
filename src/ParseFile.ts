@@ -205,7 +205,7 @@ class ParseFile {
    *
    * @returns {object}
    */
-  metadata() {
+  metadata(): { [key: string]: any } {
     return this._metadata;
   }
 
@@ -214,7 +214,7 @@ class ParseFile {
    *
    * @returns {object}
    */
-  tags() {
+  tags(): { [key: string]: any } {
     return this._tags;
   }
 
@@ -435,7 +435,7 @@ class ParseFile {
 }
 
 const DefaultController = {
-  saveFile: async function (name: string, source: FileSource, options?: FileSaveOptions) {
+  async saveFile (name: string, source: FileSource, options?: FileSaveOptions) {
     if (source.format !== 'file') {
       throw new Error('saveFile can only be used with File-type sources.');
     }
@@ -459,7 +459,7 @@ const DefaultController = {
     return await DefaultController.saveBase64(name, newSource, options);
   },
 
-  saveBase64: function (name: string, source: FileSource, options: FileSaveOptions = {}) {
+  saveBase64 (name: string, source: FileSource, options: FileSaveOptions = {}) {
     if (source.format !== 'base64') {
       throw new Error('saveBase64 can only be used with Base64-type sources.');
     }
@@ -479,7 +479,7 @@ const DefaultController = {
     return CoreManager.getRESTController().request('POST', path, data, options);
   },
 
-  download: function (uri, options) {
+  download (uri, options) {
     if (XHR) {
       return this.downloadAjax(uri, options);
     } else if (process.env.PARSE_BUILD === 'node') {
@@ -507,7 +507,7 @@ const DefaultController = {
     }
   },
 
-  downloadAjax: function (uri: string, options: any) {
+  downloadAjax (uri: string, options: any) {
     return new Promise((resolve, reject) => {
       const xhr = new XHR();
       xhr.open('GET', uri, true);
@@ -533,7 +533,7 @@ const DefaultController = {
     });
   },
 
-  deleteFile: function (name: string, options?: FullOptions) {
+  deleteFile (name: string, options?: FullOptions) {
     const headers = {
       'X-Parse-Application-ID': CoreManager.get('APPLICATION_ID'),
     };

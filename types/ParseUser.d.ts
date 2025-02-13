@@ -4,13 +4,14 @@ import type { RequestOptions, FullOptions } from './RESTController';
 export type AuthData = {
   [key: string]: any;
 };
-export type AuthProviderType = {
+export type AuthProvider = {
   authenticate?(options: {
-    error?: (provider: AuthProviderType, error: string | any) => void;
-    success?: (provider: AuthProviderType, result: AuthData) => void;
+    error?: (provider: AuthProvider, error: string | any) => void;
+    success?: (provider: AuthProvider, result: AuthData) => void;
   }): void;
   restoreAuthentication(authData: any): boolean;
   getAuthType(): string;
+  getAuthData?(): AuthData;
   deauthenticate?(): void;
 };
 /**
@@ -57,7 +58,7 @@ declare class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user is linked
    */
   linkWith(
-    provider: AuthProviderType,
+    provider: AuthProvider,
     options: {
       authData?: AuthData;
     },
@@ -84,7 +85,7 @@ declare class ParseUser extends ParseObject {
    *
    * @param provider
    */
-  _synchronizeAuthData(provider: string | AuthProviderType): void;
+  _synchronizeAuthData(provider: string | AuthProvider): void;
   /**
    * Synchronizes authData for all providers.
    */
@@ -206,7 +207,7 @@ declare class ParseUser extends ParseObject {
    *     finishes.
    */
   signUp(
-    attrs: AttributeMap,
+    attrs?: AttributeMap | null,
     options?: FullOptions & {
       context?: AttributeMap;
     }
@@ -298,7 +299,7 @@ declare class ParseUser extends ParseObject {
    * either from memory or localStorage, if necessary.
    *
    * @static
-   * @returns {Parse.Object} The currently logged in Parse.User.
+   * @returns {Parse.User} The currently logged in Parse.User.
    */
   static current(): ParseUser | null;
   /**

@@ -1,5 +1,5 @@
 import ParseUser from './ParseUser';
-import type { AuthProviderType } from './ParseUser';
+import type { AuthProvider } from './ParseUser';
 /**
  * Provides a set of utilities for using Parse with Facebook.
  *
@@ -102,6 +102,6 @@ declare const FacebookUtils: {
    * @returns {Promise}
    */
   unlink: (user: any, options: any) => any;
-  _getAuthProvider(): AuthProviderType;
+  _getAuthProvider(): AuthProvider;
 };
 export default FacebookUtils;

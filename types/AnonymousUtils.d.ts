@@ -1,4 +1,5 @@
 import ParseUser from './ParseUser';
+import type { AuthProvider } from './ParseUser';
 import type { RequestOptions } from './RESTController';
 /**
  * Provides utility functions for working with Anonymously logged-in users. <br />
@@ -71,14 +72,6 @@ declare const AnonymousUtils: {
    * @static
    */
   isRegistered(): boolean;
-  _getAuthProvider(): {
-    restoreAuthentication(): boolean;
-    getAuthType(): string;
-    getAuthData(): {
-      authData: {
-        id: string;
-      };
-    };
-  };
+  _getAuthProvider(): AuthProvider;
 };
 export default AnonymousUtils;

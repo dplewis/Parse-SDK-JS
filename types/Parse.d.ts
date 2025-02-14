@@ -1,4 +1,3 @@
-import EventuallyQueue from './EventuallyQueue';
 import * as ParseOp from './ParseOp';
 import ACL from './ParseACL';
 import * as Analytics from './Analytics';
@@ -21,6 +20,7 @@ import Session from './ParseSession';
 import User from './ParseUser';
 import ParseLiveQuery from './ParseLiveQuery';
 import LiveQueryClient from './LiveQueryClient';
+import type { EventuallyQueue } from './CoreManager';
 declare const Parse: {
   ACL: typeof ACL;
   Analytics: typeof Analytics;
@@ -141,28 +141,8 @@ declare const Parse: {
         }
       ) => Promise<void>;
     }): void;
-    setEventuallyQueue(controller: {
-      save: (
-        object: ParseObject,
-        serverOptions: import('./ParseObject').SaveOptions
-      ) => Promise<any>;
-      destroy: (
-        object: ParseObject,
-        serverOptions: import('./RESTController').RequestOptions
-      ) => Promise<any>;
-      poll: (ms?: number) => void;
-    }): void;
-    getEventuallyQueue(): {
-      save: (
-        object: ParseObject,
-        serverOptions: import('./ParseObject').SaveOptions
-      ) => Promise<any>;
-      destroy: (
-        object: ParseObject,
-        serverOptions: import('./RESTController').RequestOptions
-      ) => Promise<any>;
-      poll: (ms?: number) => void;
-    };
+    setEventuallyQueue(controller: EventuallyQueue): void;
+    getEventuallyQueue(): EventuallyQueue;
     getFileController(): {
       saveFile: (
         name: string,
@@ -339,16 +319,7 @@ declare const Parse: {
         headers?: any,
         options?: import('./RESTController').FullOptions
       ) => Promise<any>;
-      handleError: (
-        err? /**
-         * Call this method to set your LocalDatastoreStorage engine
-         * If using React-Native use {@link Parse.setAsyncStorage Parse.setAsyncStorage()}
-         *
-         * @param {LocalDatastoreController} controller a data storage.
-         * @static
-         */
-        : any
-      ) => void;
+      handleError: (err?: any) => void;
     }): void;
     getRESTController(): {
       request: (
@@ -364,16 +335,7 @@ declare const Parse: {
         headers?: any,
         options?: import('./RESTController').FullOptions
       ) => Promise<any>;
-      handleError: (
-        err? /**
-         * Call this method to set your LocalDatastoreStorage engine
-         * If using React-Native use {@link Parse.setAsyncStorage Parse.setAsyncStorage()}
-         *
-         * @param {LocalDatastoreController} controller a data storage.
-         * @static
-         */
-        : any
-      ) => void;
+      handleError: (err?: any) => void;
     };
     setSchemaController(controller: {
       purge: (className: string) => Promise<any>;
@@ -789,12 +751,11 @@ declare const Parse: {
   IndexedDB: any;
   Hooks: any;
   Parse: any;
-  get EventuallyQueue(): any;
   /**
    * @member {EventuallyQueue} Parse.EventuallyQueue
    * @static
    */
-  set EventuallyQueue(queue: typeof EventuallyQueue);
+  EventuallyQueue: EventuallyQueue;
   /**
    * Call this method first to set up your authentication tokens for Parse.
    *

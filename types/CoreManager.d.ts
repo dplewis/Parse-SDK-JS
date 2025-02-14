@@ -129,10 +129,39 @@ type QueryController = {
     results?: Array<any>;
   }>;
 };
-type EventuallyQueue = {
-  save: (object: ParseObject, serverOptions: SaveOptions) => Promise<any>;
-  destroy: (object: ParseObject, serverOptions: RequestOptions) => Promise<any>;
-  poll: (ms?: number) => void;
+export type QueueObject = {
+  queueId: string;
+  action: string;
+  object: ParseObject;
+  serverOptions: SaveOptions | RequestOptions;
+  id: string;
+  className: string;
+  hash: string;
+  createdAt: Date;
+};
+export type Queue = Array<QueueObject>;
+export type EventuallyQueue = {
+  save: (object: ParseObject, serverOptions?: SaveOptions) => Promise<any>;
+  destroy: (object: ParseObject, serverOptions?: RequestOptions) => Promise<any>;
+  generateQueueId: (action: string, object: ParseObject) => string;
+  enqueue(
+    action: string,
+    object: ParseObject,
+    serverOptions?: SaveOptions | RequestOptions
+  ): Promise<void>;
+  store(data: Queue): Promise<void>;
+  load(): Promise<string | null>;
+  getQueue(): Promise<Queue>;
+  setQueue(queue: Queue): Promise<void>;
+  remove(queueId: string): Promise<void>;
+  clear(): Promise<void>;
+  queueItemExists(queue: Queue, queueId: string): number;
+  length(): Promise<number>;
+  sendQueue(): Promise<boolean>;
+  sendQueueCallback(object: ParseObject, queueObject: QueueObject): Promise<void>;
+  poll(ms?: number): void;
+  stopPoll(): void;
+  isPolling(): boolean;
 };
 type RESTController = {
   request: (method: string, path: string, data?: any, options?: RequestOptions) => Promise<any>;

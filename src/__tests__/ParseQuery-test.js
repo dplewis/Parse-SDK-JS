@@ -1842,6 +1842,7 @@ describe('ParseQuery', () => {
         useMasterKey: true,
         sessionToken: '1234',
         batchSize: 50,
+        json: true,
       };
       const q = new ParseQuery('Item');
       await q.findAll(batchOptions);
@@ -1855,6 +1856,7 @@ describe('ParseQuery', () => {
       });
       expect(options.useMasterKey).toBe(true);
       expect(options.sessionToken).toEqual('1234');
+      expect(options.json).toEqual(true);
     });
 
     it('only makes one request when the results fit in one page', async () => {
@@ -1873,6 +1875,17 @@ describe('ParseQuery', () => {
       const q = new ParseQuery('Item');
       const results = await q.findAll();
       expect(results.map(obj => obj.attributes.size)).toEqual(['medium', 'small']);
+    });
+
+    it('Returns all objects with json', async () => {
+      const q = new ParseQuery('Item');
+      const results = await q.findAll({ json: true, batchSize: 2 });
+      expect(results.length).toEqual(3);
+      expect(findMock).toHaveBeenCalledTimes(2);
+      results.map(result => {
+        expect(result.id).toBeUndefined();
+        expect(result.objectId).toBeDefined();
+      });
     });
   });
 

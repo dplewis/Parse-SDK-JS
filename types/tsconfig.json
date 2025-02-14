@@ -16,7 +16,7 @@
       "paths": {
         "parse": ["."],
         "parse/node": ["./node.d.ts"],
-        "parse/react-native": ["./react-native.d.ts"],
+        "parse/react-native": ["./react-native.d.ts"]
       }
   },
   "include": [

@@ -1,6 +1,3 @@
-/// <reference path="node.d.ts" />
-/// <reference path="react-native.d.ts" />
-
 declare enum ErrorCode {
   OTHER_CAUSE = -1,
   INTERNAL_SERVER_ERROR = 1,

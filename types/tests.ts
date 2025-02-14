@@ -2,16 +2,6 @@
 
 import Parse from 'parse';
 
-// Parse is a global type, but it can also be imported
-// async function test_imports() {
-//   // $ExpectType typeof Parse
-//   const ParseDirect = await import('parse');
-//   // $ExpectType typeof Parse
-//   const ParseNode = await import('parse/node');
-//   // $ExpectType typeof Parse
-//   const ParseRN = await import('parse/react-native');
-// }
-
 class GameScore extends Parse.Object {
   constructor(options?: any) {
     super('GameScore', options);

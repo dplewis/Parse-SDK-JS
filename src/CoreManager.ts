@@ -113,8 +113,8 @@ export type QueueObject = {
 };
 export type Queue = Array<QueueObject>;
 export type EventuallyQueue = {
-  save: (object: ParseObject, serverOptions?: SaveOptions) => Promise<any>;
-  destroy: (object: ParseObject, serverOptions?: RequestOptions) => Promise<any>;
+  save: (object: ParseObject, serverOptions?: SaveOptions) => Promise<void>;
+  destroy: (object: ParseObject, serverOptions?: RequestOptions) => Promise<void>;
   generateQueueId: (action: string, object: ParseObject) => string;
   enqueue(
     action: string,

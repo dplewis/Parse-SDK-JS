@@ -162,6 +162,11 @@ export type EventuallyQueue = {
   poll(ms?: number): void;
   stopPoll(): void;
   isPolling(): boolean;
+  process: {
+    create(ObjectType: any, queueObject: any): Promise<void>;
+    byId(ObjectType: any, queueObject: any): Promise<void>;
+    byHash(ObjectType: any, queueObject: any): Promise<void>;
+  };
 };
 type RESTController = {
   request: (method: string, path: string, data?: any, options?: RequestOptions) => Promise<any>;

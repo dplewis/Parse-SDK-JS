@@ -317,7 +317,10 @@ declare const Parse: {
         url: string,
         data: any,
         headers?: any,
-        options?: import('./RESTController').FullOptions
+        options? /**
+         * @member {string} Parse.masterKey
+         * @static
+         */ : import('./RESTController').FullOptions
       ) => Promise<any>;
       handleError: (err?: any) => void;
     }): void;
@@ -333,7 +336,10 @@ declare const Parse: {
         url: string,
         data: any,
         headers?: any,
-        options?: import('./RESTController').FullOptions
+        options? /**
+         * @member {string} Parse.masterKey
+         * @static
+         */ : import('./RESTController').FullOptions
       ) => Promise<any>;
       handleError: (err?: any) => void;
     };

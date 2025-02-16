@@ -98,23 +98,23 @@ describe('Hooks', () => {
   });
 
   it('should properly build POST function', async () => {
-    Hooks.createFunction('myFunction', 'https://dummy.com');
+    Hooks.createFunction('myFunction', 'https://example.com');
 
     expect(CoreManager.getHooksController().sendRequest.mock.calls[0]).toEqual([
       'POST',
       'hooks/functions',
       {
         functionName: 'myFunction',
-        url: 'https://dummy.com',
+        url: 'https://example.com',
       },
     ]);
     defaultController.sendRequest = sendRequest;
-    await Hooks.createFunction('myFunction', 'https://dummy.com');
+    await Hooks.createFunction('myFunction', 'https://example.com');
     expect(RESTController.ajax.mock.calls[0][1]).toBe('https://api.parse.com/1/hooks/functions');
   });
 
   it('should properly build POST trigger', async () => {
-    Hooks.createTrigger('MyClass', 'beforeSave', 'https://dummy.com');
+    Hooks.createTrigger('MyClass', 'beforeSave', 'https://example.com');
 
     expect(CoreManager.getHooksController().sendRequest.mock.calls[0]).toEqual([
       'POST',
@@ -122,43 +122,43 @@ describe('Hooks', () => {
       {
         className: 'MyClass',
         triggerName: 'beforeSave',
-        url: 'https://dummy.com',
+        url: 'https://example.com',
       },
     ]);
     defaultController.sendRequest = sendRequest;
-    await Hooks.createTrigger('MyClass', 'beforeSave', 'https://dummy.com');
+    await Hooks.createTrigger('MyClass', 'beforeSave', 'https://example.com');
     expect(RESTController.ajax.mock.calls[0][1]).toBe('https://api.parse.com/1/hooks/triggers');
   });
 
   it('should properly build PUT function', async () => {
-    Hooks.updateFunction('myFunction', 'https://dummy.com');
+    Hooks.updateFunction('myFunction', 'https://example.com');
 
     expect(CoreManager.getHooksController().sendRequest.mock.calls[0]).toEqual([
       'PUT',
       'hooks/functions/myFunction',
       {
-        url: 'https://dummy.com',
+        url: 'https://example.com',
       },
     ]);
     defaultController.sendRequest = sendRequest;
-    await Hooks.updateFunction('myFunction', 'https://dummy.com');
+    await Hooks.updateFunction('myFunction', 'https://example.com');
     expect(RESTController.ajax.mock.calls[0][1]).toBe(
       'https://api.parse.com/1/hooks/functions/myFunction'
     );
   });
 
   it('should properly build PUT trigger', async () => {
-    Hooks.updateTrigger('MyClass', 'beforeSave', 'https://dummy.com');
+    Hooks.updateTrigger('MyClass', 'beforeSave', 'https://example.com');
 
     expect(CoreManager.getHooksController().sendRequest.mock.calls[0]).toEqual([
       'PUT',
       'hooks/triggers/MyClass/beforeSave',
       {
-        url: 'https://dummy.com',
+        url: 'https://example.com',
       },
     ]);
     defaultController.sendRequest = sendRequest;
-    await Hooks.updateTrigger('MyClass', 'beforeSave', 'https://dummy.com');
+    await Hooks.updateTrigger('MyClass', 'beforeSave', 'https://example.com');
     expect(RESTController.ajax.mock.calls[0][1]).toBe(
       'https://api.parse.com/1/hooks/triggers/MyClass/beforeSave'
     );
@@ -202,7 +202,7 @@ describe('Hooks', () => {
       expect(err.error).toBe('invalid hook declaration');
     });
 
-    const p2 = Hooks.create({ url: 'http://dummy.com' }).catch(err => {
+    const p2 = Hooks.create({ url: 'http://example.com' }).catch(err => {
       expect(err.code).toBe(143);
       expect(err.error).toBe('invalid hook declaration');
     });
@@ -212,7 +212,7 @@ describe('Hooks', () => {
       expect(err.error).toBe('invalid hook declaration');
     });
 
-    const p4 = Hooks.create({ className: 'MyClass', url: 'http://dummy.com' }).catch(err => {
+    const p4 = Hooks.create({ className: 'MyClass', url: 'http://example.com' }).catch(err => {
       expect(err.code).toBe(143);
       expect(err.error).toBe('invalid hook declaration');
     });
@@ -237,7 +237,7 @@ describe('Hooks', () => {
       expect(err.error).toBe('invalid hook declaration');
     });
 
-    const p3 = Hooks.update({ className: 'MyClass', url: 'http://dummy.com' }).catch(err => {
+    const p3 = Hooks.update({ className: 'MyClass', url: 'http://example.com' }).catch(err => {
       expect(err.code).toBe(143);
       expect(err.error).toBe('invalid hook declaration');
     });
@@ -256,7 +256,7 @@ describe('Hooks', () => {
       expect(err.error).toBe('invalid hook declaration');
     });
 
-    const p3 = Hooks.remove({ className: 'MyClass', url: 'http://dummy.com' }).catch(err => {
+    const p3 = Hooks.remove({ className: 'MyClass', url: 'http://example.com' }).catch(err => {
       expect(err.code).toBe(143);
       expect(err.error).toBe('invalid hook declaration');
     });

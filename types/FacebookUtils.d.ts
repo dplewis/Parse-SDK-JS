@@ -62,7 +62,7 @@ declare const FacebookUtils: {
    * @param {object} options MasterKey / SessionToken. Alternatively can be used for authData if permissions is a string
    * @returns {Promise}
    */
-  logIn(permissions: any, options: any): Promise<ParseUser>;
+  logIn(permissions: any, options: any): Promise<ParseUser<import('./ParseObject').Attributes>>;
   /**
    * Links Facebook to an existing PFUser. This method delegates to the
    * Facebook SDK to authenticate the user, and then automatically links

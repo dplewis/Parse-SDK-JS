@@ -235,7 +235,7 @@ function handleOfflineSort(a, b, sorts) {
  *
  * @alias Parse.Query
  */
-class ParseQuery {
+class ParseQuery<T extends ParseObject = ParseObject> {
   /**
    * @property {string} className
    */
@@ -263,7 +263,7 @@ class ParseQuery {
   /**
    * @param {(string | Parse.Object)} objectClass An instance of a subclass of Parse.Object, or a Parse className string.
    */
-  constructor(objectClass: string | any) {
+  constructor(objectClass: string | (new (...args: any[]) => T | ParseObject)) {
     if (typeof objectClass === 'string') {
       if (objectClass === 'User' && CoreManager.get('PERFORM_USER_REWRITE')) {
         this.className = '_User';

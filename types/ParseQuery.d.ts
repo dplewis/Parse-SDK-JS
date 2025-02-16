@@ -88,7 +88,7 @@ export type QueryJSON = {
  *
  * @alias Parse.Query
  */
-declare class ParseQuery {
+declare class ParseQuery<T extends ParseObject = ParseObject> {
   /**
    * @property {string} className
    */
@@ -117,7 +117,7 @@ declare class ParseQuery {
   /**
    * @param {(string | Parse.Object)} objectClass An instance of a subclass of Parse.Object, or a Parse className string.
    */
-  constructor(objectClass: string | any);
+  constructor(objectClass: string | (new (...args: any[]) => T | ParseObject));
   /**
    * Adds constraint that at least one of the passed in queries matches.
    *

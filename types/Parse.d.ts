@@ -691,7 +691,7 @@ declare const Parse: {
   FacebookUtils: {
     init(options: any): void;
     isLinked(user: any): any;
-    logIn(permissions: any, options: any): Promise<User>;
+    logIn(permissions: any, options: any): Promise<User<import('./ParseObject').Attributes>>;
     link(user: any, permissions: any, options: any): any;
     unlink: (user: any, options: any) => any;
     _getAuthProvider(): import('./ParseUser').AuthProvider;

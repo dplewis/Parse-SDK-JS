@@ -1,7 +1,7 @@
 import CoreManager from './CoreManager';
-import ParseACL from './ParseACL';
+import ACL from './ParseACL';
 import ParseError from './ParseError';
-import ParseObject from './ParseObject';
+import ParseObject, { Attributes, SetOptions } from './ParseObject';
 
 import type { AttributeMap } from './ObjectStateMutations';
 import type ParseRelation from './ParseRelation';
@@ -19,16 +19,16 @@ import type ParseRelation from './ParseRelation';
  * @alias Parse.Role
  * @augments Parse.Object
  */
-class ParseRole extends ParseObject {
+class ParseRole<T extends Attributes = Attributes> extends ParseObject<T> {
   /**
    * @param {string} name The name of the Role to create.
    * @param {Parse.ACL} acl The ACL for this role. Roles must have an ACL.
    * A Parse.Role is a local representation of a role persisted to the Parse
    * cloud.
    */
-  constructor(name: string, acl: ParseACL) {
+  constructor(name: string, acl: ACL) {
     super('_Role');
-    if (typeof name === 'string' && acl instanceof ParseACL) {
+    if (typeof name === 'string' && acl instanceof ACL) {
       this.setName(name);
       this.setACL(acl);
     }
@@ -62,9 +62,9 @@ class ParseRole extends ParseObject {
    * @param {string} name The name of the role.
    * @param {object} options Standard options object with success and error
    *     callbacks.
-   * @returns {(ParseObject|boolean)} true if the set succeeded.
+   * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  setName(name: string, options?: any): ParseObject | boolean {
+  setName(name: string, options?: SetOptions): this {
     this._validateName(name);
     return this.set('name', name, options);
   }

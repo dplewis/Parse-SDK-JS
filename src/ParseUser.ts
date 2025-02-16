@@ -1,10 +1,9 @@
 import CoreManager from './CoreManager';
 import isRevocableSession from './isRevocableSession';
 import ParseError from './ParseError';
-import ParseObject from './ParseObject';
+import ParseObject, { Attributes } from './ParseObject';
 import Storage from './Storage';
 
-import type { AttributeMap } from './ObjectStateMutations';
 import type { RequestOptions, FullOptions } from './RESTController';
 
 export type AuthData = { [key: string]: any };
@@ -15,7 +14,6 @@ export type AuthProvider = {
   }): void;
   restoreAuthentication(authData: any): boolean;
   getAuthType(): string;
-  getAuthData?(): AuthData;
   deauthenticate?(): void;
 };
 const CURRENT_USER_KEY = 'currentUser';
@@ -35,11 +33,11 @@ const authProviders: { [key: string]: AuthProvider } = {};
  * @alias Parse.User
  * @augments Parse.Object
  */
-class ParseUser extends ParseObject {
+class ParseUser<T extends Attributes = Attributes> extends ParseObject<T> {
   /**
    * @param {object} attributes The initial set of data to store in the user.
    */
-  constructor(attributes?: AttributeMap) {
+  constructor(attributes?: T) {
     super('_User');
     if (attributes && typeof attributes === 'object') {
       try {
@@ -296,7 +294,7 @@ class ParseUser extends ParseObject {
    *
    * @returns {object} sessionToken
    */
-  _preserveFieldsOnFetch(): AttributeMap {
+  _preserveFieldsOnFetch(): Attributes {
     return {
       sessionToken: this.get('sessionToken'),
     };
@@ -437,8 +435,8 @@ class ParseUser extends ParseObject {
    *     finishes.
    */
   signUp(
-    attrs?: AttributeMap | null,
-    options?: FullOptions & { context?: AttributeMap }
+    attrs?: Attributes | null,
+    options?: FullOptions & { context?: Attributes }
   ): Promise<ParseUser> {
     const signupOptions = ParseObject._getRequestOptions(options);
     const controller = CoreManager.getUserController();
@@ -463,7 +461,7 @@ class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the login is complete.
    */
-  logIn(options: FullOptions & { context?: AttributeMap } = {}): Promise<ParseUser> {
+  logIn(options: FullOptions & { context?: Attributes } = {}): Promise<ParseUser> {
     const loginOptions = ParseObject._getRequestOptions(options);
     if (!Object.hasOwn(loginOptions, 'usePost')) {
       loginOptions.usePost = true;
@@ -637,7 +635,7 @@ class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the signup completes.
    */
-  static signUp(username: string, password: string, attrs: AttributeMap, options?: FullOptions) {
+  static signUp(username: string, password: string, attrs: Attributes, options?: FullOptions) {
     attrs = attrs || {};
     attrs.username = username;
     attrs.password = password;
@@ -773,7 +771,7 @@ class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the login completes.
    */
-  static hydrate(userJSON: AttributeMap) {
+  static hydrate(userJSON: Attributes) {
     const controller = CoreManager.getUserController();
     const user = new this();
     return controller.hydrate(user, userJSON);
@@ -1100,7 +1098,7 @@ const DefaultController = {
     });
   },
 
-  signUp(user: ParseUser, attrs: AttributeMap, options: RequestOptions): Promise<ParseUser> {
+  signUp(user: ParseUser, attrs: Attributes, options: RequestOptions): Promise<ParseUser> {
     const username = (attrs && attrs.username) || user.get('username');
     const password = (attrs && attrs.password) || user.get('password');
 
@@ -1174,7 +1172,7 @@ const DefaultController = {
     });
   },
 
-  hydrate(user: ParseUser, userJSON: AttributeMap): Promise<ParseUser> {
+  hydrate(user: ParseUser, userJSON: Attributes): Promise<ParseUser> {
     user._finishFetch(userJSON);
     user._setExisted(true);
     if (userJSON.sessionToken && canUseCurrentUser) {

@@ -92,7 +92,7 @@ const AnonymousUtils = {
   },
 
   _getAuthProvider(): AuthProvider {
-    const provider: AuthProvider = {
+    const provider: any = {
       restoreAuthentication() {
         return true;
       },

@@ -57,6 +57,14 @@ type FetchOptions = {
   context?: AttributeMap;
 };
 
+export type SetOptions = {
+  ignoreValidation: boolean;
+};
+
+export interface Attributes {
+  [key: string]: any;
+}
+
 // Mapping of class names to constructors, so we can populate objects from the
 // server with appropriate subclasses of ParseObject
 const classMap: AttributeMap = {};
@@ -100,7 +108,7 @@ function getServerUrlPath() {
  *
  * @alias Parse.Object
  */
-class ParseObject {
+class ParseObject<T extends Attributes = Attributes> {
   /**
    * @param {string} className The class name for the object
    * @param {object} attributes The initial set of data to store in the object.
@@ -109,8 +117,8 @@ class ParseObject {
    */
   constructor(
     className?: string | { className: string; [attr: string]: any },
-    attributes?: { [attr: string]: any },
-    options?: { ignoreValidation: boolean }
+    attributes?: T | Attributes,
+    options?: SetOptions
   ) {
     // Enable legacy initializers
     if (typeof this.initialize === 'function') {
@@ -157,9 +165,9 @@ class ParseObject {
 
   /* Prototype getters / setters */
 
-  get attributes(): AttributeMap {
+  get attributes(): T {
     const stateController = CoreManager.getObjectStateController();
-    return Object.freeze(stateController.estimateAttributes(this._getStateIdentifier()));
+    return Object.freeze(stateController.estimateAttributes(this._getStateIdentifier())) as T;
   }
 
   /**
@@ -221,7 +229,7 @@ class ParseObject {
     }
   }
 
-  _getServerData(): AttributeMap {
+  _getServerData(): Attributes {
     const stateController = CoreManager.getObjectStateController();
     return stateController.getServerData(this._getStateIdentifier());
   }
@@ -254,13 +262,13 @@ class ParseObject {
     });
   }
 
-  _getDirtyObjectAttributes(): AttributeMap {
+  _getDirtyObjectAttributes(): Attributes {
     const attributes = this.attributes;
     const stateController = CoreManager.getObjectStateController();
     const objectCache = stateController.getObjectCache(this._getStateIdentifier());
-    const dirty = {};
+    const dirty: Attributes = {};
     for (const attr in attributes) {
-      const val = attributes[attr];
+      const val: any = attributes[attr];
       if (
         val &&
         typeof val === 'object' &&
@@ -286,14 +294,14 @@ class ParseObject {
     return dirty;
   }
 
-  _toFullJSON(seen?: Array<any>, offline?: boolean): AttributeMap {
-    const json: { [key: string]: any } = this.toJSON(seen, offline);
+  _toFullJSON(seen?: Array<any>, offline?: boolean): Attributes {
+    const json: Attributes = this.toJSON(seen, offline);
     json.__type = 'Object';
     json.className = this.className;
     return json;
   }
 
-  _getSaveJSON(): AttributeMap {
+  _getSaveJSON(): Attributes {
     const pending = this._getPendingOps();
     const dirtyObjects = this._getDirtyObjectAttributes();
     const json = {};
@@ -347,7 +355,7 @@ class ParseObject {
     };
   }
 
-  _finishFetch(serverData: AttributeMap) {
+  _finishFetch(serverData: Attributes) {
     if (!this.id && serverData.objectId) {
       this.id = serverData.objectId;
     }
@@ -406,7 +414,7 @@ class ParseObject {
     }
   }
 
-  _handleSaveResponse(response: AttributeMap, status: number) {
+  _handleSaveResponse(response: Attributes, status: number) {
     const changes: Partial<{
       createdAt: string;
       updatedAt: string;
@@ -508,10 +516,10 @@ class ParseObject {
    * @param offline
    * @returns {object}
    */
-  toJSON(seen: Array<any> | void, offline?: boolean): AttributeMap {
+  toJSON(seen: Array<any> | void, offline?: boolean): Attributes {
     const seenEntry = this.id ? this.className + ':' + this.id : this;
     seen = seen || [seenEntry];
-    const json: AttributeMap = {};
+    const json: Attributes = {};
     const attrs = this.attributes;
     for (const attr in attrs) {
       if ((attr === 'createdAt' || attr === 'updatedAt') && attrs[attr].toJSON) {
@@ -982,7 +990,7 @@ class ParseObject {
       const readonly = (this.constructor as any).readOnlyAttributes() || [];
       // Attributes are frozen, so we have to rebuild an object,
       // rather than delete readonly keys
-      const copy = {};
+      const copy: T = {} as T;
       for (const a in attributes) {
         if (readonly.indexOf(a) < 0) {
           copy[a] = attributes[a];
@@ -1094,7 +1102,7 @@ class ParseObject {
    * @returns {Parse.Error|boolean} False if the data is valid.  An error object otherwise.
    * @see Parse.Object#set
    */
-  validate(attrs: AttributeMap): ParseError | boolean {
+  validate(attrs: Attributes): ParseError | boolean {
     if (Object.hasOwn(attrs, 'ACL') && !(attrs.ACL instanceof ParseACL)) {
       return new ParseError(ParseError.OTHER_CAUSE, 'ACL must be a Parse ACL.');
     }
@@ -1159,7 +1167,7 @@ class ParseObject {
    */
   clear(): this {
     const attributes = this.attributes;
-    const erasable = {};
+    const erasable: Attributes = {};
     let readonly = ['createdAt', 'updatedAt'];
     if (typeof (this.constructor as any).readOnlyAttributes === 'function') {
       readonly = readonly.concat((this.constructor as any).readOnlyAttributes());
@@ -1838,7 +1846,7 @@ class ParseObject {
     }
     const constructor = classMap[json.className];
     const o = constructor ? new constructor(json.className) : new ParseObject(json.className);
-    const otherAttributes: AttributeMap = {};
+    const otherAttributes: Attributes = {};
     for (const attr in json) {
       if (attr !== 'className' && attr !== '__type') {
         otherAttributes[attr] = json[attr];

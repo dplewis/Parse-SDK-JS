@@ -100,7 +100,7 @@ const EventuallyQueue = {
       queueId,
       action,
       object: object.toJSON(),
-      serverOptions,
+      serverOptions: serverOptions || {},
       id: object.id,
       className: object.className,
       hash: object.get('hash'),

@@ -28,6 +28,12 @@ type FetchOptions = {
   include?: string | string[];
   context?: AttributeMap;
 };
+export type SetOptions = {
+  ignoreValidation: boolean;
+};
+export interface Attributes {
+  [key: string]: any;
+}
 /**
  * Creates a new model with defined attributes.
  *
@@ -46,7 +52,7 @@ type FetchOptions = {
  *
  * @alias Parse.Object
  */
-declare class ParseObject {
+declare class ParseObject<T extends Attributes = Attributes> {
   /**
    * @param {string} className The class name for the object
    * @param {object} attributes The initial set of data to store in the object.
@@ -60,12 +66,8 @@ declare class ParseObject {
           className: string;
           [attr: string]: any;
         },
-    attributes?: {
-      [attr: string]: any;
-    },
-    options?: {
-      ignoreValidation: boolean;
-    }
+    attributes?: T | Attributes,
+    options?: SetOptions
   );
   /**
    * The ID of this object, unique within its class.
@@ -76,7 +78,7 @@ declare class ParseObject {
   _localId?: string;
   _objCount: number;
   className: string;
-  get attributes(): AttributeMap;
+  get attributes(): T;
   /**
    * The first time this object was saved on the server.
    *
@@ -108,7 +110,7 @@ declare class ParseObject {
         id: string;
         className: string;
       };
-  _getServerData(): AttributeMap;
+  _getServerData(): Attributes;
   _clearServerData(): void;
   _getPendingOps(): Array<OpsMap>;
   /**
@@ -116,14 +118,14 @@ declare class ParseObject {
    * these fields will be cleared
    */
   _clearPendingOps(keysToClear?: Array<string>): void;
-  _getDirtyObjectAttributes(): AttributeMap;
-  _toFullJSON(seen?: Array<any>, offline?: boolean): AttributeMap;
-  _getSaveJSON(): AttributeMap;
+  _getDirtyObjectAttributes(): Attributes;
+  _toFullJSON(seen?: Array<any>, offline?: boolean): Attributes;
+  _getSaveJSON(): Attributes;
   _getSaveParams(): SaveParams;
-  _finishFetch(serverData: AttributeMap): void;
+  _finishFetch(serverData: Attributes): void;
   _setExisted(existed: boolean): void;
   _migrateId(serverId: string): void;
-  _handleSaveResponse(response: AttributeMap, status: number): void;
+  _handleSaveResponse(response: Attributes, status: number): void;
   _handleSaveError(): void;
   static _getClassMap(): AttributeMap;
   static _getRequestOptions(
@@ -143,7 +145,7 @@ declare class ParseObject {
    * @param offline
    * @returns {object}
    */
-  toJSON(seen: Array<any> | void, offline?: boolean): AttributeMap;
+  toJSON(seen: Array<any> | void, offline?: boolean): Attributes;
   /**
    * Determines whether this ParseObject is equal to another ParseObject
    *
@@ -397,7 +399,7 @@ declare class ParseObject {
    * @returns {Parse.Error|boolean} False if the data is valid.  An error object otherwise.
    * @see Parse.Object#set
    */
-  validate(attrs: AttributeMap): ParseError | boolean;
+  validate(attrs: Attributes): ParseError | boolean;
   /**
    * Returns the ACL for this object.
    *
@@ -712,7 +714,7 @@ declare class ParseObject {
   static fetchAll(
     list: Array<ParseObject>,
     options?: RequestOptions
-  ): Promise<ParseObject | ParseObject[]>;
+  ): Promise<ParseObject<Attributes> | ParseObject<Attributes>[]>;
   /**
    * Fetches the given list of Parse.Object.
    *
@@ -746,7 +748,7 @@ declare class ParseObject {
     list: Array<ParseObject>,
     keys: string | Array<string | Array<string>>,
     options: RequestOptions
-  ): Promise<ParseObject | ParseObject[]>;
+  ): Promise<ParseObject<Attributes> | ParseObject<Attributes>[]>;
   /**
    * Fetches the given list of Parse.Object if needed.
    * If any error is encountered, stops and calls the error handler.
@@ -781,7 +783,7 @@ declare class ParseObject {
     list: Array<ParseObject>,
     keys: string | Array<string | Array<string>>,
     options: RequestOptions
-  ): Promise<ParseObject | ParseObject[]>;
+  ): Promise<ParseObject<Attributes> | ParseObject<Attributes>[]>;
   /**
    * Fetches the given list of Parse.Object if needed.
    * If any error is encountered, stops and calls the error handler.
@@ -812,7 +814,7 @@ declare class ParseObject {
   static fetchAllIfNeeded(
     list: Array<ParseObject>,
     options: FetchOptions
-  ): Promise<ParseObject | ParseObject[]>;
+  ): Promise<ParseObject<Attributes> | ParseObject<Attributes>[]>;
   static handleIncludeOptions(options: { include?: string | string[] }): any[];
   /**
    * Destroy the given list of models on the server if it was already persisted.
@@ -872,7 +874,7 @@ declare class ParseObject {
   static destroyAll(
     list: Array<ParseObject>,
     options?: SaveOptions
-  ): Promise<ParseObject | ParseObject[]>;
+  ): Promise<ParseObject<Attributes> | ParseObject<Attributes>[]>;
   /**
    * Saves the given list of Parse.Object.
    * If any error is encountered, stops and calls the error handler.
@@ -905,7 +907,7 @@ declare class ParseObject {
   static saveAll(
     list: Array<ParseObject>,
     options?: SaveOptions
-  ): Promise<ParseObject | ParseFile | ParseObject[]>;
+  ): Promise<ParseObject<Attributes> | ParseFile | ParseObject<Attributes>[]>;
   /**
    * Creates a reference to a subclass of Parse.Object with the given id. This
    * does not exist on Parse.Object, only on subclasses.

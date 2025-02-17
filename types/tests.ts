@@ -2158,7 +2158,7 @@ function testEventuallyQueue() {
     const obj = new Parse.Object('TestObject');
     // $ExpectType Promise<void>
     Parse.EventuallyQueue.clear();
-    // $ExpectType Promise<Queue>
+    // $ExpectType Promise<any[]>
     Parse.EventuallyQueue.getQueue();
     // $ExpectType boolean
     Parse.EventuallyQueue.isPolling();

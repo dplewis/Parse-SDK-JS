@@ -260,31 +260,31 @@ async function test_query_promise() {
 async function test_live_query() {
   const subscription = await new Parse.Query('Test').subscribe();
   subscription.on('close', object => {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     object;
   });
   subscription.on('create', object => {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     object;
   });
   subscription.on('delete', object => {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     object;
   });
   subscription.on('enter', object => {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     object;
   });
   subscription.on('leave', object => {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     object;
   });
   subscription.on('open', object => {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     object;
   });
   subscription.on('update', object => {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     object;
   });
 }
@@ -1117,10 +1117,10 @@ async function test_schema(
 
 function testObject() {
   function testConstructor() {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     new Parse.Object();
 
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     new Parse.Object('TestObject');
 
     // $ExpectType Object<{ example: number; }>
@@ -1144,7 +1144,7 @@ function testObject() {
       objUntyped: Parse.Object,
       objTyped: Parse.Object<{ example: string }>
     ) {
-      // $ExpectType Object<Attributes>[]
+      // $ExpectType ParseObject<Attributes>[]
       await Parse.Object.saveAll([objUntyped]);
 
       // $ExpectType Object<{ example: string; }>[]
@@ -1392,7 +1392,7 @@ function testObject() {
   }
 
   function testNewInstance(objUntyped: Parse.Object, objTyped: Parse.Object<{ example: number }>) {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.newInstance();
 
     // $ExpectType Object<{ example: number; }>
@@ -1414,10 +1414,10 @@ function testObject() {
     objUntyped: Parse.Object,
     objTyped: Parse.Object<{ example: number; rel: Parse.Relation }>
   ) {
-    // $ExpectType Relation<Object<Attributes>, Object<Attributes>>
+    // $ExpectType Relation<Object<Attributes>, ParseObject<Attributes>>
     objUntyped.relation('whatever');
 
-    // $ExpectType Relation<Object<{ example: number; rel: Relation<Object<Attributes>, Object<Attributes>>; }>, Object<Attributes>>
+    // $ExpectType Relation<Object<{ example: number; rel: Relation<Object<Attributes>, ParseObject<Attributes>>; }>, ParseObject<Attributes>>
     objTyped.relation('rel');
 
     // @ts-expect-error
@@ -1500,10 +1500,10 @@ function testObject() {
     objTyped: Parse.Object<ObjectAttributes>,
     objTypedOptional: Parse.Object<OptionalObjectAttributes>
   ) {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     await objUntyped.save({ whatever: 100 });
 
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     await objUntyped.save('whatever', 100);
 
     // $ExpectType Object<ObjectAttributes>
@@ -2041,16 +2041,16 @@ function testQuery() {
     queryUntyped: Parse.Query,
     queryTyped: Parse.Query<Parse.Object<{ example: string }>>
   ) {
-    // $ExpectType Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     await queryUntyped.get('objectId');
 
-    // $ExpectType Object<Attributes>[]
+    // $ExpectType ParseObject<Attributes>[]
     await queryUntyped.find();
 
     // $ExpectType string[]
     await queryTyped.distinct('example');
 
-    // $ExpectType Object<Attributes> | undefined
+    // $ExpectType ParseObject<Attributes> | undefined
     await queryUntyped.first();
 
     // $ExpectType Object<{ example: string; }>

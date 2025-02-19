@@ -1,5 +1,5 @@
 import CoreManager from './CoreManager';
-import ACL from './ParseACL';
+import ParseACL from './ParseACL';
 import ParseError from './ParseError';
 import ParseObject, { Attributes, SetOptions } from './ParseObject';
 
@@ -26,9 +26,9 @@ class ParseRole<T extends Attributes = Attributes> extends ParseObject<T> {
    * A Parse.Role is a local representation of a role persisted to the Parse
    * cloud.
    */
-  constructor(name: string, acl: ACL) {
+  constructor(name: string, acl: ParseACL) {
     super('_Role');
-    if (typeof name === 'string' && acl instanceof ACL) {
+    if (typeof name === 'string' && acl instanceof ParseACL) {
       this.setName(name);
       this.setACL(acl);
     }

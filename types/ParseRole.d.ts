@@ -1,4 +1,4 @@
-import ACL from './ParseACL';
+import ParseACL from './ParseACL';
 import ParseError from './ParseError';
 import ParseObject, { Attributes, SetOptions } from './ParseObject';
 import type { AttributeMap } from './ObjectStateMutations';
@@ -23,7 +23,7 @@ declare class ParseRole<T extends Attributes = Attributes> extends ParseObject<T
    * A Parse.Role is a local representation of a role persisted to the Parse
    * cloud.
    */
-  constructor(name: string, acl: ACL);
+  constructor(name: string, acl: ParseACL);
   /**
    * Gets the name of the role.  You can alternatively call role.get("name")
    *

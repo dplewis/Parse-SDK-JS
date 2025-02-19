@@ -20,6 +20,7 @@ import Session from './ParseSession';
 import User from './ParseUser';
 import ParseLiveQuery from './ParseLiveQuery';
 import LiveQueryClient from './LiveQueryClient';
+import type { EventuallyQueue } from './CoreManager';
 declare const Parse: {
   ACL: typeof ACL;
   Analytics: typeof Analytics;
@@ -28,15 +29,7 @@ declare const Parse: {
     logIn(options?: import('./RESTController').RequestOptions): Promise<User>;
     link(user: User, options?: import('./RESTController').RequestOptions): Promise<User>;
     isRegistered(): boolean;
-    _getAuthProvider(): {
-      restoreAuthentication(): boolean;
-      getAuthType(): string;
-      getAuthData(): {
-        authData: {
-          id: string;
-        };
-      };
-    };
+    _getAuthProvider(): import('./ParseUser').AuthProvider;
   };
   Cloud: typeof Cloud;
   CLP: typeof CLP;
@@ -148,28 +141,8 @@ declare const Parse: {
         }
       ) => Promise<void>;
     }): void;
-    setEventuallyQueue(controller: {
-      save: (
-        object: ParseObject,
-        serverOptions: import('./ParseObject').SaveOptions
-      ) => Promise<any>;
-      destroy: (
-        object: ParseObject,
-        serverOptions: import('./RESTController').RequestOptions
-      ) => Promise<any>;
-      poll: (ms?: number) => void;
-    }): void;
-    getEventuallyQueue(): {
-      save: (
-        object: ParseObject,
-        serverOptions: import('./ParseObject').SaveOptions
-      ) => Promise<any>;
-      destroy: (
-        object: ParseObject,
-        serverOptions: import('./RESTController').RequestOptions
-      ) => Promise<any>;
-      poll: (ms?: number) => void;
-    };
+    setEventuallyQueue(controller: EventuallyQueue): void;
+    getEventuallyQueue(): EventuallyQueue;
     getFileController(): {
       saveFile: (
         name: string,
@@ -344,18 +317,12 @@ declare const Parse: {
         url: string,
         data: any,
         headers?: any,
-        options?: import('./RESTController').FullOptions
-      ) => Promise<any>;
-      handleError: (
-        err? /**
-         * Call this method to set your LocalDatastoreStorage engine
-         * If using React-Native use {@link Parse.setAsyncStorage Parse.setAsyncStorage()}
-         *
-         * @param {LocalDatastoreController} controller a data storage.
+        options? /**
+         * @member {string} Parse.masterKey
          * @static
-         */
-        : any
-      ) => void;
+         */ : import('./RESTController').FullOptions
+      ) => Promise<any>;
+      handleError: (err?: any) => void;
     }): void;
     getRESTController(): {
       request: (
@@ -369,18 +336,12 @@ declare const Parse: {
         url: string,
         data: any,
         headers?: any,
-        options?: import('./RESTController').FullOptions
-      ) => Promise<any>;
-      handleError: (
-        err? /**
-         * Call this method to set your LocalDatastoreStorage engine
-         * If using React-Native use {@link Parse.setAsyncStorage Parse.setAsyncStorage()}
-         *
-         * @param {LocalDatastoreController} controller a data storage.
+        options? /**
+         * @member {string} Parse.masterKey
          * @static
-         */
-        : any
-      ) => void;
+         */ : import('./RESTController').FullOptions
+      ) => Promise<any>;
+      handleError: (err?: any) => void;
     };
     setSchemaController(controller: {
       purge: (className: string) => Promise<any>;
@@ -730,10 +691,10 @@ declare const Parse: {
   FacebookUtils: {
     init(options: any): void;
     isLinked(user: any): any;
-    logIn(permissions: any, options: any): Promise<User>;
+    logIn(permissions: any, options: any): Promise<User<import('./ParseObject').Attributes>>;
     link(user: any, permissions: any, options: any): any;
     unlink: (user: any, options: any) => any;
-    _getAuthProvider(): import('./ParseUser').AuthProviderType;
+    _getAuthProvider(): import('./ParseUser').AuthProvider;
   };
   File: typeof File;
   GeoPoint: typeof GeoPoint;
@@ -796,12 +757,11 @@ declare const Parse: {
   IndexedDB: any;
   Hooks: any;
   Parse: any;
-  get EventuallyQueue(): any;
   /**
    * @member {EventuallyQueue} Parse.EventuallyQueue
    * @static
    */
-  set EventuallyQueue(queue: typeof EventuallyQueue);
+  EventuallyQueue: EventuallyQueue;
   /**
    * Call this method first to set up your authentication tokens for Parse.
    *

@@ -1178,10 +1178,10 @@ function testObject() {
     objUntyped: Parse.Object,
     objTyped: Parse.Object<{ stringList: string[]; thing: boolean }>
   ) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.add('whatever', 'hello');
 
-    // $ExpectType false | Object<{ stringList: string[]; thing: boolean; }>
+    // $ExpectType ParseObject<{ stringList: string[]; thing: boolean; }>
     objTyped.add('stringList', 'hello');
 
     // @ts-expect-error
@@ -1198,10 +1198,10 @@ function testObject() {
     objUntyped: Parse.Object,
     objTyped: Parse.Object<{ stringList: string[]; thing: boolean }>
   ) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.addAll('whatever', ['hello', 100]);
 
-    // $ExpectType false | Object<{ stringList: string[]; thing: boolean; }>
+    // $ExpectType ParseObject<{ stringList: string[]; thing: boolean; }>
     objTyped.addAll('stringList', ['hello']);
 
     // @ts-expect-error
@@ -1218,10 +1218,10 @@ function testObject() {
     objUntyped: Parse.Object,
     objTyped: Parse.Object<{ stringList: string[]; thing: boolean }>
   ) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.addAllUnique('whatever', ['hello', 100]);
 
-    // $ExpectType false | Object<{ stringList: string[]; thing: boolean; }>
+    // $ExpectType ParseObject<{ stringList: string[]; thing: boolean; }>
     objTyped.addAllUnique('stringList', ['hello']);
 
     // @ts-expect-error
@@ -1238,10 +1238,10 @@ function testObject() {
     objUntyped: Parse.Object,
     objTyped: Parse.Object<{ stringList: string[]; thing: boolean }>
   ) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.addUnique('whatever', 'hello');
 
-    // $ExpectType false | Object<{ stringList: string[]; thing: boolean; }>
+    // $ExpectType ParseObject<{ stringList: string[]; thing: boolean; }>
     objTyped.addUnique('stringList', 'hello');
 
     // @ts-expect-error
@@ -1357,16 +1357,16 @@ function testObject() {
   }
 
   function testIncrement(objUntyped: Parse.Object, objTyped: Parse.Object<{ example: number }>) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.increment('whatever');
 
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.increment('whatever', 10);
 
-    // $ExpectType false | Object<{ example: number; }>
+    // $ExpectType ParseObject<{ example: number; }>
     objTyped.increment('example');
 
-    // $ExpectType false | Object<{ example: number; }>
+    // $ExpectType ParseObject<{ example: number; }>
     objTyped.increment('example', 20);
 
     // @ts-expect-error
@@ -1377,16 +1377,16 @@ function testObject() {
   }
 
   function testDecrement(objUntyped: Parse.Object, objTyped: Parse.Object<{ example: number }>) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.decrement('whatever');
 
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.decrement('whatever', 10);
 
-    // $ExpectType false | Object<{ example: number; }>
+    // $ExpectType ParseObject<{ example: number; }>
     objTyped.decrement('example');
 
-    // $ExpectType false | Object<{ example: number; }>
+    // $ExpectType ParseObject<{ example: number; }>
     objTyped.decrement('example', 20);
 
     // @ts-expect-error
@@ -1436,10 +1436,10 @@ function testObject() {
     objUntyped: Parse.Object,
     objTyped: Parse.Object<{ stringList: string[]; thing: boolean }>
   ) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.remove('whatever', 'hello');
 
-    // $ExpectType false | Object<{ stringList: string[]; thing: boolean; }>
+    // $ExpectType ParseObject<{ stringList: string[]; thing: boolean; }>
     objTyped.remove('stringList', 'hello');
 
     // @ts-expect-error
@@ -1456,10 +1456,10 @@ function testObject() {
     objUntyped: Parse.Object,
     objTyped: Parse.Object<{ stringList: string[]; thing: boolean }>
   ) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.removeAll('whatever', ['hello', 100]);
 
-    // $ExpectType false | Object<{ stringList: string[]; thing: boolean; }>
+    // $ExpectType ParseObject<{ stringList: string[]; thing: boolean; }>
     objTyped.removeAll('stringList', ['hello']);
 
     // @ts-expect-error
@@ -1565,22 +1565,22 @@ function testObject() {
     objTyped: Parse.Object<ObjectAttributes>,
     objTypedOptional: Parse.Object<OptionalObjectAttributes>
   ) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.set('propA', 'some value');
 
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.set({ propA: undefined });
 
-    // $ExpectType false | Object<ObjectAttributes>
+    // $ExpectType ParseObject<ObjectAttributes>
     objTyped.set({ example: false });
 
-    // $ExpectType false | Object<ObjectAttributes>
+    // $ExpectType ParseObject<ObjectAttributes>
     objTyped.set({ example: true, someString: 'abc' });
 
     // @ts-expect-error
     objTyped.set({ example: 123, someString: 'abc' });
 
-    // $ExpectType false | Object<ObjectAttributes>
+    // $ExpectType ParseObject<ObjectAttributes>
     objTyped.set('example', true);
 
     // @ts-expect-error
@@ -1598,19 +1598,19 @@ function testObject() {
     // @ts-expect-error
     objTyped.set({ example: undefined });
 
-    // $ExpectType false | Object<ObjectAttributes>
+    // $ExpectType ParseObject<ObjectAttributes>
     objTyped.set({});
 
     // @ts-expect-error
     objTyped.set('example', undefined);
 
-    // $ExpectType false | Object<OptionalObjectAttributes>
+    // $ExpectType ParseObject<OptionalObjectAttributes>
     objTypedOptional.set({ example: undefined });
 
-    // $ExpectType false | Object<OptionalObjectAttributes>
+    // $ExpectType ParseObject<OptionalObjectAttributes>
     objTypedOptional.set('example', undefined);
 
-    // $ExpectType false | Object<OptionalObjectAttributes>
+    // $ExpectType ParseObject<OptionalObjectAttributes>
     objTypedOptional.set({});
   }
 
@@ -1688,10 +1688,10 @@ function testObject() {
   }
 
   function testUnset(objUntyped: Parse.Object, objTyped: Parse.Object<{ example: string }>) {
-    // $ExpectType false | Object<Attributes>
+    // $ExpectType ParseObject<Attributes>
     objUntyped.unset('whatever');
 
-    // $ExpectType false | Object<{ example: string; }>
+    // $ExpectType ParseObject<{ example: string; }>
     objTyped.unset('example');
 
     // @ts-expect-error
@@ -1706,37 +1706,37 @@ function testObject() {
   }
 
   function testNullableArrays(objTyped: Parse.Object<{ stringList?: string[] | null }>) {
-    // $ExpectType false | Object<{ stringList?: string[] | null | undefined; }>
+    // $ExpectType ParseObject<{ stringList?: string[] | null | undefined; }>
     objTyped.add('stringList', 'foo');
 
     // @ts-expect-error
     objTyped.add('stringList', 4);
 
-    // $ExpectType false | Object<{ stringList?: string[] | null | undefined; }>
+    // $ExpectType ParseObject<{ stringList?: string[] | null | undefined; }>
     objTyped.addAll('stringList', ['foo']);
 
     // @ts-expect-error
     objTyped.addAll('stringList', [4]);
 
-    // $ExpectType false | Object<{ stringList?: string[] | null | undefined; }>
+    // $ExpectType ParseObject<{ stringList?: string[] | null | undefined; }>
     objTyped.addAllUnique('stringList', ['foo', 'bar']);
 
     // @ts-expect-error
     objTyped.addAllUnique('stringList', [4]);
 
-    // $ExpectType false | Object<{ stringList?: string[] | null | undefined; }>
+    // $ExpectType ParseObject<{ stringList?: string[] | null | undefined; }>
     objTyped.addUnique('stringList', 'foo');
 
     // @ts-expect-error
     objTyped.addUnique('stringList', 4);
 
-    // $ExpectType false | Object<{ stringList?: string[] | null | undefined; }>
+    // $ExpectType ParseObject<{ stringList?: string[] | null | undefined; }>
     objTyped.remove('stringList', 'bar');
 
     // @ts-expect-error
     objTyped.remove('stringList', 4);
 
-    // $ExpectType false | Object<{ stringList?: string[] | null | undefined; }>
+    // $ExpectType ParseObject<{ stringList?: string[] | null | undefined; }>
     objTyped.removeAll('stringList', ['bar']);
 
     // @ts-expect-error
@@ -2158,7 +2158,7 @@ function testEventuallyQueue() {
     const obj = new Parse.Object('TestObject');
     // $ExpectType Promise<void>
     Parse.EventuallyQueue.clear();
-    // $ExpectType Promise<any[]>
+    // $ExpectType Promise<Queue>
     Parse.EventuallyQueue.getQueue();
     // $ExpectType boolean
     Parse.EventuallyQueue.isPolling();

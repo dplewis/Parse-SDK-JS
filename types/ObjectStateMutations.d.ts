@@ -4,9 +4,6 @@ import type ParseObject from './ParseObject';
 export type AttributeMap = {
   [attr: string]: any;
 };
-export type Attributes = {
-  [attr: string]: any;
-};
 export type OpsMap = {
   [attr: string]: Op;
 };

@@ -8,7 +8,6 @@ import type { Op } from './ParseOp';
 import type ParseObject from './ParseObject';
 
 export type AttributeMap = { [attr: string]: any };
-export type Attributes = { [attr: string]: any };
 export type OpsMap = { [attr: string]: Op };
 export type ObjectCache = { [attr: string]: string };
 

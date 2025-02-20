@@ -64,6 +64,14 @@ To run the integration tests, you will need a valid mongodb running on your loca
 
 Use `npm run integration` in order to run the integration tests. If you have the vscode Jasmine extension installed (as recommended), you can run your tests by clicking the *Run* or the *Debug* lens that appears near by the test.
 
+#### TypeScript Types tests
+
+Those tests are located in [/types/tests](/types/tests) and are responsible for ensure types generated for each class is behaving as expected.
+
+Types must be generated using `npm run build:types` and should not be manually changed. These types are `.d.ts` files located in [/types](/types).
+
+Use `npm run test:types` in order to run types tests against generated `.d.ts` files.
+
 ### Pull Requests
 
 We actively welcome your pull requests. When we get one, we'll run some Parse-specific integration tests on it first. From here, we'll need to get a core member to sign off on the changes and then merge the pull request. For API changes we may need to fix internal uses, which could cause some delay. We'll do our best to provide updates and feedback throughout the process.

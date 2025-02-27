@@ -1949,9 +1949,12 @@ describe('ParseObject', () => {
     const child = new ParseObject('Item');
     parent.set('child', child);
     child.set('parent', parent);
-    await expect(parent.save()).rejects.toThrowError(
-      'Cannot create a pointer to an unsaved Object.'
-    );
+    try {
+      await parent.save();
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e.message).toBe('Cannot create a pointer to an unsaved Object.');
+    }
   });
 
   it('will fail for deeper unsaved objects', async () => {
@@ -1960,9 +1963,12 @@ describe('ParseObject', () => {
     const grandchild = new ParseObject('Item');
     parent.set('child', child);
     child.set('child', grandchild);
-    await expect(parent.save()).rejects.toThrowError(
-      'Cannot create a pointer to an unsaved Object.'
-    );
+    try {
+      await parent.save();
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e.message).toBe('Cannot create a pointer to an unsaved Object.');
+    }
   });
 
   it('does not mark shallow objects as dirty', () => {

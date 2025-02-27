@@ -4,6 +4,45 @@ import ParseCLP from './ParseCLP';
 
 import type { PermissionsMap } from './ParseCLP';
 
+interface CLPField {
+  '*'?: boolean | undefined;
+  requiresAuthentication?: boolean | undefined;
+  [userIdOrRoleName: string]: boolean | undefined;
+}
+
+interface CLP {
+  find?: CLPField | undefined;
+  get?: CLPField | undefined;
+  count?: CLPField | undefined;
+  create?: CLPField | undefined;
+  update?: CLPField | undefined;
+  delete?: CLPField | undefined;
+  addField?: CLPField | undefined;
+  readUserFields?: string[] | undefined;
+  writeUserFields?: string[] | undefined;
+  protectedFields?: {
+    [userIdOrRoleName: string]: string[];
+  };
+}
+
+interface RestSchema {
+  className: string;
+  fields: {
+    [key: string]: {
+      type: string;
+      targetClass?: string;
+      required?: boolean;
+      defaultValue?: string;
+    };
+  };
+  classLevelPermissions: CLP;
+  indexes?: {
+    [key: string]: {
+      [key: string]: any;
+    };
+  };
+}
+
 const FIELD_TYPES = [
   'String',
   'Number',
@@ -70,7 +109,7 @@ class ParseSchema {
    * @returns {Promise} A promise that is resolved with the result when
    * the query completes.
    */
-  static all() {
+  static all(): Promise<RestSchema[]> {
     const controller = CoreManager.getSchemaController();
     return controller.get('').then(response => {
       if (response.results.length === 0) {
@@ -86,7 +125,7 @@ class ParseSchema {
    * @returns {Promise} A promise that is resolved with the result when
    * the query completes.
    */
-  get() {
+  get(): Promise<RestSchema> {
     this.assertClassName();
 
     const controller = CoreManager.getSchemaController();

@@ -1,17 +1,16 @@
 import CoreManager from './CoreManager';
 import isRevocableSession from './isRevocableSession';
 import ParseError from './ParseError';
-import ParseObject from './ParseObject';
+import ParseObject, { Attributes } from './ParseObject';
 import Storage from './Storage';
 
-import type { AttributeMap } from './ObjectStateMutations';
 import type { RequestOptions, FullOptions } from './RESTController';
 
 export type AuthData = { [key: string]: any };
-export type AuthProviderType = {
+export type AuthProvider = {
   authenticate?(options: {
-    error?: (provider: AuthProviderType, error: string | any) => void;
-    success?: (provider: AuthProviderType, result: AuthData) => void;
+    error?: (provider: AuthProvider, error: string | any) => void;
+    success?: (provider: AuthProvider, result: AuthData) => void;
   }): void;
   restoreAuthentication(authData: any): boolean;
   getAuthType(): string;
@@ -22,7 +21,7 @@ let canUseCurrentUser = !CoreManager.get('IS_NODE');
 let currentUserCacheMatchesDisk = false;
 let currentUserCache: ParseUser | null = null;
 
-const authProviders: { [key: string]: AuthProviderType } = {};
+const authProviders: { [key: string]: AuthProvider } = {};
 
 /**
  * <p>A Parse.User object is a local representation of a user persisted to the
@@ -34,11 +33,11 @@ const authProviders: { [key: string]: AuthProviderType } = {};
  * @alias Parse.User
  * @augments Parse.Object
  */
-class ParseUser extends ParseObject {
+class ParseUser<T extends Attributes = Attributes> extends ParseObject<T> {
   /**
    * @param {object} attributes The initial set of data to store in the user.
    */
-  constructor(attributes?: AttributeMap) {
+  constructor(attributes?: T) {
     super('_User');
     if (attributes && typeof attributes === 'object') {
       try {
@@ -83,7 +82,7 @@ class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user is linked
    */
   linkWith(
-    provider: AuthProviderType,
+    provider: AuthProvider,
     options: { authData?: AuthData },
     saveOpts: FullOptions = {}
   ): Promise<ParseUser> {
@@ -168,7 +167,7 @@ class ParseUser extends ParseObject {
    *
    * @param provider
    */
-  _synchronizeAuthData(provider: string | AuthProviderType) {
+  _synchronizeAuthData(provider: string | AuthProvider) {
     if (!this.isCurrent() || !provider) {
       return;
     }
@@ -295,7 +294,7 @@ class ParseUser extends ParseObject {
    *
    * @returns {object} sessionToken
    */
-  _preserveFieldsOnFetch(): AttributeMap {
+  _preserveFieldsOnFetch(): Attributes {
     return {
       sessionToken: this.get('sessionToken'),
     };
@@ -436,8 +435,8 @@ class ParseUser extends ParseObject {
    *     finishes.
    */
   signUp(
-    attrs: AttributeMap,
-    options?: FullOptions & { context?: AttributeMap }
+    attrs?: Attributes | null,
+    options?: FullOptions & { context?: Attributes }
   ): Promise<ParseUser> {
     const signupOptions = ParseObject._getRequestOptions(options);
     const controller = CoreManager.getUserController();
@@ -462,7 +461,7 @@ class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the login is complete.
    */
-  logIn(options: FullOptions & { context?: AttributeMap } = {}): Promise<ParseUser> {
+  logIn(options: FullOptions & { context?: Attributes } = {}): Promise<ParseUser> {
     const loginOptions = ParseObject._getRequestOptions(options);
     if (!Object.hasOwn(loginOptions, 'usePost')) {
       loginOptions.usePost = true;
@@ -510,11 +509,11 @@ class ParseUser extends ParseObject {
    * @param {...any} args
    * @returns {Parse.User}
    */
-  async fetch(...args: Array<any>): Promise<ParseUser> {
+  async fetch(...args: Array<any>): Promise<this> {
     await super.fetch.apply(this, args);
     const current = await this.isCurrentAsync();
     if (current) {
-      return CoreManager.getUserController().updateUserOnDisk(this);
+      return CoreManager.getUserController().updateUserOnDisk(this) as Promise<this>;
     }
     return this;
   }
@@ -526,11 +525,11 @@ class ParseUser extends ParseObject {
    * @param {...any} args
    * @returns {Parse.User}
    */
-  async fetchWithInclude(...args: Array<any>): Promise<ParseUser> {
+  async fetchWithInclude(...args: Array<any>): Promise<this> {
     await super.fetchWithInclude.apply(this, args);
     const current = await this.isCurrentAsync();
     if (current) {
-      return CoreManager.getUserController().updateUserOnDisk(this);
+      return CoreManager.getUserController().updateUserOnDisk(this) as Promise<this>;
     }
     return this;
   }
@@ -597,7 +596,7 @@ class ParseUser extends ParseObject {
    * either from memory or localStorage, if necessary.
    *
    * @static
-   * @returns {Parse.Object} The currently logged in Parse.User.
+   * @returns {Parse.User} The currently logged in Parse.User.
    */
   static current(): ParseUser | null {
     if (!canUseCurrentUser) {
@@ -636,7 +635,7 @@ class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the signup completes.
    */
-  static signUp(username: string, password: string, attrs: AttributeMap, options?: FullOptions) {
+  static signUp(username: string, password: string, attrs: Attributes, options?: FullOptions) {
     attrs = attrs || {};
     attrs.username = username;
     attrs.password = password;
@@ -663,7 +662,7 @@ class ParseUser extends ParseObject {
       return Promise.reject(new ParseError(ParseError.OTHER_CAUSE, 'Password must be a string.'));
     }
     const user = new this();
-    user._finishFetch({ username: username, password: password });
+    user._finishFetch({ username, password });
     return user.logIn(options);
   }
 
@@ -696,7 +695,7 @@ class ParseUser extends ParseObject {
       return Promise.reject(new ParseError(ParseError.OTHER_CAUSE, 'Auth must be an object.'));
     }
     const user = new this();
-    user._finishFetch({ username: username, password: password, authData });
+    user._finishFetch({ username, password, authData });
     return user.logIn(options);
   }
 
@@ -772,7 +771,7 @@ class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the login completes.
    */
-  static hydrate(userJSON: AttributeMap) {
+  static hydrate(userJSON: Attributes) {
     const controller = CoreManager.getUserController();
     const user = new this();
     return controller.hydrate(user, userJSON);
@@ -1099,7 +1098,7 @@ const DefaultController = {
     });
   },
 
-  signUp(user: ParseUser, attrs: AttributeMap, options: RequestOptions): Promise<ParseUser> {
+  signUp(user: ParseUser, attrs: Attributes, options: RequestOptions): Promise<ParseUser> {
     const username = (attrs && attrs.username) || user.get('username');
     const password = (attrs && attrs.password) || user.get('password');
 
@@ -1173,7 +1172,7 @@ const DefaultController = {
     });
   },
 
-  hydrate(user: ParseUser, userJSON: AttributeMap): Promise<ParseUser> {
+  hydrate(user: ParseUser, userJSON: Attributes): Promise<ParseUser> {
     user._finishFetch(userJSON);
     user._setExisted(true);
     if (userJSON.sessionToken && canUseCurrentUser) {
@@ -1219,7 +1218,7 @@ const DefaultController = {
 
   requestPasswordReset(email: string, options: RequestOptions) {
     const RESTController = CoreManager.getRESTController();
-    return RESTController.request('POST', 'requestPasswordReset', { email: email }, options);
+    return RESTController.request('POST', 'requestPasswordReset', { email }, options);
   },
 
   async upgradeToRevocableSession(user: ParseUser, options: RequestOptions) {
@@ -1265,7 +1264,7 @@ const DefaultController = {
 
   requestEmailVerification(email: string, options: RequestOptions) {
     const RESTController = CoreManager.getRESTController();
-    return RESTController.request('POST', 'verificationEmailRequest', { email: email }, options);
+    return RESTController.request('POST', 'verificationEmailRequest', { email }, options);
   },
 };
 

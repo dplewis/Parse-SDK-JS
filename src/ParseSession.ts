@@ -1,6 +1,6 @@
 import CoreManager from './CoreManager';
 import isRevocableSession from './isRevocableSession';
-import ParseObject from './ParseObject';
+import ParseObject, { Attributes } from './ParseObject';
 import ParseUser from './ParseUser';
 
 import type { RequestOptions, FullOptions } from './RESTController';
@@ -13,11 +13,11 @@ import type { RequestOptions, FullOptions } from './RESTController';
  * @alias Parse.Session
  * @augments Parse.Object
  */
-class ParseSession extends ParseObject {
+class ParseSession<T extends Attributes = Attributes> extends ParseObject<T> {
   /**
    * @param {object} attributes The initial set of data to store in the user.
    */
-  constructor(attributes?: any) {
+  constructor(attributes?: T) {
     super('_Session');
     if (attributes && typeof attributes === 'object') {
       try {

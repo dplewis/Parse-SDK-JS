@@ -1,5 +1,5 @@
 import ParseUser from './ParseUser';
-import type { AuthProviderType } from './ParseUser';
+import type { AuthProvider } from './ParseUser';
 /**
  * Provides a set of utilities for using Parse with Facebook.
  *
@@ -62,7 +62,7 @@ declare const FacebookUtils: {
    * @param {object} options MasterKey / SessionToken. Alternatively can be used for authData if permissions is a string
    * @returns {Promise}
    */
-  logIn(permissions: any, options: any): Promise<ParseUser>;
+  logIn(permissions: any, options: any): Promise<ParseUser<import('./ParseObject').Attributes>>;
   /**
    * Links Facebook to an existing PFUser. This method delegates to the
    * Facebook SDK to authenticate the user, and then automatically links
@@ -102,6 +102,6 @@ declare const FacebookUtils: {
    * @returns {Promise}
    */
   unlink: (user: any, options: any) => any;
-  _getAuthProvider(): AuthProviderType;
+  _getAuthProvider(): AuthProvider;
 };
 export default FacebookUtils;

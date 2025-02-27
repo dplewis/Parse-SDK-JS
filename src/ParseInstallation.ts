@@ -1,8 +1,6 @@
 import CoreManager from './CoreManager';
 import ParseError from './ParseError';
-import ParseObject from './ParseObject';
-
-import type { AttributeMap } from './ObjectStateMutations';
+import ParseObject, { Attributes } from './ParseObject';
 
 type DeviceInterface = {
   IOS: string;
@@ -33,11 +31,11 @@ const DEVICE_TYPES: DeviceInterface = {
  *
  * @alias Parse.Installation
  */
-class ParseInstallation extends ParseObject {
+class ParseInstallation<T extends Attributes = Attributes> extends ParseObject<T> {
   /**
    * @param {object} attributes The initial set of data to store in the object.
    */
-  constructor(attributes?: AttributeMap) {
+  constructor(attributes?: T) {
     super('_Installation');
     if (attributes && typeof attributes === 'object') {
       try {
@@ -220,7 +218,7 @@ class ParseInstallation extends ParseObject {
    * @param {...any} args
    * @returns {Promise}
    */
-  async fetch(...args: Array<any>): Promise<ParseInstallation> {
+  async fetch(...args: Array<any>): Promise<this> {
     try {
       await super.fetch.apply(this, args);
     } catch (e) {
@@ -259,7 +257,7 @@ class ParseInstallation extends ParseObject {
       this._markAllFieldsDirty();
       await super.save.apply(this, args);
     }
-    await CoreManager.getInstallationController().updateInstallationOnDisk(this);
+    await CoreManager.getInstallationController().updateInstallationOnDisk(this as any);
     return this;
   }
 

@@ -320,7 +320,7 @@ class ParseFile {
       throw new ParseError(ParseError.FILE_DELETE_UNNAMED_ERROR, 'Cannot delete an unnamed file.');
     }
     const destroyOptions = { useMasterKey: true };
-    if (options.hasOwnProperty('useMasterKey')) {
+    if (Object.hasOwn(options, 'useMasterKey')) {
       destroyOptions.useMasterKey = !!options.useMasterKey;
     }
     const controller = CoreManager.getFileController();
@@ -440,7 +440,6 @@ const DefaultController = {
       throw new Error('saveFile can only be used with File-type sources.');
     }
     const base64Data = await new Promise<string>((res, rej) => {
-      // eslint-disable-next-line no-undef
       const reader = new FileReader();
       reader.onload = () => res(reader.result as string);
       reader.onerror = error => rej(error);

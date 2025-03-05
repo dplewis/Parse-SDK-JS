@@ -1,3 +1,10 @@
+# [6.1.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/6.0.0...6.1.0-alpha.1) (2025-03-05)
+
+
+### Features
+
+* Allow `Parse.Object` field names to begin with underscore `_` to access internal fields of Parse Server ([#2475](https://github.com/parse-community/Parse-SDK-JS/issues/2475)) ([08e43ba](https://github.com/parse-community/Parse-SDK-JS/commit/08e43ba86276096820f467d9f5819e624a286b22))
+
 # [6.0.0-alpha.2](https://github.com/parse-community/Parse-SDK-JS/compare/6.0.0-alpha.1...6.0.0-alpha.2) (2025-02-16)
 
 

@@ -66,7 +66,7 @@ Use `npm run integration` in order to run the integration tests. If you have the
 
 #### TypeScript Types tests
 
-Those tests are located in [/types/tests](/types/tests) and are responsible for ensure types generated for each class is behaving as expected.
+Those tests are located in [/types/tests.ts](/types/tests.ts) and are responsible for ensure types generated for each class is behaving as expected.
 
 Types must be generated using `npm run build:types` and should not be manually changed. These types are `.d.ts` files located in [/types](/types).
 

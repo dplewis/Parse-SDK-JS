@@ -13,6 +13,7 @@ import type { RequestOptions, FullOptions } from './RESTController';
 type BatchOptions = FullOptions & {
   batchSize?: number;
   useMasterKey?: boolean;
+  useMaintenanceKey?: boolean;
   sessionToken?: string;
   context?: { [key: string]: any };
   json?: boolean;

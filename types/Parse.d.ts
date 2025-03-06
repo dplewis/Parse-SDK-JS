@@ -347,16 +347,7 @@ declare const Parse: {
         headers?: any,
         options?: import('./RESTController').FullOptions
       ) => Promise<any>;
-      handleError: (
-        err? /**
-         * Call this method to set your LocalDatastoreStorage engine
-         * If using React-Native use {@link Parse.setAsyncStorage Parse.setAsyncStorage()}
-         *
-         * @param {LocalDatastoreController} controller a data storage.
-         * @static
-         */
-        : any
-      ) => void;
+      handleError: (err?: any) => void;
     }): void;
     getRESTController(): {
       request: (
@@ -372,16 +363,7 @@ declare const Parse: {
         headers?: any,
         options?: import('./RESTController').FullOptions
       ) => Promise<any>;
-      handleError: (
-        err? /**
-         * Call this method to set your LocalDatastoreStorage engine
-         * If using React-Native use {@link Parse.setAsyncStorage Parse.setAsyncStorage()}
-         *
-         * @param {LocalDatastoreController} controller a data storage.
-         * @static
-         */
-        : any
-      ) => void;
+      handleError: (err?: any) => void;
     };
     setSchemaController(controller: {
       purge: (className: string) => Promise<any>;
@@ -812,7 +794,12 @@ declare const Parse: {
    * @static
    */
   initialize(applicationId: string, javaScriptKey: string): void;
-  _initialize(applicationId: string, javaScriptKey: string, masterKey?: string): void;
+  _initialize(
+    applicationId: string,
+    javaScriptKey: string,
+    masterKey?: string,
+    maintenanceKey?: string
+  ): void;
   /**
    * Call this method to set your AsyncStorage engine
    * Starting Parse@1.11, the ParseSDK do not provide a React AsyncStorage as the ReactNative module
@@ -852,6 +839,11 @@ declare const Parse: {
    * @static
    */
   masterKey: any;
+  /**
+   * @member {string} Parse.maintenanceKey
+   * @static
+   */
+  maintenanceKey: any;
   /**
    * @member {string} Parse.serverURL
    * @static

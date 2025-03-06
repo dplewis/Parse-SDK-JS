@@ -468,6 +468,9 @@ class ParseObject {
     if (hasOwn(options, 'useMasterKey')) {
       requestOptions.useMasterKey = !!options.useMasterKey;
     }
+    if (hasOwn(options, 'useMaintenanceKey')) {
+      requestOptions.useMaintenanceKey = !!options.useMaintenanceKey;
+    }
     if (hasOwn(options, 'sessionToken') && typeof options.sessionToken === 'string') {
       requestOptions.sessionToken = options.sessionToken;
     }

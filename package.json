@@ -1,6 +1,6 @@
 {
   "name": "parse",
-  "version": "6.0.0-alpha.2",
+  "version": "6.1.0-alpha.1",
   "description": "Parse JavaScript SDK",
   "homepage": "https://parseplatform.org",
   "keywords": [
@@ -33,7 +33,7 @@
     "idb-keyval": "6.2.1",
     "react-native-crypto-js": "1.0.0",
     "uuid": "10.0.0",
-    "ws": "8.18.0",
+    "ws": "8.18.1",
     "xmlhttprequest": "1.8.0"
   },
   "devDependencies": {
@@ -43,7 +43,7 @@
     "@babel/preset-env": "7.26.9",
     "@babel/preset-react": "7.26.3",
     "@babel/preset-typescript": "7.26.0",
-    "@eslint/js": "9.18.0",
+    "@eslint/js": "9.21.0",
     "@parse/minami": "git+https://github.com/parse-community/minami#main",
     "@saithodev/semantic-release-backmerge": "4.0.1",
     "@semantic-release/changelog": "6.0.3",
@@ -59,9 +59,9 @@
     "babel-plugin-transform-inline-environment-variables": "0.4.4",
     "browserify": "17.0.0",
     "codecov": "3.8.3",
-    "core-js": "3.40.0",
+    "core-js": "3.41.0",
     "cross-env": "7.0.2",
-    "eslint": "9.20.1",
+    "eslint": "9.21.0",
     "eslint-plugin-expect-type": "0.6.2",
     "eslint-plugin-jsdoc": "50.6.3",
     "express": "4.21.2",
@@ -85,11 +85,11 @@
     "metro-react-native-babel-preset": "0.77.0",
     "mongodb-runner": "5.8.0",
     "parse-server": "7.3.0",
-    "prettier": "3.5.1",
+    "prettier": "3.5.2",
     "puppeteer": "24.2.1",
     "regenerator-runtime": "0.14.1",
     "semantic-release": "24.2.3",
-    "typescript-eslint": "8.24.1",
+    "typescript-eslint": "8.25.0",
     "vinyl-source-stream": "2.0.0"
   },
   "optionalDependencies": {
@@ -97,7 +97,8 @@
   },
   "scripts": {
     "build": "node build_releases.js",
-    "build:types": "tsc && prettier --write 'types/{**/*,*}.ts' && npm run lint:fix",
+    "build:types": "tsc && prettier --write 'types/{**/*,*}.ts'",
+    "ci:typecheck": "node ./ci/typecheck.js",
     "release": "node build_releases.js && npm publish",
     "test": "cross-env PARSE_BUILD=node jest",
     "test:mongodb": "npm run test:mongodb:runnerstart && npm run integration",

@@ -1357,7 +1357,7 @@ class ParseObject<T extends Attributes = Attributes> {
    * @returns {Promise} A promise that is fulfilled when the save
    * completes.
    */
-  save(
+  async save(
     arg1?: undefined | string | { [attr: string]: any } | null,
     arg2?: SaveOptions | any,
     arg3?: SaveOptions
@@ -1403,9 +1403,8 @@ class ParseObject<T extends Attributes = Attributes> {
         .then(() => controller.save(unsavedObjects, saveOptions))
         .then((savedOjbects: this[]) => savedOjbects.pop());
     }
-    return controller.save(unsaved, saveOptions).then(() => {
-      return controller.save(this, saveOptions);
-    }) as Promise<ParseObject> as Promise<this>;
+    await controller.save(unsaved, saveOptions);
+    return controller.save(this, saveOptions) as Promise<ParseObject> as Promise<this>;
   }
 
   /**

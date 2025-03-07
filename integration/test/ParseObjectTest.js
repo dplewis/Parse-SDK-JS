@@ -552,12 +552,7 @@ describe('Parse Object', () => {
     expect(() => {
       item.set({ 'foo^bar': 'baz' });
     }).toThrow(error);
-    try {
-      await item.save({ 'foo^bar': 'baz' });
-      expect(true).toBe(false);
-    } catch (e) {
-      expect(e).toEqual(error);
-    }
+    await expectAsync(item.save({ 'foo^bar': 'baz' })).toBeRejectedWith(error);
   });
 
   it('cannot use invalid key names in multiple sets', () => {

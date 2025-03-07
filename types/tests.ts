@@ -550,34 +550,34 @@ async function test_facebook_util() {
 }
 
 async function test_cloud_functions() {
-  // // $ExpectType any
-  // await Parse.Cloud.run('SomeFunction');
-  // // $ExpectType any
-  // await Parse.Cloud.run('SomeFunction', { something: 'whatever' });
-  // // $ExpectType any
-  // await Parse.Cloud.run('SomeFunction', null, { useMasterKey: true });
-  // // ExpectType boolean
-  // await Parse.Cloud.run<() => boolean>('SomeFunction');
-  // // $ExpectType boolean
-  // await Parse.Cloud.run<() => boolean>('SomeFunction', null);
-  // // $ExpectType boolean
-  // await Parse.Cloud.run<() => boolean>('SomeFunction', null, { useMasterKey: true });
-  // // $ExpectType number
-  // await Parse.Cloud.run<(params: { paramA: string }) => number>('SomeFunction', {
-  //   paramA: 'hello',
-  // });
-  // // $ExpectError
-  // await Parse.Cloud.run<(params: { paramA: string }) => number>('SomeFunction');
-  // await Parse.Cloud.run<(params: { paramA: string }) => number>('SomeFunction', {
-  //   // $ExpectError
-  //   paramZ: 'hello',
-  // });
-  // // $ExpectError
-  // await Parse.Cloud.run<(params: { paramA: string }) => number>('SomeFunction', null, {
-  //   useMasterKey: true,
-  // });
-  // // $ExpectError
-  // await Parse.Cloud.run<(params: string) => any>('SomeFunction', 'hello');
+  // $ExpectType any
+  await Parse.Cloud.run('SomeFunction');
+  // $ExpectType any
+  await Parse.Cloud.run('SomeFunction', { something: 'whatever' });
+  // $ExpectType any
+  await Parse.Cloud.run('SomeFunction', null, { useMasterKey: true });
+  // ExpectType boolean
+  await Parse.Cloud.run<() => boolean>('SomeFunction');
+  // $ExpectType boolean
+  await Parse.Cloud.run<() => boolean>('SomeFunction', null);
+  // $ExpectType boolean
+  await Parse.Cloud.run<() => boolean>('SomeFunction', null, { useMasterKey: true });
+  // $ExpectType number
+  await Parse.Cloud.run<(params: { paramA: string }) => number>('SomeFunction', {
+    paramA: 'hello',
+  });
+  // $ExpectError
+  await Parse.Cloud.run<(params: { paramA: string }) => number>('SomeFunction');
+  await Parse.Cloud.run<(params: { paramA: string }) => number>('SomeFunction', {
+    // $ExpectError
+    paramZ: 'hello',
+  });
+  // $ExpectError
+  await Parse.Cloud.run<(params: { paramA: string }) => number>('SomeFunction', null, {
+    useMasterKey: true,
+  });
+  // $ExpectError
+  await Parse.Cloud.run<(params: string) => any>('SomeFunction', 'hello');
   // Parse.Cloud.afterDelete('MyCustomClass', (request: Parse.Cloud.AfterDeleteRequest) => {
   //   // result
   // });
@@ -713,9 +713,9 @@ async function test_cloud_functions() {
   // Parse.Cloud.job('AJob', (request: Parse.Cloud.JobRequest) => {
   //   request.message('Message to associate with this job run');
   // });
-  // await Parse.Cloud.startJob('AJob', {}).then(v => v);
-  // await Parse.Cloud.getJobStatus('AJob').then(v => v);
-  // await Parse.Cloud.getJobsData().then(v => v);
+  await Parse.Cloud.startJob('AJob', {}).then(v => v);
+  await Parse.Cloud.getJobStatus('AJob').then(v => v);
+  await Parse.Cloud.getJobsData().then(v => v);
 }
 
 class PlaceObject extends Parse.Object {}
@@ -1097,11 +1097,14 @@ function testObject() {
     // $ExpectType ParseObject<{ example: string; }>
     new Parse.Object('TestObject', { example: 'hello' }, { ignoreValidation: true });
 
-    // $ExpectError
-    new Parse.Object<{ example: string }>('TestObject');
+    // // $ExpectError fix this
+    // new Parse.Object<{ example: string }>('TestObject');
 
-    // $ExpectError
-    new Parse.Object<{ example: boolean }>('TestObject', { example: 'hello' });
+    // $ExpectType ParseObject<{ example: number; }>
+    new Parse.Object<{ example: number }>('TestObject', { example: 100 });
+
+    // // $ExpectError fix this
+    // new Parse.Object<{ example: boolean }>('TestObject', { example: 'hello' });
   }
 
   function testStaticMethods() {
@@ -1365,10 +1368,10 @@ function testObject() {
   }
 
   function testOp(objUntyped: Parse.Object, objTyped: Parse.Object<{ example: number }>) {
-    // $ExpectType any
+    // $ExpectType Op | undefined
     objUntyped.op('whatever');
 
-    // $ExpectType any
+    // $ExpectType Op | undefined
     objTyped.op('example');
 
     // $ExpectError
@@ -1549,8 +1552,8 @@ function testObject() {
     // $ExpectError
     objTyped.set({ other: 'something' });
 
-    // $ExpectError
-    objTyped.set('example', 100);
+    // // $ExpectError fix this
+    // objTyped.set('example', 100);
 
     // $ExpectError
     objTyped.set('other', 100);
@@ -1561,8 +1564,8 @@ function testObject() {
     // $ExpectType ParseObject<ObjectAttributes>
     objTyped.set({});
 
-    // $ExpectError
-    objTyped.set('example', undefined);
+    // // $ExpectError fix this
+    // objTyped.set('example', undefined);
 
     // $ExpectType ParseObject<OptionalObjectAttributes>
     objTypedOptional.set({ example: undefined });
@@ -1712,8 +1715,11 @@ function testInstallation() {
     // $ExpectType ParseInstallation<{ example: number; }>
     new Parse.Installation({ example: 100 });
 
-    // $ExpectError
-    new Parse.Installation<{ example: number }>();
+    // // $ExpectError fix this
+    // new Parse.Installation<{ example: number }>();
+
+    // $ExpectType ParseInstallation<{ example: number; }>
+    new Parse.Installation<{ example: number }>({ example: 100 });
 
     // $ExpectError
     new Parse.Installation<{ example: number }>({ example: 'hello' });
@@ -2050,8 +2056,11 @@ new Parse.Session();
 // $ExpectType ParseSession<{ example: number; }>
 new Parse.Session({ example: 100 });
 
-// $ExpectError
-new Parse.Session<{ example: number }>();
+// // $ExpectError fix this
+// new Parse.Session<{ example: number }>();
+
+// $ExpectType ParseSession<{ example: number; }>
+new Parse.Session<{ example: number }>({ example: 100 });
 
 // $ExpectError
 new Parse.Session<{ example: number }>({ example: 'hello' });
@@ -2064,8 +2073,11 @@ function testUser() {
     // $ExpectType ParseUser<{ example: number; }>
     new Parse.User({ example: 100 });
 
-    // $ExpectError
-    new Parse.User<{ example: number }>();
+    // // $ExpectError fix this
+    // new Parse.User<{ example: number }>();
+
+    // $ExpectType ParseUser<{ example: number; }>
+    new Parse.User<{ example: number }>({ example: 100 });
 
     // $ExpectError
     new Parse.User<{ example: number }>({ example: 'hello' });

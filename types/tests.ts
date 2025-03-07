@@ -2114,26 +2114,26 @@ function testEncryptingUser() {
 }
 
 function testEventuallyQueue() {
-  function test() {
+  async function test() {
     const obj = new Parse.Object('TestObject');
-    // $ExpectType Promise<void>
-    Parse.EventuallyQueue.clear();
-    // $ExpectType Promise<any[]>
-    Parse.EventuallyQueue.getQueue();
+    // $ExpectType void
+    await Parse.EventuallyQueue.clear();
+    // $ExpectType Queue
+    await Parse.EventuallyQueue.getQueue();
     // $ExpectType boolean
     Parse.EventuallyQueue.isPolling();
-    // $ExpectType Promise<void>
-    Parse.EventuallyQueue.save(obj);
-    // $ExpectType Promise<void>
-    Parse.EventuallyQueue.save(obj, {});
-    // $ExpectType Promise<void>
-    Parse.EventuallyQueue.destroy(obj);
-    // $ExpectType Promise<void>
-    Parse.EventuallyQueue.destroy(obj, {});
-    // $ExpectType Promise<number>
-    Parse.EventuallyQueue.length();
-    // $ExpectType Promise<boolean>
-    Parse.EventuallyQueue.sendQueue();
+    // $ExpectType void
+    await Parse.EventuallyQueue.save(obj);
+    // $ExpectType void
+    await Parse.EventuallyQueue.save(obj, {});
+    // $ExpectType void
+    await Parse.EventuallyQueue.destroy(obj);
+    // $ExpectType void
+    await Parse.EventuallyQueue.destroy(obj, {});
+    // $ExpectType number
+    await Parse.EventuallyQueue.length();
+    // $ExpectType boolean
+    await Parse.EventuallyQueue.sendQueue();
     // $ExpectType void
     Parse.EventuallyQueue.stopPoll();
     // $ExpectType void

@@ -84,7 +84,7 @@ import type ParseQuery from './ParseQuery';
  *
  * });</pre></p>
  */
-class Subscription {
+class LiveQuerySubscription {
   id: string | number;
   query: ParseQuery;
   sessionToken?: string;
@@ -131,4 +131,4 @@ class Subscription {
   }
 }
 
-export default Subscription;
+export default LiveQuerySubscription;

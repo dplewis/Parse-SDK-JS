@@ -367,12 +367,7 @@ declare const Parse: {
     };
     setSchemaController(controller: {
       purge: (className: string) => Promise<any>;
-      get: (
-        className: string,
-        options?: import('./RESTController').RequestOptions
-      ) => Promise<{
-        results: Schema[];
-      }>;
+      get: (className: string, options?: import('./RESTController').RequestOptions) => Promise<any>;
       delete: (
         className: string,
         options?: import('./RESTController').RequestOptions
@@ -396,12 +391,7 @@ declare const Parse: {
     }): void;
     getSchemaController(): {
       purge: (className: string) => Promise<any>;
-      get: (
-        className: string,
-        options?: import('./RESTController').RequestOptions
-      ) => Promise<{
-        results: Schema[];
-      }>;
+      get: (className: string, options?: import('./RESTController').RequestOptions) => Promise<any>;
       delete: (
         className: string,
         options?: import('./RESTController').RequestOptions
@@ -733,10 +723,10 @@ declare const Parse: {
   FacebookUtils: {
     init(options: any): void;
     isLinked(user: any): any;
-    logIn(permissions: any, options: any): Promise<User>;
+    logIn(permissions: any, options: any): Promise<User<import('./ParseObject').Attributes>>;
     link(user: any, permissions: any, options: any): any;
     unlink: (user: any, options: any) => any;
-    _getAuthProvider(): import('./ParseUser').AuthProviderType;
+    _getAuthProvider(): import('./ParseUser').AuthProvider;
   };
   File: typeof File;
   GeoPoint: typeof GeoPoint;

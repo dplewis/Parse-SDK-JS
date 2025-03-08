@@ -81,7 +81,7 @@ import type ParseQuery from './ParseQuery';
  *
  * });</pre></p>
  */
-declare class Subscription {
+declare class LiveQuerySubscription {
   id: string | number;
   query: ParseQuery;
   sessionToken?: string;
@@ -99,4 +99,4 @@ declare class Subscription {
    */
   unsubscribe(): Promise<void>;
 }
-export default Subscription;
+export default LiveQuerySubscription;

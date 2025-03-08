@@ -13,7 +13,6 @@ import type ParseSession from './ParseSession';
 import type { HookDeclaration, HookDeleteArg } from './ParseHooks';
 import type ParseConfig from './ParseConfig';
 import type LiveQueryClient from './LiveQueryClient';
-import type ParseSchema from './ParseSchema';
 import type ParseInstallation from './ParseInstallation';
 
 type AnalyticsController = {
@@ -119,7 +118,7 @@ type RESTController = {
 };
 type SchemaController = {
   purge: (className: string) => Promise<any>;
-  get: (className: string, options?: RequestOptions) => Promise<{ results: ParseSchema[] }>;
+  get: (className: string, options?: RequestOptions) => Promise<any>;
   delete: (className: string, options?: RequestOptions) => Promise<void>;
   create: (className: string, params: any, options?: RequestOptions) => Promise<any>;
   update: (className: string, params: any, options?: RequestOptions) => Promise<any>;

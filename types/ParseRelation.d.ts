@@ -13,29 +13,32 @@ import type ParseQuery from './ParseQuery';
  *
  * @alias Parse.Relation
  */
-declare class ParseRelation {
-  parent?: ParseObject;
+declare class ParseRelation<
+  S extends ParseObject = ParseObject,
+  T extends ParseObject = ParseObject,
+> {
+  parent?: S;
   key?: string;
   targetClassName?: string | null;
   /**
    * @param {Parse.Object} parent The parent of this relation.
    * @param {string} key The key for this relation on the parent.
    */
-  constructor(parent?: ParseObject, key?: string);
-  _ensureParentAndKey(parent: ParseObject, key: string): void;
+  constructor(parent?: S, key?: string);
+  _ensureParentAndKey(parent: S, key: string): void;
   /**
    * Adds a Parse.Object or an array of Parse.Objects to the relation.
    *
    * @param {(Parse.Object|Array)} objects The item or items to add.
    * @returns {Parse.Object} The parent of the relation.
    */
-  add(objects: ParseObject | Array<ParseObject | string>): ParseObject;
+  add(objects: T | T[]): S;
   /**
    * Removes a Parse.Object or an array of Parse.Objects from this relation.
    *
    * @param {(Parse.Object|Array)} objects The item or items to remove.
    */
-  remove(objects: ParseObject | Array<ParseObject | string>): void;
+  remove(objects: T | T[]): void;
   /**
    * Returns a JSON version of the object suitable for saving to disk.
    *
@@ -51,6 +54,6 @@ declare class ParseRelation {
    *
    * @returns {Parse.Query} Relation Query
    */
-  query(): ParseQuery;
+  query(): ParseQuery<T>;
 }
 export default ParseRelation;

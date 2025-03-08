@@ -1,5 +1,4 @@
-import ParseObject from './ParseObject';
-import type { AttributeMap } from './ObjectStateMutations';
+import ParseObject, { Attributes } from './ParseObject';
 type DeviceInterface = {
   IOS: string;
   MACOS: string;
@@ -19,11 +18,11 @@ type DeviceInterface = {
  *
  * @alias Parse.Installation
  */
-declare class ParseInstallation extends ParseObject {
+declare class ParseInstallation<T extends Attributes = Attributes> extends ParseObject<T> {
   /**
    * @param {object} attributes The initial set of data to store in the object.
    */
-  constructor(attributes?: AttributeMap);
+  constructor(attributes?: T);
   /**
    * A unique identifier for this installation’s client application. In iOS, this is the Bundle Identifier.
    *
@@ -154,7 +153,7 @@ declare class ParseInstallation extends ParseObject {
    * @param {...any} args
    * @returns {Promise}
    */
-  fetch(...args: Array<any>): Promise<ParseInstallation>;
+  fetch(...args: Array<any>): Promise<this>;
   /**
    * Wrap the default save behavior with functionality to update the local storage.
    * If the installation is deleted on the server, retry saving a new installation.

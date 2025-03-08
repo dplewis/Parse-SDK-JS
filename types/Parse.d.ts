@@ -347,16 +347,7 @@ declare const Parse: {
         headers?: any,
         options?: import('./RESTController').FullOptions
       ) => Promise<any>;
-      handleError: (
-        err? /**
-         * Call this method to set your LocalDatastoreStorage engine
-         * If using React-Native use {@link Parse.setAsyncStorage Parse.setAsyncStorage()}
-         *
-         * @param {LocalDatastoreController} controller a data storage.
-         * @static
-         */
-        : any
-      ) => void;
+      handleError: (err?: any) => void;
     }): void;
     getRESTController(): {
       request: (
@@ -372,25 +363,11 @@ declare const Parse: {
         headers?: any,
         options?: import('./RESTController').FullOptions
       ) => Promise<any>;
-      handleError: (
-        err? /**
-         * Call this method to set your LocalDatastoreStorage engine
-         * If using React-Native use {@link Parse.setAsyncStorage Parse.setAsyncStorage()}
-         *
-         * @param {LocalDatastoreController} controller a data storage.
-         * @static
-         */
-        : any
-      ) => void;
+      handleError: (err?: any) => void;
     };
     setSchemaController(controller: {
       purge: (className: string) => Promise<any>;
-      get: (
-        className: string,
-        options?: import('./RESTController').RequestOptions
-      ) => Promise<{
-        results: Schema[];
-      }>;
+      get: (className: string, options?: import('./RESTController').RequestOptions) => Promise<any>;
       delete: (
         className: string,
         options?: import('./RESTController').RequestOptions
@@ -414,12 +391,7 @@ declare const Parse: {
     }): void;
     getSchemaController(): {
       purge: (className: string) => Promise<any>;
-      get: (
-        className: string,
-        options?: import('./RESTController').RequestOptions
-      ) => Promise<{
-        results: Schema[];
-      }>;
+      get: (className: string, options?: import('./RESTController').RequestOptions) => Promise<any>;
       delete: (
         className: string,
         options?: import('./RESTController').RequestOptions
@@ -731,10 +703,10 @@ declare const Parse: {
   FacebookUtils: {
     init(options: any): void;
     isLinked(user: any): any;
-    logIn(permissions: any, options: any): Promise<User>;
+    logIn(permissions: any, options: any): Promise<User<import('./ParseObject').Attributes>>;
     link(user: any, permissions: any, options: any): any;
     unlink: (user: any, options: any) => any;
-    _getAuthProvider(): import('./ParseUser').AuthProviderType;
+    _getAuthProvider(): import('./ParseUser').AuthProvider;
   };
   File: typeof File;
   GeoPoint: typeof GeoPoint;

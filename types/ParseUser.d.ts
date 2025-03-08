@@ -1,13 +1,12 @@
-import ParseObject from './ParseObject';
-import type { AttributeMap } from './ObjectStateMutations';
+import ParseObject, { Attributes } from './ParseObject';
 import type { RequestOptions, FullOptions } from './RESTController';
 export type AuthData = {
   [key: string]: any;
 };
-export type AuthProviderType = {
+export type AuthProvider = {
   authenticate?(options: {
-    error?: (provider: AuthProviderType, error: string | any) => void;
-    success?: (provider: AuthProviderType, result: AuthData) => void;
+    error?: (provider: AuthProvider, error: string | any) => void;
+    success?: (provider: AuthProvider, result: AuthData) => void;
   }): void;
   restoreAuthentication(authData: any): boolean;
   getAuthType(): string;
@@ -23,11 +22,11 @@ export type AuthProviderType = {
  * @alias Parse.User
  * @augments Parse.Object
  */
-declare class ParseUser extends ParseObject {
+declare class ParseUser<T extends Attributes = Attributes> extends ParseObject<T> {
   /**
    * @param {object} attributes The initial set of data to store in the user.
    */
-  constructor(attributes?: AttributeMap);
+  constructor(attributes?: T);
   /**
    * Request a revocable session token to replace the older style of token.
    *
@@ -57,7 +56,7 @@ declare class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user is linked
    */
   linkWith(
-    provider: AuthProviderType,
+    provider: AuthProvider,
     options: {
       authData?: AuthData;
     },
@@ -84,7 +83,7 @@ declare class ParseUser extends ParseObject {
    *
    * @param provider
    */
-  _synchronizeAuthData(provider: string | AuthProviderType): void;
+  _synchronizeAuthData(provider: string | AuthProvider): void;
   /**
    * Synchronizes authData for all providers.
    */
@@ -126,7 +125,7 @@ declare class ParseUser extends ParseObject {
    *
    * @returns {object} sessionToken
    */
-  _preserveFieldsOnFetch(): AttributeMap;
+  _preserveFieldsOnFetch(): Attributes;
   /**
    * Returns true if <code>current</code> would return this user.
    *
@@ -206,9 +205,9 @@ declare class ParseUser extends ParseObject {
    *     finishes.
    */
   signUp(
-    attrs: AttributeMap,
+    attrs?: Attributes | null,
     options?: FullOptions & {
-      context?: AttributeMap;
+      context?: Attributes;
     }
   ): Promise<ParseUser>;
   /**
@@ -231,7 +230,7 @@ declare class ParseUser extends ParseObject {
    */
   logIn(
     options?: FullOptions & {
-      context?: AttributeMap;
+      context?: Attributes;
     }
   ): Promise<ParseUser>;
   /**
@@ -257,7 +256,7 @@ declare class ParseUser extends ParseObject {
    * @param {...any} args
    * @returns {Parse.User}
    */
-  fetch(...args: Array<any>): Promise<ParseUser>;
+  fetch(...args: Array<any>): Promise<this>;
   /**
    * Wrap the default fetchWithInclude behavior with functionality to save to local
    * storage if this is current user.
@@ -265,7 +264,7 @@ declare class ParseUser extends ParseObject {
    * @param {...any} args
    * @returns {Parse.User}
    */
-  fetchWithInclude(...args: Array<any>): Promise<ParseUser>;
+  fetchWithInclude(...args: Array<any>): Promise<this>;
   /**
    * Verify whether a given password is the password of the current user.
    *
@@ -298,7 +297,7 @@ declare class ParseUser extends ParseObject {
    * either from memory or localStorage, if necessary.
    *
    * @static
-   * @returns {Parse.Object} The currently logged in Parse.User.
+   * @returns {Parse.User} The currently logged in Parse.User.
    */
   static current(): ParseUser | null;
   /**
@@ -326,9 +325,9 @@ declare class ParseUser extends ParseObject {
   static signUp(
     username: string,
     password: string,
-    attrs: AttributeMap,
+    attrs: Attributes,
     options?: FullOptions
-  ): Promise<ParseUser>;
+  ): Promise<ParseUser<Attributes>>;
   /**
    * Logs in a user with a username (or email) and password. On success, this
    * saves the session to disk, so you can retrieve the currently logged in
@@ -341,7 +340,11 @@ declare class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the login completes.
    */
-  static logIn(username: string, password: string, options?: FullOptions): Promise<ParseUser>;
+  static logIn(
+    username: string,
+    password: string,
+    options?: FullOptions
+  ): Promise<ParseUser<Attributes>>;
   /**
    * Logs in a user with a username (or email) and password, and authData. On success, this
    * saves the session to disk, so you can retrieve the currently logged in
@@ -360,7 +363,7 @@ declare class ParseUser extends ParseObject {
     password: string,
     authData: AuthData,
     options?: FullOptions
-  ): Promise<ParseUser>;
+  ): Promise<ParseUser<Attributes>>;
   /**
    * Logs in a user with an objectId. On success, this saves the session
    * to disk, so you can retrieve the currently logged in user using
@@ -371,7 +374,7 @@ declare class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the login completes.
    */
-  static loginAs(userId: string): Promise<ParseUser>;
+  static loginAs(userId: string): Promise<ParseUser<Attributes>>;
   /**
    * Logs in a user with a session token. On success, this saves the session
    * to disk, so you can retrieve the currently logged in user using
@@ -384,7 +387,7 @@ declare class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the login completes.
    */
-  static become(sessionToken: string, options?: RequestOptions): Promise<ParseUser>;
+  static become(sessionToken: string, options?: RequestOptions): Promise<ParseUser<Attributes>>;
   /**
    * Retrieves a user with a session token.
    *
@@ -394,7 +397,7 @@ declare class ParseUser extends ParseObject {
    * @static
    * @returns {Promise} A promise that is fulfilled with the user is fetched.
    */
-  static me(sessionToken: string, options?: RequestOptions): Promise<ParseUser>;
+  static me(sessionToken: string, options?: RequestOptions): Promise<ParseUser<Attributes>>;
   /**
    * Logs in a user with a session token. On success, this saves the session
    * to disk, so you can retrieve the currently logged in user using
@@ -405,7 +408,7 @@ declare class ParseUser extends ParseObject {
    * @returns {Promise} A promise that is fulfilled with the user when
    *     the login completes.
    */
-  static hydrate(userJSON: AttributeMap): Promise<ParseUser>;
+  static hydrate(userJSON: Attributes): Promise<ParseUser<Attributes>>;
   /**
    * Static version of {@link https://parseplatform.org/Parse-SDK-JS/api/master/Parse.User.html#linkWith linkWith}
    *
@@ -479,7 +482,7 @@ declare class ParseUser extends ParseObject {
     username: string,
     password: string,
     options?: RequestOptions
-  ): Promise<ParseUser>;
+  ): Promise<ParseUser<Attributes>>;
   /**
    * Allow someone to define a custom User class without className
    * being rewritten to _User. The default behavior is to rewrite
@@ -549,7 +552,7 @@ declare class ParseUser extends ParseObject {
       authData?: AuthData;
     },
     saveOpts?: FullOptions
-  ): Promise<ParseUser>;
+  ): Promise<ParseUser<Attributes>>;
   static _clearCache(): void;
   static _setCurrentUserCache(user: ParseUser): void;
 }

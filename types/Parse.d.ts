@@ -490,17 +490,7 @@ declare const Parse: {
     setAsyncStorage(storage: {
       getItem: (
         key: string,
-        callback?: (
-          error? /**
-           * Enable pinning in your application.
-           * This must be called after `Parse.initialize` in your application.
-           *
-           * @param [polling] Allow pinging the server /health endpoint. Default true
-           * @param [ms] Milliseconds to ping the server. Default 2000ms
-           * @static
-           */ : Error | null,
-          result?: string | null
-        ) => void
+        callback?: (error?: Error | null, result?: string | null) => void
       ) => Promise<string | null>;
       setItem: (
         key: string,
@@ -540,17 +530,7 @@ declare const Parse: {
     getAsyncStorage(): {
       getItem: (
         key: string,
-        callback?: (
-          error? /**
-           * Enable pinning in your application.
-           * This must be called after `Parse.initialize` in your application.
-           *
-           * @param [polling] Allow pinging the server /health endpoint. Default true
-           * @param [ms] Milliseconds to ping the server. Default 2000ms
-           * @static
-           */ : Error | null,
-          result?: string | null
-        ) => void
+        callback?: (error?: Error | null, result?: string | null) => void
       ) => Promise<string | null>;
       setItem: (
         key: string,

@@ -7,7 +7,7 @@ const ParseServer = require('parse-server').default;
 const CustomAuth = require('./CustomAuth');
 const { TestUtils } = require('parse-server');
 const Parse = require('../../node');
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const dns = require('dns');
 const MockEmailAdapterWithOptions = require('./support/MockEmailAdapterWithOptions');
@@ -21,6 +21,7 @@ const port = 1337;
 const mountPath = '/parse';
 const serverURL = 'http://localhost:1337/parse';
 let didChangeConfiguration = false;
+const distFiles = {};
 
 /*
   To generate the auth data below, the Twitter app "GitHub CI Test App" has
@@ -96,8 +97,11 @@ let parseServer;
 
 const reconfigureServer = async (changedConfiguration = {}) => {
   if (parseServer) {
-    await parseServer.handleShutdown();
-    await new Promise(resolve => parseServer.server.close(resolve));
+    try {
+      await parseServer.handleShutdown();
+    } catch (e) {
+      console.error('Failed to shutdown the server', e);
+    }
     parseServer = undefined;
     return reconfigureServer(changedConfiguration);
   }
@@ -113,8 +117,7 @@ const reconfigureServer = async (changedConfiguration = {}) => {
     return reconfigureServer(newConfiguration);
   }
   const app = parseServer.expressApp;
-  for (const fileName of ['parse.js', 'parse.min.js']) {
-    const file = fs.readFileSync(path.resolve(__dirname, `./../../dist/${fileName}`)).toString();
+  for (const [fileName, file] of Object.entries(distFiles)) {
     app.get(`/${fileName}`, (_req, res) => {
       res.send(`<html><head>
           <meta charset="utf-8">
@@ -132,12 +135,6 @@ const reconfigureServer = async (changedConfiguration = {}) => {
         </body></html>`);
     });
   }
-  app.get('/clear/:fast', (req, res) => {
-    const { fast } = req.params;
-    TestUtils.destroyAllDataPermanently(fast).then(() => {
-      res.send('{}');
-    });
-  });
   parseServer.server.on('connection', connection => {
     const key = `${connection.remoteAddress}:${connection.remotePort}`;
     openConnections[key] = connection;
@@ -157,18 +154,29 @@ global.TestObject = Parse.Object.extend('TestObject');
 global.reconfigureServer = reconfigureServer;
 
 beforeAll(async () => {
+  const promise = ['parse.js', 'parse.min.js'].map(fileName => {
+    return fs.readFile(path.resolve(__dirname, `./../../dist/${fileName}`), 'utf8').then(file => {
+      distFiles[fileName] = file;
+    });
+  });
+  await Promise.all(promise);
   await reconfigureServer();
   Parse.initialize('integration');
   Parse.CoreManager.set('SERVER_URL', serverURL);
   Parse.CoreManager.set('MASTER_KEY', 'notsosecret');
+  Parse.CoreManager.set('REQUEST_ATTEMPT_LIMIT', 1);
 });
 
 afterEach(async () => {
-  await Parse.User.logOut();
-  Parse.Storage._clear();
-  await TestUtils.destroyAllDataPermanently(true);
-  if (didChangeConfiguration) {
-    await reconfigureServer();
+  try {
+    await Parse.User.logOut();
+    Parse.Storage._clear();
+    await TestUtils.destroyAllDataPermanently(true);
+    if (didChangeConfiguration) {
+      await reconfigureServer();
+    }
+  } catch (e) {
+    console.error('Failed to tear down the server', e);
   }
 });
 

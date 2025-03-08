@@ -1922,10 +1922,12 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * @param {...string|Array<string>} keys The name(s) of the key(s) to include.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  include(...keys: Array<string | Array<string>>): this {
+  include<K extends keyof T['attributes'] | keyof BaseAttributes>(
+    ...keys: Array<K | Array<K>>
+  ): this {
     keys.forEach(key => {
       if (Array.isArray(key)) {
-        this._include = this._include.concat(key);
+        this._include = this._include.concat(key as string[]);
       } else {
         this._include.push(key as string);
       }
@@ -1952,13 +1954,15 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * @param {...string|Array<string>} keys The name(s) of the key(s) to include.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  select(...keys: Array<string | Array<string>>): this {
+  select<K extends keyof T['attributes'] | keyof BaseAttributes>(
+    ...keys: Array<K | Array<K>>
+  ): this {
     if (!this._select) {
       this._select = [];
     }
     keys.forEach(key => {
       if (Array.isArray(key)) {
-        this._select = this._select.concat(key);
+        this._select = this._select.concat(key as string[]);
       } else {
         this._select.push(key as string);
       }
@@ -1975,10 +1979,12 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * @param {...string|Array<string>} keys The name(s) of the key(s) to exclude.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  exclude(...keys: Array<string | Array<string>>): this {
+  exclude<K extends keyof T['attributes'] | keyof BaseAttributes>(
+    ...keys: Array<K | Array<K>>
+  ): this {
     keys.forEach(key => {
       if (Array.isArray(key)) {
-        this._exclude = this._exclude.concat(key);
+        this._exclude = this._exclude.concat(key as string[]);
       } else {
         this._exclude.push(key as string);
       }
@@ -1994,10 +2000,12 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * @param {...string|Array<string>} keys The name(s) of the key(s) to watch.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  watch(...keys: Array<string | Array<string>>): this {
+  watch<K extends keyof T['attributes'] | keyof BaseAttributes>(
+    ...keys: Array<K | Array<K>>
+  ): this {
     keys.forEach(key => {
       if (Array.isArray(key)) {
-        this._watch = this._watch.concat(key);
+        this._watch = this._watch.concat(key as string[]);
       } else {
         this._watch.push(key as string);
       }

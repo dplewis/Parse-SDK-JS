@@ -144,6 +144,7 @@ async function test_query() {
   query.include('score');
   query.include('score', 'team');
   query.include(['score.team']);
+  query.include('*');
   query.includeAll();
   query.sortByTextScore();
   // Find objects that match the aggregation pipeline
@@ -1094,14 +1095,14 @@ function testObject() {
     // $ExpectType ParseObject<{ example: string; }>
     new Parse.Object('TestObject', { example: 'hello' }, { ignoreValidation: true });
 
-    // // $ExpectError todo
-    // new Parse.Object<{ example: string }>('TestObject');
+    // $ExpectType ParseObject<{ example: string; }>
+    new Parse.Object<{ example: string }>('TestObject');
 
     // $ExpectType ParseObject<{ example: number; }>
     new Parse.Object<{ example: number }>('TestObject', { example: 100 });
 
-    // // $ExpectError todo
-    // new Parse.Object<{ example: boolean }>('TestObject', { example: 'hello' });
+    // $ExpectError
+    new Parse.Object<{ example: boolean }>('TestObject', { example: 'hello' });
   }
 
   function testStaticMethods() {
@@ -1721,8 +1722,8 @@ function testInstallation() {
     // $ExpectType ParseInstallation<{ example: number; }>
     new Parse.Installation({ example: 100 });
 
-    // // $ExpectError todo
-    // new Parse.Installation<{ example: number }>();
+    // $ExpectType ParseInstallation<{ example: number; }>
+    new Parse.Installation<{ example: number }>();
 
     // $ExpectType ParseInstallation<{ example: number; }>
     new Parse.Installation<{ example: number }>({ example: 100 });
@@ -1914,9 +1915,18 @@ function testQuery() {
     // $ExpectType ParseQuery<MySubClass>
     query.include(['attribute1', 'attribute2']);
     // $ExpectType ParseQuery<MySubClass>
+    query.include('attribute1', 'attribute2');
+    // $ExpectType ParseQuery<MySubClass>
     query.include<any>('attribute3.someProp');
-    // // $ExpectError todo
-    // query.include(['attribute1', 'nonexistentProp']);
+    // $ExpectError
+    query.include(['attribute1', 'nonexistentProp']);
+
+    // $ExpectType ParseQuery<MySubClass>
+    query.exclude('attribute1', 'attribute2');
+    // $ExpectType ParseQuery<MySubClass>
+    query.exclude(['attribute1', 'attribute2']);
+    // $ExpectError
+    query.exclude('attribute1', 'nonexistentProp');
 
     // $ExpectType ParseQuery<MySubClass>
     query.lessThan('attribute2', 1000);
@@ -1975,13 +1985,22 @@ function testQuery() {
 
     // $ExpectType ParseQuery<MySubClass>
     query.select('attribute1', 'attribute2');
-    // // $ExpectError todo
-    // query.select('attribute1', 'nonexistentProp');
+    // $ExpectType ParseQuery<MySubClass>
+    query.select(['attribute1', 'attribute2']);
+    // $ExpectError
+    query.select('attribute1', 'nonexistentProp');
 
     // $ExpectType ParseQuery<MySubClass>
     query.startsWith('attribute1', 'prefix string');
     // $ExpectError
     query.startsWith('nonexistentProp', 'prefix string');
+
+    // $ExpectType ParseQuery<MySubClass>
+    query.watch('attribute1', 'attribute2');
+    // $ExpectType ParseQuery<MySubClass>
+    query.watch(['attribute1', 'attribute2']);
+    // $ExpectError
+    query.watch('attribute1', 'nonexistentProp');
 
     // $ExpectType ParseQuery<MySubClass>
     query.withCount(true);
@@ -2068,8 +2087,8 @@ function testSession() {
     // $ExpectType ParseSession<{ example: number; }>
     new Parse.Session({ example: 100 });
 
-    // // $ExpectError todo
-    // new Parse.Session<{ example: number }>();
+    // $ExpectType ParseSession<{ example: number; }>
+    new Parse.Session<{ example: number }>();
 
     // $ExpectType ParseSession<{ example: number; }>
     new Parse.Session<{ example: number }>({ example: 100 });
@@ -2102,8 +2121,8 @@ function testUser() {
     // $ExpectType ParseUser<{ example: number; }>
     new Parse.User({ example: 100 });
 
-    // // $ExpectError todo
-    // new Parse.User<{ example: number }>();
+    // $ExpectType ParseUser<{ example: number; }>
+    new Parse.User<{ example: number }>();
 
     // $ExpectType ParseUser<{ example: number; }>
     new Parse.User<{ example: number }>({ example: 100 });

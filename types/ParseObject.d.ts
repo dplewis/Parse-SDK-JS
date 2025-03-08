@@ -100,7 +100,7 @@ declare class ParseObject<T extends Attributes = Attributes> {
           className: string;
           [attr: string]: any;
         },
-    attributes?: T | Attributes,
+    attributes?: T,
     options?: SetOptions
   );
   /**

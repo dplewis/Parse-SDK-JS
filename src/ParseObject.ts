@@ -154,7 +154,7 @@ class ParseObject<T extends Attributes = Attributes> {
    */
   constructor(
     className?: string | { className: string; [attr: string]: any },
-    attributes?: T | Attributes,
+    attributes?: T,
     options?: SetOptions
   ) {
     // Enable legacy initializers

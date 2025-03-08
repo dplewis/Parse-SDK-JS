@@ -940,7 +940,9 @@ declare class ParseQuery<T extends ParseObject = ParseObject> {
    * @param {...string|Array<string>} keys The name(s) of the key(s) to include.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  include(...keys: Array<string | Array<string>>): this;
+  include<K extends keyof T['attributes'] | keyof BaseAttributes>(
+    ...keys: Array<K | Array<K>>
+  ): this;
   /**
    * Includes all nested Parse.Objects one level deep.
    *
@@ -957,7 +959,9 @@ declare class ParseQuery<T extends ParseObject = ParseObject> {
    * @param {...string|Array<string>} keys The name(s) of the key(s) to include.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  select(...keys: Array<string | Array<string>>): this;
+  select<K extends keyof T['attributes'] | keyof BaseAttributes>(
+    ...keys: Array<K | Array<K>>
+  ): this;
   /**
    * Restricts the fields of the returned Parse.Objects to all keys except the
    * provided keys. Exclude takes precedence over select and include.
@@ -967,7 +971,9 @@ declare class ParseQuery<T extends ParseObject = ParseObject> {
    * @param {...string|Array<string>} keys The name(s) of the key(s) to exclude.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  exclude(...keys: Array<string | Array<string>>): this;
+  exclude<K extends keyof T['attributes'] | keyof BaseAttributes>(
+    ...keys: Array<K | Array<K>>
+  ): this;
   /**
    * Restricts live query to trigger only for watched fields.
    *
@@ -976,7 +982,7 @@ declare class ParseQuery<T extends ParseObject = ParseObject> {
    * @param {...string|Array<string>} keys The name(s) of the key(s) to watch.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
    */
-  watch(...keys: Array<string | Array<string>>): this;
+  watch<K extends keyof T['attributes'] | keyof BaseAttributes>(...keys: Array<K | Array<K>>): this;
   /**
    * Changes the read preference that the backend will use when performing the query to the database.
    *

@@ -1,6 +1,6 @@
 import Parse from 'parse';
 
-describe('ParseSession Types', () => {
+describe('Parse.Session Type Definitions', () => {
   it('constructor', () => {
     // $ExpectType ParseSession<Attributes>
     new Parse.Session();

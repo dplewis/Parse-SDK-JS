@@ -4,7 +4,7 @@ describe('ParseServer', () => {
   it('can reconfigure server', async () => {
     let parseServer = await reconfigureServer({ serverURL: 'www.google.com' });
     expect(parseServer.config.serverURL).toBe('www.google.com');
-    await parseServer.handleShutdown();
+    await shutdownServer(parseServer);
     parseServer = await reconfigureServer();
     expect(parseServer.config.serverURL).toBe('http://localhost:1337/parse');
   });
@@ -16,7 +16,7 @@ describe('ParseServer', () => {
       close += 1;
     });
     const object = new TestObject({ foo: 'bar' });
-    await parseServer.handleShutdown();
+    await shutdownServer(parseServer);
     expect(close).toBe(1);
     await expectAsync(object.save()).toBeRejectedWithError(
       'XMLHttpRequest failed: "Unable to connect to the Parse API"'

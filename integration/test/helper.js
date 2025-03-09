@@ -96,11 +96,15 @@ const defaultConfiguration = {
 const openConnections = {};
 let parseServer;
 
+const shutdownServer = async _parseServer => {
+  await _parseServer.handleShutdown();
+  // Connection close events are not immediate on node 10+, so wait a bit
+  await sleep(0);
+};
+
 const reconfigureServer = async (changedConfiguration = {}) => {
   if (parseServer) {
-    await parseServer.handleShutdown();
-    // Connection close events are not immediate on node 10+, so wait a bit
-    sleep(0);
+    await shutdownServer(parseServer);
     parseServer = undefined;
     return reconfigureServer(changedConfiguration);
   }
@@ -150,6 +154,7 @@ global.Container = Parse.Object.extend('Container');
 global.TestPoint = Parse.Object.extend('TestPoint');
 global.TestObject = Parse.Object.extend('TestObject');
 global.reconfigureServer = reconfigureServer;
+global.shutdownServer = shutdownServer;
 
 beforeAll(async () => {
   const promise = ['parse.js', 'parse.min.js'].map(fileName => {

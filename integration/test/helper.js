@@ -10,6 +10,7 @@ const Parse = require('../../node');
 const fs = require('fs').promises;
 const path = require('path');
 const dns = require('dns');
+const sleep = require('./sleep');
 const MockEmailAdapterWithOptions = require('./support/MockEmailAdapterWithOptions');
 
 // Ensure localhost resolves to ipv4 address first on node v17+
@@ -99,6 +100,8 @@ const reconfigureServer = async (changedConfiguration = {}) => {
   if (parseServer) {
     try {
       await parseServer.handleShutdown();
+      // Connection close events are not immediate on node 10+, so wait a bit
+      sleep(0);
     } catch (e) {
       console.error('Failed to shutdown the server', e);
     }

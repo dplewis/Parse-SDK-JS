@@ -44,7 +44,7 @@ const AnonymousUtils = {
    *     linked to an anonymous user.
    * @static
    */
-  isLinked(user: ParseUser) {
+  isLinked(user: ParseUser): boolean {
     const provider = this._getAuthProvider();
     return user._isLinked(provider.getAuthType());
   },

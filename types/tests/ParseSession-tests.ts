@@ -18,6 +18,13 @@ describe('Parse.Session Type Definitions', () => {
     new Parse.Session<{ example: number }>({ example: 'hello' });
   });
 
+  it('instance methods', () => {
+    const session = new Parse.Session();
+
+    // $ExpectType string
+    session.getSessionToken();
+  });
+
   it('static methods', async () => {
     // $ExpectType boolean
     Parse.Session.isCurrentSessionRevocable();
@@ -30,12 +37,5 @@ describe('Parse.Session Type Definitions', () => {
 
     // $ExpectType ParseSession<{ example: string; }>
     await Parse.Session.current<Parse.Session<{ example: string }>>();
-  });
-
-  it('instance methods', () => {
-    const session = new Parse.Session();
-
-    // $ExpectType string
-    session.getSessionToken();
   });
 });

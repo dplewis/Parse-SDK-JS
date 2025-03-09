@@ -11,7 +11,6 @@ const { resolvingPromise } = require('../../lib/node/promiseUtils');
 const fs = require('fs').promises;
 const path = require('path');
 const dns = require('dns');
-const sleep = require('./sleep');
 const MockEmailAdapterWithOptions = require('./support/MockEmailAdapterWithOptions');
 
 // Ensure localhost resolves to ipv4 address first on node v17+
@@ -108,18 +107,24 @@ const shutdownServer = async _parseServer => {
   _parseServer.server.on('close', () => {
     closePromise.resolve();
   });
-  _parseServer.handleShutdown();
+  await Promise.all([
+    _parseServer.config.databaseController.adapter.handleShutdown(),
+    _parseServer.liveQueryServer.shutdown(),
+  ]);
+  _parseServer.server.close(error => {
+    if (error) {
+      console.error('Failed to close Parse Server', error);
+    }
+  });
   destroyConnections();
   await closePromise;
-  // Connection close events are not immediate on node 10+, so wait a bit
-  await sleep(0);
   expect(openConnections.size).toBe(0);
+  parseServer = undefined;
 };
 
 const reconfigureServer = async (changedConfiguration = {}) => {
   if (parseServer) {
     await shutdownServer(parseServer);
-    parseServer = undefined;
     return reconfigureServer(changedConfiguration);
   }
   didChangeConfiguration = Object.keys(changedConfiguration).length !== 0;

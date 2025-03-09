@@ -7,6 +7,7 @@ const ParseServer = require('parse-server').default;
 const CustomAuth = require('./CustomAuth');
 const { TestUtils } = require('parse-server');
 const Parse = require('../../node');
+const { resolvingPromise } = require('../../lib/node/promiseUtils');
 const fs = require('fs').promises;
 const path = require('path');
 const dns = require('dns');
@@ -96,8 +97,20 @@ const defaultConfiguration = {
 const openConnections = new Set();
 let parseServer;
 
+const destroyConnections = () => {
+  for (const socket of openConnections.values()) {
+    socket.destroy();
+  }
+};
+
 const shutdownServer = async _parseServer => {
-  await _parseServer.handleShutdown();
+  const closePromise = resolvingPromise();
+  _parseServer.server.on('close', () => {
+    closePromise.resolve();
+  });
+  _parseServer.handleShutdown();
+  destroyConnections();
+  await closePromise;
   // Connection close events are not immediate on node 10+, so wait a bit
   await sleep(0);
   expect(openConnections.size).toBe(0);

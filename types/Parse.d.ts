@@ -355,7 +355,10 @@ declare const Parse: {
       create: (
         className: string,
         params: any,
-        options?: import('./RESTController').RequestOptions
+        options? /**
+         * @member {string} Parse.maintenanceKey
+         * @static
+         */ : import('./RESTController').RequestOptions
       ) => Promise<any>;
       update: (
         className: string,
@@ -379,7 +382,10 @@ declare const Parse: {
       create: (
         className: string,
         params: any,
-        options?: import('./RESTController').RequestOptions
+        options? /**
+         * @member {string} Parse.maintenanceKey
+         * @static
+         */ : import('./RESTController').RequestOptions
       ) => Promise<any>;
       update: (
         className: string,

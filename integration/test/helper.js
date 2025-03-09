@@ -100,6 +100,7 @@ const destroyConnections = () => {
   for (const socket of openConnections.values()) {
     socket.destroy();
   }
+  openConnections.clear();
 };
 
 const shutdownServer = async _parseServer => {

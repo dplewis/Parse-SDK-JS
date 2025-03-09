@@ -6,7 +6,7 @@
       "noImplicitThis": true,
       "strictFunctionTypes": true,
       "strictNullChecks": true,
-      "types": [],
+      "types": ["jest"],
       "noEmit": true,
       "forceConsistentCasingInFileNames": true,
 
@@ -20,6 +20,6 @@
       }
   },
   "include": [
-    "tests.ts"
+    "tests/**/*.ts"
   ]
 }

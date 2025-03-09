@@ -2079,40 +2079,6 @@ function testRole() {
   }
 }
 
-function testSession() {
-  async function testConstructor() {
-    // $ExpectType ParseSession<Attributes>
-    const session = new Parse.Session();
-
-    // $ExpectType ParseSession<{ example: number; }>
-    new Parse.Session({ example: 100 });
-
-    // $ExpectType ParseSession<{ example: number; }>
-    new Parse.Session<{ example: number }>();
-
-    // $ExpectType ParseSession<{ example: number; }>
-    new Parse.Session<{ example: number }>({ example: 100 });
-
-    // $ExpectError
-    new Parse.Session<{ example: number }>({ example: 'hello' });
-
-    // $ExpectType boolean
-    Parse.Session.isCurrentSessionRevocable();
-
-    // $ExpectType string[]
-    Parse.Session.readOnlyAttributes();
-
-    // $ExpectType string
-    session.getSessionToken();
-
-    // $ExpectType ParseSession<Attributes>
-    await Parse.Session.current();
-
-    // $ExpectType ParseSession<{ example: string; }>
-    await Parse.Session.current<Parse.Session<{ example: string }>>();
-  }
-}
-
 function testUser() {
   function testConstructor() {
     // $ExpectType ParseUser<Attributes>

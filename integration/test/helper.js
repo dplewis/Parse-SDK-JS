@@ -100,6 +100,7 @@ const shutdownServer = async _parseServer => {
   await _parseServer.handleShutdown();
   // Connection close events are not immediate on node 10+, so wait a bit
   await sleep(0);
+  expect(openConnections.size).toBe(0);
 };
 
 const reconfigureServer = async (changedConfiguration = {}) => {

@@ -15,9 +15,14 @@ describe('ParseServer', () => {
     parseServer.server.on('close', () => {
       close += 1;
     });
-    const object = new TestObject({ foo: 'bar' });
+    const object = new TestObject();
+    // Open a connection to the server
+    const query = new Parse.Query(TestObject);
+    await query.subscribe();
+    expect(openConnections.size > 0).toBeTruthy();
     await shutdownServer(parseServer);
     expect(close).toBe(1);
+    expect(openConnections.size).toBe(0);
     await expectAsync(object.save()).toBeRejectedWithError(
       'XMLHttpRequest failed: "Unable to connect to the Parse API"'
     );

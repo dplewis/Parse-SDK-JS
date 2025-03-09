@@ -93,7 +93,7 @@ const defaultConfiguration = {
   }),
 };
 
-const openConnections = {};
+const openConnections = new Set();
 let parseServer;
 
 const shutdownServer = async _parseServer => {
@@ -138,10 +138,9 @@ const reconfigureServer = async (changedConfiguration = {}) => {
     });
   }
   parseServer.server.on('connection', connection => {
-    const key = `${connection.remoteAddress}:${connection.remotePort}`;
-    openConnections[key] = connection;
+    openConnections.add(connection);
     connection.on('close', () => {
-      delete openConnections[key];
+      openConnections.delete(connection);
     });
   });
   return parseServer;
@@ -155,6 +154,7 @@ global.TestPoint = Parse.Object.extend('TestPoint');
 global.TestObject = Parse.Object.extend('TestObject');
 global.reconfigureServer = reconfigureServer;
 global.shutdownServer = shutdownServer;
+global.openConnections = openConnections;
 
 beforeAll(async () => {
   const promise = ['parse.js', 'parse.min.js'].map(fileName => {
@@ -176,13 +176,6 @@ afterEach(async () => {
   await TestUtils.destroyAllDataPermanently(true);
   if (didChangeConfiguration) {
     await reconfigureServer();
-  }
-});
-
-afterAll(() => {
-  // Jasmine process counts as one open connection
-  if (Object.keys(openConnections).length > 1) {
-    console.warn('There were open connections to the server left after the test finished');
   }
 });
 

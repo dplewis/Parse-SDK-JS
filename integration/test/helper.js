@@ -98,17 +98,12 @@ let parseServer;
 
 const reconfigureServer = async (changedConfiguration = {}) => {
   if (parseServer) {
-    try {
-      await parseServer.handleShutdown();
-      // Connection close events are not immediate on node 10+, so wait a bit
-      sleep(0);
-    } catch (e) {
-      console.error('Failed to shutdown the server', e);
-    }
+    await parseServer.handleShutdown();
+    // Connection close events are not immediate on node 10+, so wait a bit
+    sleep(0);
     parseServer = undefined;
     return reconfigureServer(changedConfiguration);
   }
-
   didChangeConfiguration = Object.keys(changedConfiguration).length !== 0;
   const newConfiguration = Object.assign({}, defaultConfiguration, changedConfiguration || {}, {
     mountPath,
@@ -171,15 +166,11 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
-  try {
-    await Parse.User.logOut();
-    Parse.Storage._clear();
-    await TestUtils.destroyAllDataPermanently(true);
-    if (didChangeConfiguration) {
-      await reconfigureServer();
-    }
-  } catch (e) {
-    console.error('Failed to tear down the server', e);
+  await Parse.User.logOut();
+  Parse.Storage._clear();
+  await TestUtils.destroyAllDataPermanently(true);
+  if (didChangeConfiguration) {
+    await reconfigureServer();
   }
 });
 

@@ -70,6 +70,8 @@ Those tests are located in [/types/tests.ts](/types/tests.ts) and are responsibl
 
 Types must be generated using `npm run build:types` and should not be manually changed. These types are `.d.ts` files located in [/types](/types).
 
+When developing type definitions you can use `npm run watch:ts` in order to rebuild your changes upon each save.
+
 Use `npm run test:types` in order to run types tests against generated `.d.ts` files.
 
 ### Pull Requests

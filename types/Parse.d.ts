@@ -84,12 +84,22 @@ declare const Parse: {
             }) => Promise<void>;
         };
         setCryptoController(controller: {
-            encrypt: (obj: any, secretKey: string) => string;
-            decrypt: (encryptedText: string, secretKey: any) => string;
+            async: 0;
+            encrypt: (json: any, parseSecret: any) => string;
+            decrypt: (encryptedJSON: string, secretKey: any) => string;
+        } | {
+            async: 1;
+            encrypt: (json: any, parseSecret: any) => Promise<string>;
+            decrypt: (encryptedJSON: string, secretKey: any) => Promise<string>;
         }): void;
         getCryptoController(): {
-            encrypt: (obj: any, secretKey: string) => string;
-            decrypt: (encryptedText: string, secretKey: any) => string;
+            async: 0;
+            encrypt: (json: any, parseSecret: any) => string;
+            decrypt: (encryptedJSON: string, secretKey: any) => string;
+        } | {
+            async: 1;
+            encrypt: (json: any, parseSecret: any) => Promise<string>;
+            decrypt: (encryptedJSON: string, secretKey: any) => Promise<string>;
         };
         setEventEmitter(eventEmitter: any): void;
         getEventEmitter(): any;
@@ -223,10 +233,7 @@ declare const Parse: {
             purge: (className: string) => Promise<any>;
             get: (className: string, options?: import("./RESTController").RequestOptions) => Promise<any>;
             delete: (className: string, options?: import("./RESTController").RequestOptions) => Promise<void>;
-            create: (className: string, params: any, options? /**
-             * @member {string} Parse.maintenanceKey
-             * @static
-             */: import("./RESTController").RequestOptions) => Promise<any>;
+            create: (className: string, params: any, options?: import("./RESTController").RequestOptions) => Promise<any>;
             update: (className: string, params: any, options?: import("./RESTController").RequestOptions) => Promise<any>;
             send(className: string, method: string, params: any, options?: import("./RESTController").RequestOptions): Promise<any>;
         }): void;
@@ -234,10 +241,7 @@ declare const Parse: {
             purge: (className: string) => Promise<any>;
             get: (className: string, options?: import("./RESTController").RequestOptions) => Promise<any>;
             delete: (className: string, options?: import("./RESTController").RequestOptions) => Promise<void>;
-            create: (className: string, params: any, options? /**
-             * @member {string} Parse.maintenanceKey
-             * @static
-             */: import("./RESTController").RequestOptions) => Promise<any>;
+            create: (className: string, params: any, options?: import("./RESTController").RequestOptions) => Promise<any>;
             update: (className: string, params: any, options?: import("./RESTController").RequestOptions) => Promise<any>;
             send(className: string, method: string, params: any, options?: import("./RESTController").RequestOptions): Promise<any>;
         };
@@ -564,11 +568,6 @@ declare const Parse: {
      */
     liveQueryServerURL: any;
     /**
-     * @member {boolean} Parse.encryptedUser
-     * @static
-     */
-    encryptedUser: boolean;
-    /**
      * @member {string} Parse.secret
      * @static
      */
@@ -615,19 +614,5 @@ declare const Parse: {
      * @returns {object}
      */
     dumpLocalDatastore(): Promise<any>;
-    /**
-     * Enable the current user encryption.
-     * This must be called before login any user.
-     *
-     * @static
-     */
-    enableEncryptedUser(): void;
-    /**
-     * Flag that indicates whether Encrypted User is enabled.
-     *
-     * @static
-     * @returns {boolean}
-     */
-    isEncryptedUserEnabled(): any;
 };
 export default Parse;

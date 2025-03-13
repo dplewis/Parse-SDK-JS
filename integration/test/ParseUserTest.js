@@ -1139,7 +1139,6 @@ describe('Parse User', () => {
 
   it('can encrypt user', async () => {
     Parse.User.enableUnsafeCurrentUser();
-    Parse.enableEncryptedUser();
     Parse.secret = 'My Secret Key';
     const user = new Parse.User();
     user.setUsername('usernameENC');
@@ -1150,7 +1149,10 @@ describe('Parse User', () => {
     const encryptedUser = Parse.Storage.getItem(path);
 
     const crypto = Parse.CoreManager.getCryptoController();
-    const decryptedUser = crypto.decrypt(encryptedUser, Parse.CoreManager.get('ENCRYPTED_KEY'));
+    const decryptedUser = await crypto.decrypt(
+      encryptedUser,
+      Parse.CoreManager.get('ENCRYPTED_KEY')
+    );
     expect(JSON.parse(decryptedUser).objectId).toBe(user.id);
 
     const currentUser = Parse.User.current();
@@ -1159,7 +1161,6 @@ describe('Parse User', () => {
     const currentUserAsync = await Parse.User.currentAsync();
     expect(currentUserAsync).toEqual(user);
     await Parse.User.logOut();
-    Parse.CoreManager.set('ENCRYPTED_USER', false);
     Parse.CoreManager.set('ENCRYPTED_KEY', null);
   });
 

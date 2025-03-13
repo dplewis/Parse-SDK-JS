@@ -32,10 +32,17 @@ type ConfigController = {
     masterKeyOnlyFlags?: { [key: string]: any }
   ) => Promise<void>;
 };
-type CryptoController = {
-  encrypt: (obj: any, secretKey: string) => string;
-  decrypt: (encryptedText: string, secretKey: any) => string;
-};
+type CryptoController =
+  | {
+      async: 0;
+      encrypt: (json: any, parseSecret: any) => string;
+      decrypt: (encryptedJSON: string, secretKey: any) => string;
+    }
+  | {
+      async: 1;
+      encrypt: (json: any, parseSecret: any) => Promise<string>;
+      decrypt: (encryptedJSON: string, secretKey: any) => Promise<string>;
+    };
 type FileController = {
   saveFile: (name: string, source: FileSource, options?: FullOptions) => Promise<any>;
   saveBase64: (
@@ -358,7 +365,6 @@ const config: Config & { [key: string]: any } = {
   USE_MASTER_KEY: false,
   PERFORM_USER_REWRITE: true,
   FORCE_REVOCABLE_SESSION: false,
-  ENCRYPTED_USER: false,
   IDEMPOTENCY: false,
   ALLOW_CUSTOM_OBJECT_ID: false,
   PARSE_ERRORS: [],

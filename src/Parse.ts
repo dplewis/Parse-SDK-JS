@@ -271,17 +271,6 @@ const Parse = {
   },
 
   /**
-   * @member {boolean} Parse.encryptedUser
-   * @static
-   */
-  set encryptedUser(value: boolean) {
-    CoreManager.set('ENCRYPTED_USER', value);
-  },
-  get encryptedUser() {
-    return CoreManager.get('ENCRYPTED_USER');
-  },
-
-  /**
    * @member {string} Parse.secret
    * @static
    */
@@ -380,26 +369,6 @@ const Parse = {
     } else {
       return Parse.LocalDatastore._getAllContents();
     }
-  },
-
-  /**
-   * Enable the current user encryption.
-   * This must be called before login any user.
-   *
-   * @static
-   */
-  enableEncryptedUser() {
-    this.encryptedUser = true;
-  },
-
-  /**
-   * Flag that indicates whether Encrypted User is enabled.
-   *
-   * @static
-   * @returns {boolean}
-   */
-  isEncryptedUserEnabled() {
-    return this.encryptedUser;
   },
 };
 

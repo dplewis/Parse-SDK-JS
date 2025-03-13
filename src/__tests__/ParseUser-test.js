@@ -1749,7 +1749,7 @@ describe('ParseUser', () => {
     });
   });
 
-  fit('can encrypt user', async () => {
+  it('can encrypt user', async () => {
     CoreManager.set('ENCRYPTED_KEY', 'hello');
 
     ParseUser.enableUnsafeCurrentUser();
@@ -1804,7 +1804,7 @@ describe('ParseUser', () => {
   it('can encrypt user with custom CryptoController', async () => {
     CoreManager.set('ENCRYPTED_KEY', 'hello');
     const ENCRYPTED_DATA = 'encryptedString';
-
+    const CryptoController = CoreManager.getCryptoController();
     ParseUser.enableUnsafeCurrentUser();
     ParseUser._clearCache();
     Storage._clear();
@@ -1828,6 +1828,7 @@ describe('ParseUser', () => {
       ajax() {},
     });
     const CustomCrypto = {
+      async: 0,
       encrypt(_obj, secretKey) {
         expect(secretKey).toBe('hello');
         return ENCRYPTED_DATA;
@@ -1843,10 +1844,9 @@ describe('ParseUser', () => {
     // Clear cache to read from disk
     ParseUser._clearCache();
 
-    const isCurrent = await u.isCurrentAsync();
     expect(u.id).toBe('uid2');
     expect(u.getSessionToken()).toBe('123abc');
-    expect(isCurrent).toBe(true);
+    expect(u.isCurrent()).toBe(true);
     expect(u.authenticated()).toBe(true);
     expect(ParseUser.current().id).toBe('uid2');
 
@@ -1854,7 +1854,20 @@ describe('ParseUser', () => {
     const userStorage = Storage.getItem(path);
     expect(userStorage).toBe(ENCRYPTED_DATA);
     CoreManager.set('ENCRYPTED_KEY', null);
+    CoreManager.setCryptoController(CryptoController);
     Storage._clear();
+  });
+
+  it('cannot get synchronous current user with encryption enabled', async () => {
+    CoreManager.set('ENCRYPTED_KEY', 'hello');
+    ParseUser.enableUnsafeCurrentUser();
+    ParseUser._clearCache();
+    expect(() => {
+      ParseUser.current();
+    }).toThrow(
+      'Cannot call currentUser() when using a platform with an async encrypted storage system. Call currentUserAsync() instead.'
+    );
+    CoreManager.set('ENCRYPTED_KEY', null);
   });
 
   it('can static signup a user with installationId', async () => {

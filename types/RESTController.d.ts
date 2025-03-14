@@ -28,8 +28,6 @@ declare const RESTController: {
         reject: (err: any) => void;
     }) | Promise<unknown>;
     request(method: string, path: string, data: any, options?: RequestOptions): Promise<any>;
-    handleError(response: any): Promise<never>;
-    _setXHR(xhr: any): void;
-    _getXHR(): any;
+    handleError(errorJSON: any): Promise<never>;
 };
 export default RESTController;

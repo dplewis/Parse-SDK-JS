@@ -156,7 +156,7 @@ class ParseFile {
    * </pre>
    * @returns {Promise} Promise that is resolve with base64 data
    */
-  async getData(options): Promise<string> {
+  async getData(options?: { progress?: () => void }): Promise<string> {
     options = options || {};
     if (this._data) {
       return this._data;
@@ -164,7 +164,7 @@ class ParseFile {
     if (!this._url) {
       throw new Error('Cannot retrieve data for unsaved ParseFile.');
     }
-    options.requestTask = task => (this._requestTask = task);
+    (options as any).requestTask = task => (this._requestTask = task);
     const controller = CoreManager.getFileController();
     const result = await controller.download(this._url, options);
     this._data = result.base64;

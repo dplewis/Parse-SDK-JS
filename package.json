@@ -21,10 +21,12 @@
     "weapp.js",
     "dist/",
     "lib/",
+    "types/",
     "LICENSE",
     "NOTICE",
     "README.md"
   ],
+  "types": "types/index.d.ts",
   "browser": {
     "react-native": false
   },

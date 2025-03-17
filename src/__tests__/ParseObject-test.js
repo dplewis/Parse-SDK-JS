@@ -143,8 +143,8 @@ const mockLocalDatastore = {
 };
 jest.setMock('../LocalDatastore', mockLocalDatastore);
 
-const CoreManager = require('../CoreManager');
-const EventuallyQueue = require('../EventuallyQueue');
+const CoreManager = require('../CoreManager').default;
+const EventuallyQueue = require('../EventuallyQueue').default;
 const ParseACL = require('../ParseACL').default;
 const ParseError = require('../ParseError').default;
 const ParseFile = require('../ParseFile').default;
@@ -152,7 +152,7 @@ const ParseGeoPoint = require('../ParseGeoPoint').default;
 const ParsePolygon = require('../ParsePolygon').default;
 const ParseObject = require('../ParseObject').default;
 const ParseOp = require('../ParseOp');
-const RESTController = require('../RESTController');
+const RESTController = require('../RESTController').default;
 const SingleInstanceStateController = require('../SingleInstanceStateController');
 const unsavedChildren = require('../unsavedChildren').default;
 
@@ -965,7 +965,7 @@ describe('ParseObject', () => {
       o.validate({
         'invalid!key': 12,
       })
-    ).toEqual(new ParseError(ParseError.INVALID_KEY_NAME, `Invalid key name: "invalid!key"`));
+    ).toEqual(new ParseError(ParseError.INVALID_KEY_NAME, 'Invalid key name: invalid!key'));
 
     expect(
       o.validate({
@@ -988,7 +988,7 @@ describe('ParseObject', () => {
     expect(o.set('ACL', { '*': { read: true, write: false } })).toBe(o);
     expect(() => {
       o.set('$$$', 'o_O');
-    }).toThrow(new ParseError(ParseError.INVALID_KEY_NAME, `Invalid key name: "$$$"`));
+    }).toThrow(new ParseError(ParseError.INVALID_KEY_NAME, 'Invalid key name: $$$'));
   });
 
   it('ignores validation if ignoreValidation option is passed to set()', () => {
@@ -1002,6 +1002,8 @@ describe('ParseObject', () => {
     const o = new ParseObject('Item');
     expect(o.isValid()).toBe(true);
     o.set('someKey', 'someValue');
+    expect(o.isValid()).toBe(true);
+    o.set('_internalField', 'allow_underscore');
     expect(o.isValid()).toBe(true);
     o._finishFetch({
       objectId: 'O3',

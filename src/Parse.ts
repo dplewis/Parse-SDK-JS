@@ -1,7 +1,7 @@
 import decode from './decode';
 import encode from './encode';
 import CryptoController from './CryptoController';
-import EventuallyQueue from './EventuallyQueue';
+import EQ from './EventuallyQueue';
 import IndexedDBStorageController from './IndexedDBStorageController';
 import InstallationController from './InstallationController';
 import * as ParseOp from './ParseOp';
@@ -36,6 +36,7 @@ import LiveQueryClient from './LiveQueryClient';
 import LocalDatastoreController from './LocalDatastoreController';
 import StorageController from './StorageController';
 import WebSocketController from './WebSocketController';
+import type { EventuallyQueue } from './CoreManager';
 
 const Parse = {
   ACL,
@@ -79,11 +80,11 @@ const Parse = {
    * @member {EventuallyQueue} Parse.EventuallyQueue
    * @static
    */
-  set EventuallyQueue(queue: typeof EventuallyQueue) {
+  set EventuallyQueue(queue: EventuallyQueue) {
     CoreManager.setEventuallyQueue(queue);
   },
 
-  get EventuallyQueue(): any {
+  get EventuallyQueue(): EventuallyQueue {
     return CoreManager.getEventuallyQueue();
   },
 
@@ -109,15 +110,21 @@ const Parse = {
     Parse._initialize(applicationId, javaScriptKey);
   },
 
-  _initialize(applicationId: string, javaScriptKey: string, masterKey?: string) {
+  _initialize(
+    applicationId: string,
+    javaScriptKey: string,
+    masterKey?: string,
+    maintenanceKey?: string
+  ) {
     CoreManager.set('APPLICATION_ID', applicationId);
     CoreManager.set('JAVASCRIPT_KEY', javaScriptKey);
+    CoreManager.set('MAINTENANCE_KEY', maintenanceKey);
     CoreManager.set('MASTER_KEY', masterKey);
     CoreManager.set('USE_MASTER_KEY', false);
     CoreManager.setIfNeeded('EventEmitter', EventEmitter);
     CoreManager.setIfNeeded('LiveQuery', new ParseLiveQuery());
     CoreManager.setIfNeeded('CryptoController', CryptoController);
-    CoreManager.setIfNeeded('EventuallyQueue', EventuallyQueue);
+    CoreManager.setIfNeeded('EventuallyQueue', EQ);
     CoreManager.setIfNeeded('InstallationController', InstallationController);
     CoreManager.setIfNeeded('LocalDatastoreController', LocalDatastoreController);
     CoreManager.setIfNeeded('StorageController', StorageController);
@@ -195,6 +202,17 @@ const Parse = {
   },
   get masterKey() {
     return CoreManager.get('MASTER_KEY');
+  },
+
+  /**
+   * @member {string} Parse.maintenanceKey
+   * @static
+   */
+  set maintenanceKey(value) {
+    CoreManager.set('MAINTENANCE_KEY', value);
+  },
+  get maintenanceKey() {
+    return CoreManager.get('MAINTENANCE_KEY');
   },
 
   /**
@@ -342,7 +360,7 @@ const Parse = {
    * @static
    * @returns {boolean}
    */
-  isLocalDatastoreEnabled() {
+  isLocalDatastoreEnabled(): boolean {
     return this.LocalDatastore.isEnabled;
   },
   /**

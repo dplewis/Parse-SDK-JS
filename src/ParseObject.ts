@@ -29,6 +29,8 @@ import unsavedChildren from './unsavedChildren';
 
 import type { AttributeMap, OpsMap } from './ObjectStateMutations';
 import type { RequestOptions, FullOptions } from './RESTController';
+import type ParseGeoPoint from './ParseGeoPoint';
+import type ParsePolygon from './ParsePolygon';
 
 export type Pointer = {
   __type: string;
@@ -55,6 +57,49 @@ type FetchOptions = {
   sessionToken?: string;
   include?: string | string[];
   context?: AttributeMap;
+};
+
+export type SetOptions = {
+  ignoreValidation?: boolean;
+  unset?: boolean;
+};
+
+export type AttributeKey<T> = Extract<keyof T, string>;
+
+export interface Attributes {
+  [key: string]: any;
+}
+
+interface JSONBaseAttributes {
+  objectId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CommonAttributes {
+  ACL: ParseACL;
+}
+
+type AtomicKey<T> = {
+  [K in keyof T]: NonNullable<T[K]> extends any[] ? K : never;
+};
+
+type Encode<T> = T extends ParseObject
+  ? ReturnType<T['toJSON']> | Pointer
+  : T extends ParseACL | ParseGeoPoint | ParsePolygon | ParseRelation | ParseFile
+    ? ReturnType<T['toJSON']>
+    : T extends Date
+      ? { __type: 'Date'; iso: string }
+      : T extends RegExp
+        ? string
+        : T extends Array<infer R>
+          ? Array<Encode<R>>
+          : T extends object
+            ? ToJSON<T>
+            : T;
+
+type ToJSON<T> = {
+  [K in keyof T]: Encode<T[K]>;
 };
 
 // Mapping of class names to constructors, so we can populate objects from the
@@ -100,7 +145,7 @@ function getServerUrlPath() {
  *
  * @alias Parse.Object
  */
-class ParseObject {
+class ParseObject<T extends Attributes = Attributes> {
   /**
    * @param {string} className The class name for the object
    * @param {object} attributes The initial set of data to store in the object.
@@ -109,8 +154,8 @@ class ParseObject {
    */
   constructor(
     className?: string | { className: string; [attr: string]: any },
-    attributes?: { [attr: string]: any },
-    options?: { ignoreValidation: boolean }
+    attributes?: T,
+    options?: SetOptions
   ) {
     // Enable legacy initializers
     if (typeof this.initialize === 'function') {
@@ -157,9 +202,9 @@ class ParseObject {
 
   /* Prototype getters / setters */
 
-  get attributes(): AttributeMap {
+  get attributes(): T {
     const stateController = CoreManager.getObjectStateController();
-    return Object.freeze(stateController.estimateAttributes(this._getStateIdentifier()));
+    return Object.freeze(stateController.estimateAttributes(this._getStateIdentifier())) as T;
   }
 
   /**
@@ -213,7 +258,7 @@ class ParseObject {
         id = this._getId();
       }
       return {
-        id: id,
+        id,
         className: this.className,
       };
     } else {
@@ -221,7 +266,7 @@ class ParseObject {
     }
   }
 
-  _getServerData(): AttributeMap {
+  _getServerData(): Attributes {
     const stateController = CoreManager.getObjectStateController();
     return stateController.getServerData(this._getStateIdentifier());
   }
@@ -254,13 +299,13 @@ class ParseObject {
     });
   }
 
-  _getDirtyObjectAttributes(): AttributeMap {
+  _getDirtyObjectAttributes(): Attributes {
     const attributes = this.attributes;
     const stateController = CoreManager.getObjectStateController();
     const objectCache = stateController.getObjectCache(this._getStateIdentifier());
-    const dirty = {};
+    const dirty: Attributes = {};
     for (const attr in attributes) {
-      const val = attributes[attr];
+      const val: any = attributes[attr];
       if (
         val &&
         typeof val === 'object' &&
@@ -286,14 +331,14 @@ class ParseObject {
     return dirty;
   }
 
-  _toFullJSON(seen?: Array<any>, offline?: boolean): AttributeMap {
-    const json: { [key: string]: any } = this.toJSON(seen, offline);
+  _toFullJSON(seen?: Array<any>, offline?: boolean): Attributes {
+    const json: Attributes = this.toJSON(seen, offline);
     json.__type = 'Object';
     json.className = this.className;
     return json;
   }
 
-  _getSaveJSON(): AttributeMap {
+  _getSaveJSON(): Attributes {
     const pending = this._getPendingOps();
     const dirtyObjects = this._getDirtyObjectAttributes();
     const json = {};
@@ -347,7 +392,7 @@ class ParseObject {
     };
   }
 
-  _finishFetch(serverData: AttributeMap) {
+  _finishFetch(serverData: Attributes) {
     if (!this.id && serverData.objectId) {
       this.id = serverData.objectId;
     }
@@ -406,7 +451,7 @@ class ParseObject {
     }
   }
 
-  _handleSaveResponse(response: AttributeMap, status: number) {
+  _handleSaveResponse(response: Attributes, status: number) {
     const changes: Partial<{
       createdAt: string;
       updatedAt: string;
@@ -468,6 +513,9 @@ class ParseObject {
     if (hasOwn(options, 'useMasterKey')) {
       requestOptions.useMasterKey = !!options.useMasterKey;
     }
+    if (hasOwn(options, 'useMaintenanceKey')) {
+      requestOptions.useMaintenanceKey = !!options.useMaintenanceKey;
+    }
     if (hasOwn(options, 'sessionToken') && typeof options.sessionToken === 'string') {
       requestOptions.sessionToken = options.sessionToken;
     }
@@ -508,10 +556,10 @@ class ParseObject {
    * @param offline
    * @returns {object}
    */
-  toJSON(seen: Array<any> | void, offline?: boolean): AttributeMap {
+  toJSON(seen: Array<any> | void, offline?: boolean): ToJSON<T> & JSONBaseAttributes {
     const seenEntry = this.id ? this.className + ':' + this.id : this;
     seen = seen || [seenEntry];
-    const json: AttributeMap = {};
+    const json: any = {};
     const attrs = this.attributes;
     for (const attr in attrs) {
       if ((attr === 'createdAt' || attr === 'updatedAt') && attrs[attr].toJSON) {
@@ -538,8 +586,8 @@ class ParseObject {
    * @param {object} other - An other object ot compare
    * @returns {boolean}
    */
-  equals(other: any): boolean {
-    if (this === other) {
+  equals<T extends ParseObject>(other: T): boolean {
+    if ((this as any) === (other as any)) {
       return true;
     }
     return (
@@ -558,7 +606,7 @@ class ParseObject {
    * @param {string} attr An attribute name (optional).
    * @returns {boolean}
    */
-  dirty(attr?: string): boolean {
+  dirty<K extends AttributeKey<T>>(attr?: K): boolean {
     if (!this.id) {
       return true;
     }
@@ -589,7 +637,7 @@ class ParseObject {
    *
    * @returns {string[]}
    */
-  dirtyKeys(): Array<string> {
+  dirtyKeys(): string[] {
     const pendingOps = this._getPendingOps();
     const keys = {};
     for (let i = 0; i < pendingOps.length; i++) {
@@ -652,7 +700,7 @@ class ParseObject {
    * @param {string} attr The string name of an attribute.
    * @returns {*}
    */
-  get(attr: string): any {
+  get<K extends AttributeKey<T>>(attr: K): T[K] {
     return this.attributes[attr];
   }
 
@@ -662,8 +710,10 @@ class ParseObject {
    * @param {string} attr The attribute to get the relation for.
    * @returns {Parse.Relation}
    */
-  relation(attr: string): ParseRelation {
-    const value = this.get(attr);
+  relation<R extends ParseObject, K extends AttributeKey<T> = AttributeKey<T>>(
+    attr: T[K] extends ParseRelation ? K : never
+  ): ParseRelation<this, R> {
+    const value = this.get(attr) as any;
     if (value) {
       if (!(value instanceof ParseRelation)) {
         throw new Error('Called relation() on non-relation field ' + attr);
@@ -680,7 +730,7 @@ class ParseObject {
    * @param {string} attr The string name of an attribute.
    * @returns {string}
    */
-  escape(attr: string): string {
+  escape<K extends AttributeKey<T>>(attr: K): string {
     let val = this.attributes[attr];
     if (val == null) {
       return '';
@@ -701,7 +751,7 @@ class ParseObject {
    * @param {string} attr The string name of the attribute.
    * @returns {boolean}
    */
-  has(attr: string): boolean {
+  has<K extends AttributeKey<T>>(attr: K): boolean {
     const attributes = this.attributes;
     if (Object.hasOwn(attributes, attr)) {
       return attributes[attr] != null;
@@ -739,8 +789,12 @@ class ParseObject {
    *     The only supported option is <code>error</code>.
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  set(key: any, value?: any, options?: any): this {
-    let changes = {};
+  set<K extends AttributeKey<T>>(
+    key: K | (Pick<T, K> | T),
+    value?: SetOptions | (T[K] extends undefined ? never : T[K]),
+    options?: SetOptions
+  ): this {
+    let changes: any = {};
     const newOps = {};
     if (key && typeof key === 'object') {
       changes = key;
@@ -750,7 +804,6 @@ class ParseObject {
     } else {
       return this;
     }
-
     options = options || {};
     let readonly = [];
     if (typeof (this.constructor as any).readOnlyAttributes === 'function') {
@@ -834,7 +887,7 @@ class ParseObject {
    * @param options
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  unset(attr: string, options?: { [opt: string]: any }): this {
+  unset<K extends AttributeKey<T>>(attr: K, options?: SetOptions): this {
     options = options || {};
     options.unset = true;
     return this.set(attr, null, options);
@@ -848,14 +901,14 @@ class ParseObject {
    * @param amount {Number} The amount to increment by (optional).
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  increment(attr: string, amount?: number): this {
+  increment<K extends AttributeKey<T>>(attr: K, amount?: number): this {
     if (typeof amount === 'undefined') {
       amount = 1;
     }
     if (typeof amount !== 'number') {
       throw new Error('Cannot increment by a non-numeric amount.');
     }
-    return this.set(attr, new IncrementOp(amount));
+    return this.set(attr, new IncrementOp(amount) as any);
   }
 
   /**
@@ -866,14 +919,14 @@ class ParseObject {
    * @param amount {Number} The amount to decrement by (optional).
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  decrement(attr: string, amount?: number): this {
+  decrement<K extends AttributeKey<T>>(attr: K, amount?: number): this {
     if (typeof amount === 'undefined') {
       amount = 1;
     }
     if (typeof amount !== 'number') {
       throw new Error('Cannot decrement by a non-numeric amount.');
     }
-    return this.set(attr, new IncrementOp(amount * -1));
+    return this.set(attr, new IncrementOp(amount * -1) as any);
   }
 
   /**
@@ -884,8 +937,8 @@ class ParseObject {
    * @param item {} The item to add.
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  add(attr: string, item: any): this {
-    return this.set(attr, new AddOp([item]));
+  add<K extends AtomicKey<T>[keyof T]>(attr: K, item: NonNullable<T[K]>[number]): this {
+    return this.set(attr as any, new AddOp([item]) as any);
   }
 
   /**
@@ -896,8 +949,8 @@ class ParseObject {
    * @param items {Object[]} The items to add.
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  addAll(attr: string, items: Array<any>): this {
-    return this.set(attr, new AddOp(items));
+  addAll<K extends AtomicKey<T>[keyof T]>(attr: K, items: NonNullable<T[K]>): this {
+    return this.set(attr as any, new AddOp(items) as any);
   }
 
   /**
@@ -909,8 +962,8 @@ class ParseObject {
    * @param item {} The object to add.
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  addUnique(attr: string, item: any): this {
-    return this.set(attr, new AddUniqueOp([item]));
+  addUnique<K extends AtomicKey<T>[keyof T]>(attr: K, item: NonNullable<T[K]>[number]): this {
+    return this.set(attr as any, new AddUniqueOp([item]) as any);
   }
 
   /**
@@ -922,8 +975,8 @@ class ParseObject {
    * @param items {Object[]} The objects to add.
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  addAllUnique(attr: string, items: Array<any>): this {
-    return this.set(attr, new AddUniqueOp(items));
+  addAllUnique<K extends AtomicKey<T>[keyof T]>(attr: K, items: NonNullable<T[K]>): this {
+    return this.set(attr as any, new AddUniqueOp(items) as any);
   }
 
   /**
@@ -934,8 +987,8 @@ class ParseObject {
    * @param item {} The object to remove.
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  remove(attr: string, item: any): this {
-    return this.set(attr, new RemoveOp([item]));
+  remove<K extends AtomicKey<T>[keyof T]>(attr: K, item: NonNullable<T[K]>[number]): this {
+    return this.set(attr as any, new RemoveOp([item]) as any);
   }
 
   /**
@@ -946,8 +999,8 @@ class ParseObject {
    * @param items {Object[]} The object to remove.
    * @returns {Parse.Object} Returns the object, so you can chain this call.
    */
-  removeAll(attr: string, items: Array<any>): this {
-    return this.set(attr, new RemoveOp(items));
+  removeAll<K extends AtomicKey<T>[keyof T]>(attr: K, items: NonNullable<T[K]>): this {
+    return this.set(attr as any, new RemoveOp(items) as any);
   }
 
   /**
@@ -959,7 +1012,7 @@ class ParseObject {
    * @param attr {String} The key.
    * @returns {Parse.Op | undefined} The operation, or undefined if none.
    */
-  op(attr: string): Op | undefined {
+  op<K extends AttributeKey<T>>(attr: K): Op | undefined {
     const pending = this._getPendingOps();
     for (let i = pending.length; i--;) {
       if (pending[i][attr]) {
@@ -982,7 +1035,7 @@ class ParseObject {
       const readonly = (this.constructor as any).readOnlyAttributes() || [];
       // Attributes are frozen, so we have to rebuild an object,
       // rather than delete readonly keys
-      const copy = {};
+      const copy: T = {} as T;
       for (const a in attributes) {
         if (readonly.indexOf(a) < 0) {
           copy[a] = attributes[a];
@@ -991,7 +1044,7 @@ class ParseObject {
       attributes = copy;
     }
     if (clone.set) {
-      clone.set(attributes);
+      clone.set(attributes as any);
     }
     return clone;
   }
@@ -1001,7 +1054,7 @@ class ParseObject {
    *
    * @returns {Parse.Object}
    */
-  newInstance(): any {
+  newInstance(): this {
     const clone = new (this.constructor as new (
       ...args: ConstructorParameters<typeof ParseObject>
     ) => this)(this.className);
@@ -1094,13 +1147,13 @@ class ParseObject {
    * @returns {Parse.Error|boolean} False if the data is valid.  An error object otherwise.
    * @see Parse.Object#set
    */
-  validate(attrs: AttributeMap): ParseError | boolean {
+  validate(attrs: Attributes): ParseError | boolean {
     if (Object.hasOwn(attrs, 'ACL') && !(attrs.ACL instanceof ParseACL)) {
       return new ParseError(ParseError.OTHER_CAUSE, 'ACL must be a Parse ACL.');
     }
     for (const key in attrs) {
-      if (!/^[A-Za-z][0-9A-Za-z_.]*$/.test(key)) {
-        return new ParseError(ParseError.INVALID_KEY_NAME, `Invalid key name: "${key}"`);
+      if (!/^[A-Za-z_][0-9A-Za-z_.]*$/.test(key)) {
+        return new ParseError(ParseError.INVALID_KEY_NAME, `Invalid key name: ${key}`);
       }
     }
     return false;
@@ -1113,7 +1166,7 @@ class ParseObject {
    * @see Parse.Object#get
    */
   getACL(): ParseACL | null {
-    const acl = this.get('ACL');
+    const acl: any = this.get('ACL' as AttributeKey<T>);
     if (acl instanceof ParseACL) {
       return acl;
     }
@@ -1129,7 +1182,7 @@ class ParseObject {
    * @see Parse.Object#set
    */
   setACL(acl: ParseACL, options?: any): this {
-    return this.set('ACL', acl, options);
+    return this.set('ACL' as AttributeKey<T>, acl as any, options);
   }
 
   /**
@@ -1137,7 +1190,7 @@ class ParseObject {
    *
    * @param {string} [keys] - specify which fields to revert
    */
-  revert(...keys: Array<string>): void {
+  revert(...keys: Array<Extract<keyof (T & CommonAttributes), string>>): void {
     let keysToRevert;
     if (keys.length) {
       keysToRevert = [];
@@ -1159,7 +1212,7 @@ class ParseObject {
    */
   clear(): this {
     const attributes = this.attributes;
-    const erasable = {};
+    const erasable: Attributes = {};
     let readonly = ['createdAt', 'updatedAt'];
     if (typeof (this.constructor as any).readOnlyAttributes === 'function') {
       readonly = readonly.concat((this.constructor as any).readOnlyAttributes());
@@ -1169,7 +1222,7 @@ class ParseObject {
         erasable[attr] = true;
       }
     }
-    return this.set(erasable, { unset: true });
+    return this.set(erasable as any, { unset: true });
   }
 
   /**
@@ -1189,10 +1242,10 @@ class ParseObject {
    * @returns {Promise} A promise that is fulfilled when the fetch
    *     completes.
    */
-  fetch(options: FetchOptions): Promise<any> {
+  fetch(options: FetchOptions): Promise<this> {
     const fetchOptions = ParseObject._getRequestOptions(options);
     const controller = CoreManager.getObjectController();
-    return controller.fetch(this, true, fetchOptions);
+    return controller.fetch(this, true, fetchOptions) as Promise<this>;
   }
 
   /**
@@ -1215,8 +1268,8 @@ class ParseObject {
    */
   fetchWithInclude(
     keys: string | Array<string | Array<string>>,
-    options: RequestOptions
-  ): Promise<any> {
+    options?: RequestOptions
+  ): Promise<this> {
     options = options || {};
     options.include = keys;
     return this.fetch(options);
@@ -1246,7 +1299,7 @@ class ParseObject {
    * @returns {Promise} A promise that is fulfilled when the save
    * completes.
    */
-  async saveEventually(options: SaveOptions): Promise<this> {
+  async saveEventually(options?: SaveOptions): Promise<this> {
     try {
       await this.save(null, options);
     } catch (e) {
@@ -1321,9 +1374,13 @@ class ParseObject {
    * @returns {Promise} A promise that is fulfilled when the save
    * completes.
    */
-  async save(
-    arg1: undefined | string | { [attr: string]: any } | null,
-    arg2: SaveOptions | any,
+  async save<K extends AttributeKey<T>>(
+    arg1?: Pick<T, K> | T | null,
+    arg2?: SaveOptions
+  ): Promise<this>;
+  async save<K extends AttributeKey<T>>(
+    arg1: K,
+    arg2: T[K] extends undefined ? never : T[K],
     arg3?: SaveOptions
   ): Promise<this> {
     let attrs;
@@ -1367,9 +1424,8 @@ class ParseObject {
         .then(() => controller.save(unsavedObjects, saveOptions))
         .then((savedOjbects: this[]) => savedOjbects.pop());
     }
-    return controller.save(unsaved, saveOptions).then(() => {
-      return controller.save(this, saveOptions);
-    }) as Promise<ParseObject> as Promise<this>;
+    await controller.save(unsaved, saveOptions);
+    return controller.save(this, saveOptions) as Promise<ParseObject> as Promise<this>;
   }
 
   /**
@@ -1394,7 +1450,7 @@ class ParseObject {
    * @returns {Promise} A promise that is fulfilled when the destroy
    *     completes.
    */
-  async destroyEventually(options: RequestOptions): Promise<this> {
+  async destroyEventually(options?: RequestOptions): Promise<this> {
     try {
       await this.destroy(options);
     } catch (e) {
@@ -1420,7 +1476,7 @@ class ParseObject {
    * @returns {Promise} A promise that is fulfilled when the destroy
    *     completes.
    */
-  destroy(options: RequestOptions): Promise<void | ParseObject> {
+  destroy(options?: RequestOptions): Promise<void | ParseObject> {
     if (!this.id) {
       return Promise.resolve();
     }
@@ -1576,9 +1632,9 @@ class ParseObject {
    * @static
    * @returns {Parse.Object[]}
    */
-  static fetchAll(list: Array<ParseObject>, options: RequestOptions = {}) {
+  static fetchAll<T extends ParseObject>(list: T[], options?: RequestOptions): Promise<T[]> {
     const fetchOptions = ParseObject._getRequestOptions(options);
-    return CoreManager.getObjectController().fetch(list, true, fetchOptions);
+    return CoreManager.getObjectController().fetch(list, true, fetchOptions) as Promise<T[]>;
   }
 
   /**
@@ -1610,11 +1666,11 @@ class ParseObject {
    * @static
    * @returns {Parse.Object[]}
    */
-  static fetchAllWithInclude(
-    list: Array<ParseObject>,
-    keys: string | Array<string | Array<string>>,
-    options: RequestOptions
-  ) {
+  static fetchAllWithInclude<T extends ParseObject>(
+    list: T[],
+    keys: keyof T['attributes'] | Array<keyof T['attributes']>,
+    options?: RequestOptions
+  ): Promise<T[]> {
     options = options || {};
     options.include = keys;
     return ParseObject.fetchAll(list, options);
@@ -1650,11 +1706,11 @@ class ParseObject {
    * @static
    * @returns {Parse.Object[]}
    */
-  static fetchAllIfNeededWithInclude(
-    list: Array<ParseObject>,
-    keys: string | Array<string | Array<string>>,
-    options: RequestOptions
-  ) {
+  static fetchAllIfNeededWithInclude<T extends ParseObject>(
+    list: T[],
+    keys: keyof T['attributes'] | Array<keyof T['attributes']>,
+    options?: RequestOptions
+  ): Promise<T[]> {
     options = options || {};
     options.include = keys;
     return ParseObject.fetchAllIfNeeded(list, options);
@@ -1687,9 +1743,9 @@ class ParseObject {
    * @static
    * @returns {Parse.Object[]}
    */
-  static fetchAllIfNeeded(list: Array<ParseObject>, options: FetchOptions) {
+  static fetchAllIfNeeded<T extends ParseObject>(list: T[], options?: FetchOptions): Promise<T[]> {
     const fetchOptions = ParseObject._getRequestOptions(options);
-    return CoreManager.getObjectController().fetch(list, false, fetchOptions);
+    return CoreManager.getObjectController().fetch(list, false, fetchOptions) as Promise<T[]>;
   }
 
   static handleIncludeOptions(options: { include?: string | string[] }) {
@@ -1763,7 +1819,7 @@ class ParseObject {
    * @returns {Promise} A promise that is fulfilled when the destroyAll
    * completes.
    */
-  static destroyAll(list: Array<ParseObject>, options: SaveOptions = {}) {
+  static destroyAll(list: Array<ParseObject>, options?: SaveOptions) {
     const destroyOptions = ParseObject._getRequestOptions(options);
     return CoreManager.getObjectController().destroy(list, destroyOptions);
   }
@@ -1797,9 +1853,9 @@ class ParseObject {
    * @static
    * @returns {Parse.Object[]}
    */
-  static saveAll(list: Array<ParseObject>, options: SaveOptions = {}) {
+  static saveAll<T extends ParseObject[]>(list: T, options?: SaveOptions): Promise<T> {
     const saveOptions = ParseObject._getRequestOptions(options);
-    return CoreManager.getObjectController().save(list, saveOptions);
+    return CoreManager.getObjectController().save(list, saveOptions) as any;
   }
 
   /**
@@ -1832,13 +1888,13 @@ class ParseObject {
    * @static
    * @returns {Parse.Object} A Parse.Object reference
    */
-  static fromJSON(json: any, override?: boolean, dirty?: boolean): ParseObject {
+  static fromJSON<T extends ParseObject>(json: any, override?: boolean, dirty?: boolean): T {
     if (!json.className) {
       throw new Error('Cannot create an object without a className');
     }
     const constructor = classMap[json.className];
     const o = constructor ? new constructor(json.className) : new ParseObject(json.className);
-    const otherAttributes: AttributeMap = {};
+    const otherAttributes: Attributes = {};
     for (const attr in json) {
       if (attr !== 'className' && attr !== '__type') {
         otherAttributes[attr] = json[attr];
@@ -2206,7 +2262,7 @@ const DefaultController = {
   fetch(
     target: ParseObject | Array<ParseObject>,
     forceFetch: boolean,
-    options: RequestOptions
+    options?: RequestOptions
   ): Promise<Array<ParseObject | undefined> | ParseObject | undefined> {
     const localDatastore = CoreManager.getLocalDatastore();
     if (Array.isArray(target)) {
@@ -2310,7 +2366,7 @@ const DefaultController = {
 
   async destroy(
     target: ParseObject | Array<ParseObject>,
-    options: RequestOptions
+    options?: RequestOptions
   ): Promise<ParseObject | Array<ParseObject>> {
     if (options && options.batchSize && options.transaction)
       throw new ParseError(
@@ -2397,7 +2453,7 @@ const DefaultController = {
 
   save(
     target: ParseObject | null | Array<ParseObject | ParseFile>,
-    options: RequestOptions
+    options?: RequestOptions
   ): Promise<ParseObject | Array<ParseObject> | ParseFile | undefined> {
     if (options && options.batchSize && options.transaction)
       return Promise.reject(

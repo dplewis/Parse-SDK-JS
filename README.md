@@ -11,7 +11,6 @@
 [![auto-release](https://img.shields.io/badge/%F0%9F%9A%80-auto--release-9e34eb.svg)](https://github.com/parse-community/parse-dashboard/releases)
 
 [![npm latest version](https://img.shields.io/npm/v/parse/latest.svg)](https://www.npmjs.com/package/parse)
-[![npm beta version](https://img.shields.io/npm/v/parse/beta.svg)](https://www.npmjs.com/package/parse)
 [![npm alpha version](https://img.shields.io/npm/v/parse/alpha.svg)](https://www.npmjs.com/package/parse)
 
 [![Backers on Open Collective](https://opencollective.com/parse-server/backers/badge.svg)][open-collective-link]
@@ -103,13 +102,6 @@ const Parse = require('parse/weapp');
 ```
 If you want to use a pre-compiled file, you can fetch it from [unpkg](https://unpkg.com). The development version is available at [https://unpkg.com/parse/dist/parse.weapp.js](https://unpkg.com/parse/dist/parse.weapp.js), and the minified production version is at [https://unpkg.com/parse/dist/parse.weapp.min.js](https://unpkg.com/parse/dist/parse.weapp.min.js).
 
-For TypeScript applications, install `'@types/parse'`:
-```
-$ npm install @types/parse
-```
-
-Types are updated manually after every release. If a definition doesn't exist, please submit a pull request to [@types/parse][types-parse]
-
 #### Core Manager
 
 The SDK has a [Core Manager][core-manager] that handles all configurations and controllers. These modules can be swapped out for customization before you initialize the SDK. For full list of all available modules take a look at the [Core Manager Documentation][core-manager].
@@ -147,4 +139,3 @@ We really want Parse to be yours, to see it grow and thrive in the open source c
 [custom-auth-module]: https://docs.parseplatform.org/js/guide/#custom-authentication-module
 [link-with]: https://docs.parseplatform.org/js/guide/#linking-users
 [open-collective-link]: https://opencollective.com/parse-server
-[types-parse]: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/parse

@@ -25,9 +25,9 @@ class ParseACL {
   permissionsById: ByIdMap;
 
   /**
-   * @param {(Parse.User | object)} arg1 The user to initialize the ACL for
+   * @param {(Parse.User | object | null)} arg1 The user to initialize the ACL for
    */
-  constructor(arg1: ParseUser | ByIdMap) {
+  constructor(arg1?: ParseUser | ByIdMap | null) {
     this.permissionsById = {};
     if (arg1 && typeof arg1 === 'object') {
       const ParseUser = CoreManager.getParseUser();

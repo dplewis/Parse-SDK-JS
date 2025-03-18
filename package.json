@@ -1,6 +1,6 @@
 {
   "name": "parse",
-  "version": "6.1.0-alpha.2",
+  "version": "6.1.0-alpha.3",
   "description": "Parse JavaScript SDK",
   "homepage": "https://parseplatform.org",
   "keywords": [
@@ -21,10 +21,12 @@
     "weapp.js",
     "dist/",
     "lib/",
+    "types/",
     "LICENSE",
     "NOTICE",
     "README.md"
   ],
+  "types": "types/index.d.ts",
   "browser": {
     "react-native": false
   },
@@ -64,7 +66,7 @@
     "cross-env": "7.0.2",
     "eslint": "9.22.0",
     "eslint-plugin-expect-type": "0.6.2",
-    "eslint-plugin-jsdoc": "50.6.6",
+    "eslint-plugin-jsdoc": "50.6.7",
     "express": "4.21.2",
     "gulp": "5.0.0",
     "gulp-babel": "8.0.0",
@@ -87,10 +89,10 @@
     "mongodb-runner": "5.8.0",
     "parse-server": "7.3.0",
     "prettier": "3.5.2",
-    "puppeteer": "24.2.1",
+    "puppeteer": "24.4.0",
     "regenerator-runtime": "0.14.1",
     "semantic-release": "24.2.3",
-    "typescript-eslint": "8.26.0",
+    "typescript-eslint": "8.26.1",
     "vinyl-source-stream": "2.0.0"
   },
   "optionalDependencies": {

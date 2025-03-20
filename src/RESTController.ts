@@ -329,5 +329,4 @@ const RESTController = {
   },
 };
 
-module.exports = RESTController;
 export default RESTController;

@@ -1,3 +1,10 @@
+# [6.1.0-alpha.3](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.0-alpha.2...6.1.0-alpha.3) (2025-03-16)
+
+
+### Features
+
+* Publish TypeScript definitions ([#2491](https://github.com/parse-community/Parse-SDK-JS/issues/2491)) ([fc3e573](https://github.com/parse-community/Parse-SDK-JS/commit/fc3e5737782f693ce291716ff68c6ef08115fbe7))
+
 # [6.1.0-alpha.2](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.0-alpha.1...6.1.0-alpha.2) (2025-03-10)
 
 

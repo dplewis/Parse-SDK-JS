@@ -26,7 +26,7 @@ jest.mock(
 );
 
 const mockEmitter = require('react-native/Libraries/vendor/emitter/EventEmitter').default;
-const CoreManager = require('../CoreManager');
+const CoreManager = require('../CoreManager').default;
 const { TextEncoder, TextDecoder } = require('util');
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
@@ -49,36 +49,36 @@ describe('React Native', () => {
   });
 
   it('load EventEmitter', () => {
-    const eventEmitter = require('../EventEmitter');
-    expect(eventEmitter).toEqual(mockEmitter);
+    const EventEmitter = require('../EventEmitter').default;
+    expect(EventEmitter).toEqual(mockEmitter);
   });
 
   it('load CryptoController', async () => {
     jest.spyOn(global.crypto.subtle, 'encrypt');
-    const CryptoController = require('../CryptoController');
+    const CryptoController = require('../CryptoController').default;
     await CryptoController.encrypt({}, 'salt');
     expect(global.crypto.subtle.encrypt).toHaveBeenCalled();
   });
 
   it('load LocalDatastoreController', () => {
-    const LocalDatastoreController = require('../LocalDatastoreController');
+    const LocalDatastoreController = require('../LocalDatastoreController').default;
     require('../LocalDatastore');
     const LDC = CoreManager.getLocalDatastoreController();
     expect(LocalDatastoreController).toEqual(LDC);
   });
 
   it('load StorageController', () => {
-    const StorageController = require('../StorageController');
+    const StorageController = require('../StorageController').default;
     CoreManager.setStorageController(StorageController);
 
     jest.spyOn(StorageController, 'setItemAsync');
-    const storage = require('../Storage');
+    const storage = require('../Storage').default;
     storage.setItemAsync('key', 'value');
     expect(StorageController.setItemAsync).toHaveBeenCalledTimes(1);
   });
 
   it('load WebSocketController', () => {
-    const WebSocketController = require('../WebSocketController');
+    const WebSocketController = require('../WebSocketController').default;
     CoreManager.setWebSocketController(WebSocketController);
 
     jest.mock('../EventEmitter', () => {

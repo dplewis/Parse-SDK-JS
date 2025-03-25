@@ -50,8 +50,24 @@ declare const Parse: {
         getCloudController(): import("./CoreManager").CloudController;
         setConfigController(controller: import("./CoreManager").ConfigController): void;
         getConfigController(): import("./CoreManager").ConfigController;
-        setCryptoController(controller: import("./CoreManager").CryptoController): void;
-        getCryptoController(): import("./CoreManager").CryptoController;
+        setCryptoController(controller: {
+            async: 0;
+            encrypt: (json: any, parseSecret: any) => string;
+            decrypt: (encryptedJSON: string, secretKey: any) => string;
+        } | {
+            async: 1;
+            encrypt: (json: any, parseSecret: any) => Promise<string>;
+            decrypt: (encryptedJSON: string, secretKey: any) => Promise<string>;
+        }): void;
+        getCryptoController(): {
+            async: 0;
+            encrypt: (json: any, parseSecret: any) => string;
+            decrypt: (encryptedJSON: string, secretKey: any) => string;
+        } | {
+            async: 1;
+            encrypt: (json: any, parseSecret: any) => Promise<string>;
+            decrypt: (encryptedJSON: string, secretKey: any) => Promise<string>;
+        };
         setEventEmitter(eventEmitter: any): void;
         getEventEmitter(): any;
         setFileController(controller: import("./CoreManager").FileController): void;

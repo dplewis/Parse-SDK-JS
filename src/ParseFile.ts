@@ -113,7 +113,7 @@ class ParseFile {
     this._tags = tags || {};
 
     if (data !== undefined) {
-      if (Array.isArray(data)) {
+      if (Array.isArray(data) || data instanceof Uint8Array) {
         this._data = ParseFile.encodeBase64(data);
         this._source = {
           format: 'base64',

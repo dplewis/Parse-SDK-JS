@@ -36,7 +36,6 @@ console.log(`Building JavaScript SDK v${pkg.version}...\n`)
 
 console.log('Cleaning up old builds...\n');
 
-rmDir(path.join(__dirname, 'dist'));
 rmDir(path.join(__dirname, 'lib'));
 
 const crossEnv = 'npm run cross-env';
@@ -54,13 +53,7 @@ const gulp = 'npm run gulp';
     execCommand(`${crossEnv} PARSE_BUILD=react-native ${gulp} compile`),
   ]);
 
-  console.log('Bundling and minifying for CDN distribution:');
-  await Promise.all([
-    execCommand(`${gulp} browserify`),
-    execCommand(`${gulp} browserify-weapp`),
-  ]);
-  await Promise.all([
-    execCommand(`${gulp} minify`),
-    execCommand(`${gulp} minify-weapp`),
-  ]);
+  console.log('Bundling and minifying for CDN distribution');
+  await execCommand('npm run build:browser');
+  await execCommand('npm run build:weapp');
 }());

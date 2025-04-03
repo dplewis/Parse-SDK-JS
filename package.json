@@ -35,8 +35,7 @@
     ".": {
       "types": "./types/index.d.ts",
       "require": "./dist/index.cjs.js",
-      "import": "./dist/index.esm.js",
-      "default": "./dist/index.esm.js"
+      "import": "./dist/index.esm.js"
     },
     "./package.json": "./package.json"
   },

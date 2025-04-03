@@ -25,12 +25,12 @@ const PRESETS = {
   'react-native': ["@babel/preset-typescript", 'module:metro-react-native-babel-preset'],
 };
 const PLUGINS = {
-  'browser': [transformRuntime, '@babel/plugin-proposal-class-properties', 'inline-package-json',
+  'browser': [transformRuntime, '@babel/plugin-proposal-class-properties',
     ['transform-inline-environment-variables', {'exclude': ['SERVER_RENDERING']}]],
-  'weapp': [transformRuntime, '@babel/plugin-proposal-class-properties', 'inline-package-json',
+  'weapp': [transformRuntime, '@babel/plugin-proposal-class-properties',
     ['transform-inline-environment-variables', {'exclude': ['SERVER_RENDERING']}]],
-  'node': ['inline-package-json', 'transform-inline-environment-variables'],
-  'react-native': ['inline-package-json', 'transform-inline-environment-variables']
+  'node': ['transform-inline-environment-variables'],
+  'react-native': ['transform-inline-environment-variables']
 };
 
 function compileTask(stream) {

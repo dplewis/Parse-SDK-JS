@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import commonjs from 'vite-plugin-commonjs'
 import terser from '@rollup/plugin-terser';
 import { resolve } from 'path';
 import pkg from './package.json';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import commonjs from 'vite-plugin-commonjs'
 
 const banner = `/**
  * Parse JavaScript SDK v${pkg.version}
@@ -45,20 +45,6 @@ const umdBuilds: any = [{
     }) as any,
   ],
 }];
-let cjsBuilds: any = [];
-let esmBuilds: any = [];
-if (process.env.PARSE_BUILD === 'browser') {
-  cjsBuilds = [{
-    entryFileNames: 'index.cjs.js',
-    format: 'cjs',
-    ...build,
-  }];
-  esmBuilds = [{
-    entryFileNames: 'index.esm.js',
-    format: 'es',
-    ...build,
-  }];
-}
 
 export default defineConfig({
   plugins: [nodePolyfills(), commonjs()],
@@ -72,7 +58,7 @@ export default defineConfig({
     rollupOptions: {
       input: resolve(__dirname, 'src/Parse.ts'),
       external: ['xmlhttprequest', '_process'],
-      output: [...umdBuilds, ...cjsBuilds, ...esmBuilds],
+      output: [...umdBuilds],
     },
     minify: false,
     sourcemap: false,

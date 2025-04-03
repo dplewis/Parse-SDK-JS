@@ -55,7 +55,7 @@ const gulp = 'npm run gulp';
 
   console.log('Bundling and minifying for CDN distribution');
   await Promise.all([
-    execCommand('npm run build:browser'),
-    execCommand('npm run build:weapp'),
+    execCommand('npm run build:browser:umd'),
+    execCommand('npm run build:weapp:umd'),
   ]);
 }());

@@ -27,17 +27,8 @@
     "README.md"
   ],
   "types": "types/index.d.ts",
-  "main": "dist/index.cjs.js",
   "browser": {
     "react-native": false
-  },
-  "exports": {
-    ".": {
-      "types": "./types/index.d.ts",
-      "require": "./dist/index.cjs.js",
-      "import": "./dist/index.esm.js"
-    },
-    "./package.json": "./package.json"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "7.27.0",
@@ -106,8 +97,8 @@
   "scripts": {
     "build": "node build_releases.js",
     "build:types": "tsc",
-    "build:browser": "cross-env PARSE_BUILD=browser vite build --config vite.config.ts",
-    "build:weapp": "cross-env PARSE_BUILD=weapp vite build --config vite.config.ts",
+    "build:browser:umd": "cross-env PARSE_BUILD=browser vite build --config vite.config.umd.ts",
+    "build:weapp:umd": "cross-env PARSE_BUILD=weapp vite build --config vite.config.umd.ts",
     "ci:typecheck": "node ./ci/typecheck.js",
     "release": "node build_releases.js && npm publish",
     "test": "cross-env PARSE_BUILD=node jest",

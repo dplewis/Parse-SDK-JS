@@ -12,7 +12,7 @@ const banner = `/**
  * All rights reserved.
  *
  * The source tree of this library can be found at:
- *   https://github.com/ParsePlatform/Parse-SDK-JS
+ *   https://github.com/parse-community/Parse-SDK-JS
  *
  * This source code is licensed under the license found in the LICENSE
  * file in the root directory of this source tree. Additional legal

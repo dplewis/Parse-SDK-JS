@@ -38,7 +38,7 @@ import StorageController from './StorageController';
 import WebSocketController from './WebSocketController';
 import type { EventuallyQueue } from './CoreManager';
 
-const Parse = {
+export const Parse = {
   ACL,
   Analytics,
   AnonymousUtils,
@@ -416,7 +416,5 @@ if (process.env.PARSE_BUILD === 'node') {
 if (process.env.PARSE_BUILD === 'browser') {
   (globalThis as any).Parse = Parse;
 }
-// For legacy requires, of the form `var Parse = require('parse').Parse`
-Parse.Parse = Parse;
 
 export default Parse;

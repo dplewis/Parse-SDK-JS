@@ -97,8 +97,8 @@
   "scripts": {
     "build": "node build_releases.js",
     "build:types": "tsc",
-    "build:browser:umd": "cross-env PARSE_BUILD=browser vite build --config vite.config.umd.ts",
-    "build:weapp:umd": "cross-env PARSE_BUILD=weapp vite build --config vite.config.umd.ts",
+    "build:browser": "cross-env PARSE_BUILD=browser vite build --config vite.config.umd.ts",
+    "build:weapp": "cross-env PARSE_BUILD=weapp vite build --config vite.config.umd.ts",
     "ci:typecheck": "node ./ci/typecheck.js",
     "release": "node build_releases.js && npm publish",
     "test": "cross-env PARSE_BUILD=node jest",

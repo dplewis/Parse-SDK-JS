@@ -1,3 +1,17 @@
+# [6.1.0-alpha.5](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.0-alpha.4...6.1.0-alpha.5) (2025-04-02)
+
+
+### Bug Fixes
+
+* Remove unused option `sessionToken` from `Parse.Query.aggregate` ([#2547](https://github.com/parse-community/Parse-SDK-JS/issues/2547)) ([c7015ba](https://github.com/parse-community/Parse-SDK-JS/commit/c7015ba42c13d7a4bbe5246b0944e64dcea1712f))
+
+# [6.1.0-alpha.4](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.0-alpha.3...6.1.0-alpha.4) (2025-03-29)
+
+
+### Bug Fixes
+
+* Security upgrade tar-fs from 2.1.1 to 2.1.2 ([#2540](https://github.com/parse-community/Parse-SDK-JS/issues/2540)) ([44eeacd](https://github.com/parse-community/Parse-SDK-JS/commit/44eeacd9b4af90c8a5f48264506d058ca2745109))
+
 # [6.1.0-alpha.3](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.0-alpha.2...6.1.0-alpha.3) (2025-03-16)
 
 

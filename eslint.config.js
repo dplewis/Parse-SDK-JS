@@ -6,7 +6,8 @@ module.exports = tseslint.config({
   files: ['**/*.js', '**/*.ts'],
   extends: [
     eslint.configs.recommended,
-    ...tseslint.configs.recommended,
+    ...tseslint.configs.stylistic,
+    ...tseslint.configs.strict,
   ],
   plugins: {
     '@typescript-eslint': tseslint.plugin,
@@ -34,6 +35,9 @@ module.exports = tseslint.config({
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-dynamic-delete": "off",
+    "@typescript-eslint/prefer-for-of": "off",
+    "@typescript-eslint/no-extraneous-class": "off",
     "@typescript-eslint/no-unused-vars": [
       "error",
       {
@@ -51,6 +55,7 @@ module.exports = tseslint.config({
     "jsdoc/require-param-description": 0,
     "jsdoc/require-property-description": 0,
     "jsdoc/require-param-type": 0,
+    "jsdoc/require-param": 1,
     "jsdoc/tag-lines": 0,
     "jsdoc/check-param-names": [
       "error",
@@ -69,6 +74,15 @@ module.exports = tseslint.config({
         ]
       }
     ]
+  },
+  settings: {
+    jsdoc: {
+      tagNamePreference: {
+        member: false,
+        memberof: false,
+        yield: false,
+      },
+    },
   },
   languageOptions: {
     parser: tseslint.parser,

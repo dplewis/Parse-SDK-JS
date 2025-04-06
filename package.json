@@ -86,10 +86,10 @@
     "metro-react-native-babel-preset": "0.77.0",
     "mongodb-runner": "5.8.0",
     "parse-server": "7.3.0",
-    "puppeteer": "24.4.0",
+    "puppeteer": "24.6.0",
     "regenerator-runtime": "0.14.1",
     "semantic-release": "24.2.3",
-    "typescript-eslint": "8.28.0",
+    "typescript-eslint": "8.29.0",
     "vinyl-source-stream": "2.0.0"
   },
   "optionalDependencies": {

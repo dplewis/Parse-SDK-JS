@@ -1,3 +1,17 @@
+# [6.2.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.1...6.2.0-alpha.1) (2025-04-07)
+
+
+### Features
+
+* Add `Uint8Array` support for `Parse.File` data ([#2548](https://github.com/parse-community/Parse-SDK-JS/issues/2548)) ([6f6bb66](https://github.com/parse-community/Parse-SDK-JS/commit/6f6bb660204f3b102f8e4167297327bf12e2e2be))
+
+# [6.1.0-alpha.5](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.0-alpha.4...6.1.0-alpha.5) (2025-04-02)
+
+
+### Bug Fixes
+
+* Remove unused option `sessionToken` from `Parse.Query.aggregate` ([#2547](https://github.com/parse-community/Parse-SDK-JS/issues/2547)) ([c7015ba](https://github.com/parse-community/Parse-SDK-JS/commit/c7015ba42c13d7a4bbe5246b0944e64dcea1712f))
+
 # [6.1.0-alpha.4](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.0-alpha.3...6.1.0-alpha.4) (2025-03-29)
 
 

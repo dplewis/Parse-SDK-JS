@@ -1,3 +1,10 @@
+# [6.2.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.1...6.2.0-alpha.1) (2025-04-07)
+
+
+### Features
+
+* Add `Uint8Array` support for `Parse.File` data ([#2548](https://github.com/parse-community/Parse-SDK-JS/issues/2548)) ([6f6bb66](https://github.com/parse-community/Parse-SDK-JS/commit/6f6bb660204f3b102f8e4167297327bf12e2e2be))
+
 # [6.1.0-alpha.5](https://github.com/parse-community/Parse-SDK-JS/compare/6.1.0-alpha.4...6.1.0-alpha.5) (2025-04-02)
 
 

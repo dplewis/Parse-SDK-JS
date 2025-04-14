@@ -317,8 +317,8 @@ const RESTController = {
     // Transform the error into an instance of ParseError by trying to parse
     // the error string as JSON
     let error;
-    if (errorJSON.code || errorJSON.error) {
-      error = new ParseError(errorJSON.code, errorJSON.error);
+    if (errorJSON.code || errorJSON.error|| errorJSON.message) {
+      error = new ParseError(errorJSON.code, errorJSON.error|| errorJSON.message);
     } else {
       error = new ParseError(
         ParseError.CONNECTION_FAILED,

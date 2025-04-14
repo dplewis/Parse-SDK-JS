@@ -95,9 +95,12 @@ function ajaxIE9(method: string, url: string, data: any, _headers?: any, options
 }
 
 const RESTController = {
-  ajax(method: string, url: string, data: any, headers?: any, options?: FullOptions) {
+  async ajax(method: string, url: string, data: any, headers?: any, options?: FullOptions) {
     if (useXDomainRequest) {
       return ajaxIE9(method, url, data, headers, options);
+    }
+    if (typeof fetch !== 'function') {
+      throw new Error('Cannot make a request: Fetch API not found.');
     }
     const promise = resolvingPromise();
     const isIdempotent = CoreManager.get('IDEMPOTENCY') && ['POST', 'PUT'].includes(method);
@@ -105,9 +108,6 @@ const RESTController = {
     let attempts = 0;
 
     const dispatch = async function () {
-      if (typeof fetch !== 'function') {
-        throw new Error('Cannot make a request: Fetch API not found.');
-      }
       const controller = new AbortController();
       const { signal } = controller;
 
@@ -185,16 +185,18 @@ const RESTController = {
           } else {
             result = await response.json();
           }
-          promise.resolve({ status, response: result, headers: responseHeaders, xhr: response });
+          promise.resolve({ status, response: result, headers: responseHeaders });
         } else if (status >= 400 && status < 500) {
           const error = await response.json();
           promise.reject(error);
-        } else if (status >= 500) {
-          // retry on 5XX
+        } else if (status >= 500 || status === 0) {
+          // retry on 5XX or library error
           if (++attempts < CoreManager.get('REQUEST_ATTEMPT_LIMIT')) {
             // Exponentially-growing random delay
             const delay = Math.round(Math.random() * 125 * Math.pow(2, attempts));
             setTimeout(dispatch, delay);
+          } else if (status === 0) {
+            promise.reject('Unable to connect to the Parse API');
           } else {
             // After the retry limit is reached, fail
             promise.reject(response);
@@ -301,9 +303,9 @@ const RESTController = {
 
         const payloadString = JSON.stringify(payload);
         return RESTController.ajax(method, url, payloadString, {}, options).then(
-          ({ response, status, headers, xhr }) => {
+          ({ response, status, headers }) => {
             if (options.returnStatus) {
-              return { ...response, _status: status, _headers: headers, _xhr: xhr };
+              return { ...response, _status: status, _headers: headers };
             } else {
               return response;
             }
@@ -317,8 +319,8 @@ const RESTController = {
     // Transform the error into an instance of ParseError by trying to parse
     // the error string as JSON
     let error;
-    if (errorJSON.code || errorJSON.error|| errorJSON.message) {
-      error = new ParseError(errorJSON.code, errorJSON.error|| errorJSON.message);
+    if (errorJSON.code || errorJSON.error || errorJSON.message) {
+      error = new ParseError(errorJSON.code, errorJSON.error || errorJSON.message);
     } else {
       error = new ParseError(
         ParseError.CONNECTION_FAILED,
@@ -327,6 +329,9 @@ const RESTController = {
     }
     return Promise.reject(error);
   },
+  // Used for testing
+  _setXHR() {},
+  _getXHR() {},
 };
 
 export default RESTController;

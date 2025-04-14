@@ -1,5 +1,3 @@
-export const TEXT_FILE_EXTS = /\.(txt|json|html|txt|csv)/;
-
 // @ts-ignore
 function parseResponse(res: wx.RequestSuccessCallbackResult) {
   let headers = res.header || {};
@@ -43,6 +41,7 @@ export function polyfillFetch() {
   const typedGlobal = global as any;
   if (typeof typedGlobal.fetch !== 'function') {
     typedGlobal.fetch = (url: string, options: any) => {
+      const TEXT_FILE_EXTS = /\.(txt|json|html|txt|csv)/;
       const dataType = url.match(TEXT_FILE_EXTS) ? 'text' : 'arraybuffer';
       return new Promise((resolve, reject) => {
         // @ts-ignore

@@ -29,5 +29,6 @@ declare const RESTController: {
     }) | Promise<unknown>;
     request(method: string, path: string, data: any, options?: RequestOptions): Promise<any>;
     handleError(errorJSON: any): Promise<never>;
+    _setXHR(): void;
 };
 export default RESTController;

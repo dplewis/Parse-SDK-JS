@@ -1,3 +1,10 @@
+# [6.2.0-alpha.3](https://github.com/parse-community/Parse-SDK-JS/compare/6.2.0-alpha.2...6.2.0-alpha.3) (2025-04-15)
+
+
+### Performance Improvements
+
+* Optimize bundle packaging with Vite ([#2553](https://github.com/parse-community/Parse-SDK-JS/issues/2553)) ([a4b19e5](https://github.com/parse-community/Parse-SDK-JS/commit/a4b19e532ce97fd61632335ca5b8158f756d6fe6))
+
 # [6.2.0-alpha.2](https://github.com/parse-community/Parse-SDK-JS/compare/6.2.0-alpha.1...6.2.0-alpha.2) (2025-04-07)
 
 

@@ -329,8 +329,6 @@ const RESTController = {
     }
     return Promise.reject(error);
   },
-  // Used for testing
-  _setXHR() {},
 };
 
 export default RESTController;

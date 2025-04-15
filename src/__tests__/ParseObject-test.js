@@ -28,7 +28,6 @@ jest.mock('../uuid', () => {
   let value = 0;
   return () => value++;
 });
-jest.dontMock('./test_helpers/mockXHR');
 jest.dontMock('./test_helpers/mockFetch');
 jest.dontMock('./test_helpers/flushPromises');
 
@@ -157,7 +156,6 @@ const RESTController = require('../RESTController').default;
 const SingleInstanceStateController = require('../SingleInstanceStateController');
 const unsavedChildren = require('../unsavedChildren').default;
 
-const mockXHR = require('./test_helpers/mockXHR');
 const mockFetch = require('./test_helpers/mockFetch');
 const flushPromises = require('./test_helpers/flushPromises');
 
@@ -1440,14 +1438,7 @@ describe('ParseObject', () => {
   });
 
   it('fetchAll with empty values', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{}],
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: [{}] }]);
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'ajax');
 
@@ -1457,14 +1448,7 @@ describe('ParseObject', () => {
   });
 
   it('fetchAll with null', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{}],
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: [{}] }]);
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'ajax');
 
@@ -1612,42 +1596,21 @@ describe('ParseObject', () => {
     }
   });
 
-  it('can save the object', done => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            objectId: 'P5',
-            count: 1,
-          },
-        },
-      ])
-    );
+  it('can save the object', async () => {
+    mockFetch([{ status: 200, response: { objectId: 'P5', count: 1 } }]);
     const p = new ParseObject('Person');
     p.set('age', 38);
     p.increment('count');
-    p.save().then(obj => {
-      expect(obj).toBe(p);
-      expect(obj.get('age')).toBe(38);
-      expect(obj.get('count')).toBe(1);
-      expect(obj.op('age')).toBe(undefined);
-      expect(obj.dirty()).toBe(false);
-      done();
-    });
+    const obj = await p.save();
+    expect(obj).toBe(p);
+    expect(obj.get('age')).toBe(38);
+    expect(obj.get('count')).toBe(1);
+    expect(obj.op('age')).toBe(undefined);
+    expect(obj.dirty()).toBe(false);
   });
 
   it('can save the object eventually', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            objectId: 'PFEventually',
-          },
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: {objectId: 'PFEventually' } }]);
     const p = new ParseObject('Person');
     p.set('age', 38);
     const obj = await p.saveEventually();
@@ -1684,34 +1647,16 @@ describe('ParseObject', () => {
     expect(EventuallyQueue.poll).toHaveBeenCalledTimes(0);
   });
 
-  it('can save the object with key / value', done => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            objectId: 'P8',
-          },
-        },
-      ])
-    );
+  it('can save the object with key / value', async () => {
+    mockFetch([{ status: 200, response: { objectId: 'P8' } }]);
     const p = new ParseObject('Person');
-    p.save('foo', 'bar').then(obj => {
-      expect(obj).toBe(p);
-      expect(obj.get('foo')).toBe('bar');
-      done();
-    });
+    const obj = await p.save('foo', 'bar');
+    expect(obj).toBe(p);
+    expect(obj.get('foo')).toBe('bar');
   });
 
-  it('accepts attribute changes on save', done => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: { objectId: 'newattributes' },
-        },
-      ])
-    );
+  it('accepts attribute changes on save', (done) => {
+    mockFetch([{ status: 200, response: { objectId: 'newattributes' } }]);
     let o = new ParseObject('Item');
     o.save({ key: 'value' })
       .then(() => {
@@ -1727,15 +1672,7 @@ describe('ParseObject', () => {
   });
 
   it('accepts context on save', async () => {
-    // Mock XHR
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: { objectId: 'newattributes' },
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: { objectId: 'newattributes' } }]);
     // Spy on REST controller
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'ajax');
@@ -1748,24 +1685,12 @@ describe('ParseObject', () => {
     expect(jsonBody._context).toEqual(context);
   });
 
-  it('interpolates delete operations', done => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            objectId: 'newattributes',
-            deletedKey: { __op: 'Delete' },
-          },
-        },
-      ])
-    );
+  it('interpolates delete operations', async () => {
+    mockFetch([{ status: 200, response: { objectId: 'newattributes', deletedKey: { __op: 'Delete' } } }]);
     const o = new ParseObject('Item');
-    o.save({ key: 'value', deletedKey: 'keyToDelete' }).then(() => {
-      expect(o.get('key')).toBe('value');
-      expect(o.get('deletedKey')).toBeUndefined();
-      done();
-    });
+    await o.save({ key: 'value', deletedKey: 'keyToDelete' });
+    expect(o.get('key')).toBe('value');
+    expect(o.get('deletedKey')).toBeUndefined();
   });
 
   it('can make changes while in the process of a save', async () => {
@@ -1894,16 +1819,8 @@ describe('ParseObject', () => {
   });
 
   it('can fetch an object given an id', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            count: 10,
-          },
-        },
-      ])
-    );
+    expect.assertions(2);
+    mockFetch([{ status: 200, response: { count: 10 } }]);
     const p = new ParseObject('Person');
     p.id = 'P55';
     await p.fetch().then(res => {
@@ -1914,16 +1831,7 @@ describe('ParseObject', () => {
 
   it('throw for fetch with empty string as ID', async () => {
     expect.assertions(1);
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            count: 10,
-          },
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: { count: 10 } }]);
     const p = new ParseObject('Person');
     p.id = '';
     await expect(p.fetch()).rejects.toThrowError(
@@ -1982,7 +1890,7 @@ describe('ParseObject', () => {
   });
 
   it('should fail to save object when its children lack IDs using transaction option', async () => {
-    RESTController._setXHR(mockXHR([{ status: 200, response: [] }]));
+    mockFetch([{ status: 200, response: [] }]);
 
     const obj1 = new ParseObject('TestObject');
     const obj2 = new ParseObject('TestObject');
@@ -1997,15 +1905,10 @@ describe('ParseObject', () => {
   });
 
   it('should save batch with serializable attribute and transaction option', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{ success: { objectId: 'parent' } }, { success: { objectId: 'id2' } }],
-        },
-      ])
-    );
-
+    mockFetch([{
+      status: 200,
+      response: [{ success: { objectId: 'parent' } }, { success: { objectId: 'id2' } }],
+    }]);
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'request');
 
@@ -2042,15 +1945,10 @@ describe('ParseObject', () => {
   });
 
   it('should save object along with its children using transaction option', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{ success: { objectId: 'id2' } }, { success: { objectId: 'parent' } }],
-        },
-      ])
-    );
-
+    mockFetch([{
+      status: 200,
+      response: [{ success: { objectId: 'id2' } }, { success: { objectId: 'parent' } }],
+    }]);
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'request');
 
@@ -2094,19 +1992,16 @@ describe('ParseObject', () => {
   });
 
   it('should save file & object along with its children using transaction option', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: { name: 'mock-name', url: 'mock-url' },
-        },
-        {
-          status: 200,
-          response: [{ success: { objectId: 'id2' } }, { success: { objectId: 'parent' } }],
-        },
-      ])
-    );
-
+    mockFetch([
+      {
+        status: 200,
+        response: { name: 'mock-name', url: 'mock-url' },
+      },
+      {
+        status: 200,
+        response: [{ success: { objectId: 'id2' } }, { success: { objectId: 'parent' } }],
+      },
+    ]);
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'request');
 
@@ -2155,15 +2050,12 @@ describe('ParseObject', () => {
   });
 
   it('should destroy batch with transaction option', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{ success: { objectId: 'parent' } }, { success: { objectId: 'id2' } }],
-        },
-      ])
-    );
-
+    mockFetch([
+      {
+        status: 200,
+        response: [{ success: { objectId: 'parent' } }, { success: { objectId: 'id2' } }],
+      },
+    ]);
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'request');
 
@@ -2245,15 +2137,7 @@ describe('ParseObject', () => {
   });
 
   it('accepts context on saveAll', async () => {
-    // Mock XHR
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{}],
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: [{}] }]);
     // Spy on REST controller
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'ajax');
@@ -2269,15 +2153,7 @@ describe('ParseObject', () => {
   });
 
   it('accepts context on destroyAll', async () => {
-    // Mock XHR
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{}],
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: [{}] }]);
     // Spy on REST controller
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'ajax');
@@ -2292,15 +2168,7 @@ describe('ParseObject', () => {
   });
 
   it('destroyAll with options', async () => {
-    // Mock XHR
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{}],
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: [{}] }]);
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'ajax');
 
@@ -2318,14 +2186,7 @@ describe('ParseObject', () => {
   });
 
   it('destroyAll with empty values', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{}],
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: [{}] }]);
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'ajax');
 
@@ -2338,14 +2199,7 @@ describe('ParseObject', () => {
   });
 
   it('destroyAll unsaved objects', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [{}],
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: [{}] }]);
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'ajax');
 
@@ -2356,22 +2210,19 @@ describe('ParseObject', () => {
   });
 
   it('destroyAll handle error response', async () => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: [
-            {
-              error: {
-                code: 101,
-                error: 'Object not found',
-              },
+    mockFetch([
+      {
+        status: 200,
+        response: [
+          {
+            error: {
+              code: 101,
+              error: 'Object not found',
             },
-          ],
-        },
-      ])
-    );
-
+          },
+        ],
+      },
+    ]);
     const obj = new ParseObject('Item');
     obj.id = 'toDelete1';
     try {
@@ -2445,22 +2296,20 @@ describe('ParseObject', () => {
   });
 
   it('can update fields via a fetch() call', done => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            count: 11,
-          },
+    mockFetch([
+      {
+        status: 200,
+        response: {
+          count: 11,
         },
-        {
-          status: 200,
-          response: {
-            count: 20,
-          },
+      },
+      {
+        status: 200,
+        response: {
+          count: 20,
         },
-      ])
-    );
+      },
+    ]);
     const p = new ParseObject('Person');
     p.id = 'P55';
     p.increment('count');
@@ -2477,17 +2326,14 @@ describe('ParseObject', () => {
   });
 
   it('replaces old data when fetch() is called', done => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            count: 10,
-          },
+    mockFetch([
+      {
+        status: 200,
+        response: {
+          count: 10,
         },
-      ])
-    );
-
+      },
+    ])
     const p = ParseObject.fromJSON({
       className: 'Person',
       objectId: 'P200',
@@ -2515,15 +2361,7 @@ describe('ParseObject', () => {
   });
 
   it('accepts context on destroy', async () => {
-    // Mock XHR
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {},
-        },
-      ])
-    );
+    mockFetch([{ status: 200, response: [{}] }]);
     // Spy on REST controller
     const controller = CoreManager.getRESTController();
     jest.spyOn(controller, 'ajax');
@@ -3112,17 +2950,15 @@ describe('ParseObject (unique instance mode)', () => {
   });
 
   it('can save the object', done => {
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            objectId: 'P1',
-            count: 1,
-          },
+    mockFetch([
+      {
+        status: 200,
+        response: {
+          objectId: 'P1',
+          count: 1,
         },
-      ])
-    );
+      },
+    ]);
     const p = new ParseObject('Person');
     p.set('age', 38);
     p.increment('count');
@@ -3651,16 +3487,14 @@ describe('ParseObject pin', () => {
   });
   it('gets id for new object when cascadeSave = false and singleInstance = false', done => {
     ParseObject.disableSingleInstance();
-    CoreManager.getRESTController()._setXHR(
-      mockXHR([
-        {
-          status: 200,
-          response: {
-            objectId: 'P5',
-          },
+    mockFetch([
+      {
+        status: 200,
+        response: {
+          objectId: 'P5',
         },
-      ])
-    );
+      },
+    ])
     const p = new ParseObject('Person');
     p.save(null, { cascadeSave: false }).then(obj => {
       expect(obj).toBe(p);

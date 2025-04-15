@@ -23,12 +23,10 @@ export interface FullOptions {
     usePost?: boolean;
 }
 declare const RESTController: {
-    ajax(method: string, url: string, data: any, headers?: any, options?: FullOptions): (Promise<any> & {
-        resolve: (res: any) => void;
-        reject: (err: any) => void;
-    }) | Promise<unknown>;
+    ajax(method: string, url: string, data: any, headers?: any, options?: FullOptions): Promise<any>;
     request(method: string, path: string, data: any, options?: RequestOptions): Promise<any>;
     handleError(errorJSON: any): Promise<never>;
     _setXHR(): void;
+    _getXHR(): void;
 };
 export default RESTController;

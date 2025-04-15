@@ -23,6 +23,7 @@ export type FileSource = {
     uri: string;
     type: string | undefined;
 };
+export declare function b64Digit(number: number): string;
 /**
  * A Parse.File is a local representation of a file that is saved to the Parse
  * cloud.

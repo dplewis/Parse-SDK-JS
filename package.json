@@ -47,6 +47,7 @@
     "@babel/preset-typescript": "7.27.0",
     "@eslint/js": "9.24.0",
     "@parse/minami": "git+https://github.com/parse-community/minami#main",
+    "@rollup/plugin-terser": "0.4.4",
     "@saithodev/semantic-release-backmerge": "4.0.1",
     "@semantic-release/changelog": "6.0.3",
     "@semantic-release/commit-analyzer": "13.0.1",
@@ -56,10 +57,8 @@
     "@semantic-release/release-notes-generator": "14.0.3",
     "@types/facebook-js-sdk": "3.3.11",
     "babel-jest": "29.5.0",
-    "babel-plugin-inline-package-json": "2.0.0",
     "babel-plugin-minify-dead-code-elimination": "0.5.2",
     "babel-plugin-transform-inline-environment-variables": "0.4.4",
-    "browserify": "17.0.0",
     "codecov": "3.8.3",
     "core-js": "3.41.0",
     "cross-env": "7.0.2",
@@ -69,10 +68,6 @@
     "express": "5.1.0",
     "gulp": "5.0.0",
     "gulp-babel": "8.0.0",
-    "gulp-derequire": "3.0.0",
-    "gulp-insert": "0.5.0",
-    "gulp-rename": "2.0.0",
-    "gulp-uglify": "3.0.2",
     "gulp-watch": "5.0.1",
     "jasmine": "5.6.0",
     "jasmine-reporters": "2.5.2",
@@ -90,7 +85,9 @@
     "regenerator-runtime": "0.14.1",
     "semantic-release": "24.2.3",
     "typescript-eslint": "8.29.1",
-    "vinyl-source-stream": "2.0.0"
+    "vite": "6.2.4",
+    "vite-plugin-commonjs": "0.10.4",
+    "vite-plugin-node-polyfills": "0.23.0"
   },
   "optionalDependencies": {
     "crypto-js": "4.2.0"
@@ -98,6 +95,8 @@
   "scripts": {
     "build": "node build_releases.js",
     "build:types": "tsc",
+    "build:browser": "cross-env PARSE_BUILD=browser vite build --config vite.config.umd.ts",
+    "build:weapp": "cross-env PARSE_BUILD=weapp vite build --config vite.config.umd.ts",
     "ci:typecheck": "node ./ci/typecheck.js",
     "release": "node build_releases.js && npm publish",
     "test": "cross-env PARSE_BUILD=node jest",
@@ -108,7 +107,7 @@
     "lint:fix": "eslint --fix --cache src/ integration/",
     "test:types": "eslint types/tests.ts -c ./types/eslint.config.mjs",
     "watch": "cross-env PARSE_BUILD=${PARSE_BUILD} gulp watch",
-    "watch:browser": "cross-env PARSE_BUILD=browser npm run watch",
+    "watch:browser": "cross-env PARSE_BUILD=browser vite build --watch --config vite.config.ts",
     "watch:node": "cross-env PARSE_BUILD=node npm run watch",
     "watch:react-native": "cross-env PARSE_BUILD=react-native npm run watch",
     "watch:ts": "tsc --watch",

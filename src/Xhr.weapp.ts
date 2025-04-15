@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 // @ts-ignore
 function parseResponse(res: wx.RequestSuccessCallbackResult) {
   let headers = res.header || {};

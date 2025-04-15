@@ -236,6 +236,19 @@ describe('RESTController', () => {
     expect(results).toEqual([]);
   });
 
+  it('handles ECONNREFUSED error', async () => {
+    mockFetch([], {}, { cause: { code: 'ECONNREFUSED' } });
+    await expect(RESTController.ajax('GET', 'classes/MyObject', {}, {})).rejects.toEqual(
+      'Unable to connect to the Parse API'
+    );
+  });
+
+  it('handles fetch errors', async () => {
+    const error = { name: 'Error', message: 'Generic error' };
+    mockFetch([], {}, error);
+    await expect(RESTController.ajax('GET', 'classes/MyObject', {}, {})).rejects.toEqual(error);
+  });
+
   it('attaches the session token of the current user', async () => {
     CoreManager.setUserController({
       currentUserAsync() {

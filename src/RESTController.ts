@@ -331,7 +331,6 @@ const RESTController = {
   },
   // Used for testing
   _setXHR() {},
-  _getXHR() {},
 };
 
 export default RESTController;

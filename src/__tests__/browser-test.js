@@ -33,7 +33,7 @@ describe('Browser', () => {
   });
 
   it('warning initializing parse/node in browser', () => {
-    const Parse = require('../Parse');
+    const Parse = require('../Parse').default;
     jest.spyOn(console, 'log').mockImplementationOnce(() => {});
     jest.spyOn(Parse, '_initialize').mockImplementationOnce(() => {});
     Parse.initialize('A', 'B');
@@ -45,7 +45,7 @@ describe('Browser', () => {
 
   it('initializing parse/node in browser with server rendering', () => {
     process.env.SERVER_RENDERING = true;
-    const Parse = require('../Parse');
+    const Parse = require('../Parse').default;
     jest.spyOn(console, 'log').mockImplementationOnce(() => {});
     jest.spyOn(Parse, '_initialize').mockImplementationOnce(() => {});
     Parse.initialize('A', 'B');
@@ -54,7 +54,7 @@ describe('Browser', () => {
   });
 
   it('should start eventually queue poll on initialize', () => {
-    const Parse = require('../Parse');
+    const Parse = require('../Parse').default;
     jest.spyOn(console, 'log').mockImplementationOnce(() => {});
     jest.spyOn(EventuallyQueue, 'poll').mockImplementationOnce(() => {});
     Parse.initialize('A', 'B');

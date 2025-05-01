@@ -343,7 +343,7 @@ const config: Config & Record<string, any> = {
   SERVER_AUTH_TOKEN: null,
   LIVEQUERY_SERVER_URL: null,
   ENCRYPTED_KEY: null,
-  VERSION: 'js' + require('../package.json').version,
+  VERSION: 'js' + process.env.npm_package_version,
   APPLICATION_ID: null,
   JAVASCRIPT_KEY: null,
   MAINTENANCE_KEY: null,

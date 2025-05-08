@@ -40,7 +40,7 @@ describe('ParseServer', () => {
 
   it('can forward redirect', async () => {
     const serverURL = Parse.serverURL;
-    http.createServer(function(_, res) {
+    const redirectServer = http.createServer(function(_, res) {
       res.writeHead(301, { Location: serverURL });
       res.end();
     }).listen(8080);
@@ -52,5 +52,6 @@ describe('ParseServer', () => {
     expect(result.id).toBe(object.id);
     expect(result.get('foo')).toBe('bar');
     Parse.serverURL = serverURL;
+    redirectServer.close();
   });
 });

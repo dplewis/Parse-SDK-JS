@@ -54,11 +54,14 @@ if (typeof XDomainRequest !== 'undefined' && !('withCredentials' in new XMLHttpR
   useXDomainRequest = true;
 }
 
-function getPath(url: string, path: string) {
-  if (url[url.length - 1] !== '/') {
-    url += '/';
+function getPath(base: string, pathname: string) {
+  if (base.endsWith('/')) {
+    base = base.slice(0, -1);
   }
-  return url + path;
+  if (!pathname.startsWith('/')) {
+    pathname = '/' + pathname;
+  }
+  return base + pathname;
 }
 
 function ajaxIE9(method: string, url: string, data: any, _headers?: any, options?: FullOptions) {
@@ -203,7 +206,7 @@ const RESTController = {
             status,
             location,
             method: status === 303 ? 'GET' : method,
-            body: status === 303 ? null : data,
+            dropBody: status === 303,
           });
         } else if (status >= 500 || status === 0) {
           // retry on 5XX or library error
@@ -315,8 +318,21 @@ const RESTController = {
         const payloadString = JSON.stringify(payload);
         return RESTController.ajax(method, url, payloadString, {}, options).then(async (result) => {
           if (result.location) {
-            const newURL = getPath(result.location, path);
-            result = await RESTController.ajax(result.method, newURL, result.body, {}, options);
+            let newURL = getPath(result.location, path);
+            let newMethod = result.method;
+            let newBody = result.dropBody ? undefined : payloadString;
+
+            // Follow up to 5 redirects to avoid loops
+            for (let i = 0; i < 5; i += 1) {
+              const r = await RESTController.ajax(newMethod, newURL, newBody, {}, options);
+              if (!r.location) {
+                result = r;
+                break;
+              }
+              newURL = getPath(r.location, path);
+              newMethod = r.method;
+              newBody = r.dropBody ? undefined : payloadString;
+            }
           }
           const { response, status, headers } = result;
           if (options.returnStatus) {

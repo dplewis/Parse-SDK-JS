@@ -39,11 +39,11 @@ describe('ParseServer', () => {
   });
 
   it('can forward redirect', async () => {
+    const serverURL = Parse.serverURL;
     http.createServer(function(_, res) {
-      res.writeHead(301, { Location: 'http://localhost:1337/parse' });
+      res.writeHead(301, { Location: serverURL });
       res.end();
     }).listen(8080);
-    const serverURL = Parse.serverURL;
     Parse.CoreManager.set('SERVER_URL', 'http://localhost:8080/api');
     const object = new TestObject({ foo: 'bar' });
     await object.save();

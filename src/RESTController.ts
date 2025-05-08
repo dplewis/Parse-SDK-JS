@@ -197,9 +197,14 @@ const RESTController = {
         } else if (status >= 400 && status < 500) {
           const error = await response.json();
           promise.reject(error);
-        } else if (status === 301 || status === 302 || status === 303 || status === 307) {
+        } else if ([301, 302, 303, 307, 308].includes(status)) {
           const location = response.headers.get('location');
-          promise.resolve({ status, location, method: status === 303 ? 'GET' : method });
+          promise.resolve({
+            status,
+            location,
+            method: status === 303 ? 'GET' : method,
+            body: status === 303 ? null : data,
+          });
         } else if (status >= 500 || status === 0) {
           // retry on 5XX or library error
           if (++attempts < CoreManager.get('REQUEST_ATTEMPT_LIMIT')) {
@@ -311,7 +316,7 @@ const RESTController = {
         return RESTController.ajax(method, url, payloadString, {}, options).then(async (result) => {
           if (result.location) {
             const newURL = getPath(result.location, path);
-            result = await RESTController.ajax(result.method, newURL, payloadString, {}, options);
+            result = await RESTController.ajax(result.method, newURL, result.body, {}, options);
           }
           const { response, status, headers } = result;
           if (options.returnStatus) {

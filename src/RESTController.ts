@@ -54,6 +54,13 @@ if (typeof XDomainRequest !== 'undefined' && !('withCredentials' in new XMLHttpR
   useXDomainRequest = true;
 }
 
+function getPath(url: string, path: string) {
+  if (url[url.length - 1] !== '/') {
+    url += '/';
+  }
+  return url + path;
+}
+
 function ajaxIE9(method: string, url: string, data: any, _headers?: any, options?: FullOptions) {
   return new Promise((resolve, reject) => {
     // @ts-ignore
@@ -140,6 +147,7 @@ const RESTController = {
           method,
           headers,
           signal,
+          redirect: 'manual',
         };
         if (data) {
           fetchOptions.body = data;
@@ -189,6 +197,9 @@ const RESTController = {
         } else if (status >= 400 && status < 500) {
           const error = await response.json();
           promise.reject(error);
+        } else if (status === 301 || status === 302 || status === 303 || status === 307) {
+          const location = response.headers.get('location');
+          promise.resolve({ status, location, method: status === 303 ? 'GET' : method });
         } else if (status >= 500 || status === 0) {
           // retry on 5XX or library error
           if (++attempts < CoreManager.get('REQUEST_ATTEMPT_LIMIT')) {
@@ -221,12 +232,7 @@ const RESTController = {
 
   request(method: string, path: string, data: any, options?: RequestOptions) {
     options = options || {};
-    let url = CoreManager.get('SERVER_URL');
-    if (url[url.length - 1] !== '/') {
-      url += '/';
-    }
-    url += path;
-
+    const url = getPath(CoreManager.get('SERVER_URL'), path);
     const payload: Partial<PayloadType> = {};
     if (data && typeof data === 'object') {
       for (const k in data) {
@@ -302,15 +308,18 @@ const RESTController = {
         }
 
         const payloadString = JSON.stringify(payload);
-        return RESTController.ajax(method, url, payloadString, {}, options).then(
-          ({ response, status, headers }) => {
-            if (options.returnStatus) {
-              return { ...response, _status: status, _headers: headers };
-            } else {
-              return response;
-            }
+        return RESTController.ajax(method, url, payloadString, {}, options).then(async (result) => {
+          if (result.location) {
+            const newURL = getPath(result.location, path);
+            result = await RESTController.ajax(result.method, newURL, payloadString, {}, options);
           }
-        );
+          const { response, status, headers } = result;
+          if (options.returnStatus) {
+            return { ...response, _status: status, _headers: headers };
+          } else {
+            return response;
+          }
+        });
       })
       .catch(RESTController.handleError);
   },

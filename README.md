@@ -30,7 +30,7 @@ A library that gives you access to the powerful Parse Server backend from your J
 - [Getting Started](#getting-started)
   - [Using Parse on Different Platforms](#using-parse-on-different-platforms)
     - [Core Manager](#core-manager)
-    = [Encrypt Local Storage](#encrypt-local-storage)
+    - [Encrypt Local Storage](#encrypt-local-storage)
 - [3rd Party Authentications](#3rd-party-authentications)
   - [Experimenting](#experimenting)
 - [Contributing](#contributing)
@@ -125,7 +125,7 @@ such as logged in `Parse.User`.
 Parse.secret = 'MY_SECRET_KEY'; // or Parse.CoreManager.set('ENCRYPTED_KEY', 'MY_SECRET_KEY');
 ```
 
-The SDK has built-in encryption using the [Web Crypto API][webcrypto]. If your platform doesn't have Web Crypto support yet like react-native you will need to [polyfill](react-native-webview-crypto) Web Crypto.
+The SDK has built-in encryption using the [Web Crypto API][webcrypto]. If your platform doesn't have Web Crypto support yet like react-native you will need to [polyfill][react-native-webview-crypto] Web Crypto.
 
 We recommend creating your own [CryptoController][crypto-controller].
 
@@ -172,5 +172,4 @@ We really want Parse to be yours, to see it grow and thrive in the open source c
 [link-with]: https://docs.parseplatform.org/js/guide/#linking-users
 [open-collective-link]: https://opencollective.com/parse-server
 [react-native-webview-crypto]: https://www.npmjs.com/package/react-native-webview-crypto
-[types-parse]: https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/parse
 [webcrypto]: https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API

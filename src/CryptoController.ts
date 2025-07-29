@@ -12,10 +12,20 @@ if (typeof window !== 'undefined' && window.crypto && process.env.PARSE_BUILD !=
   decoder = new TextDecoder();
 }
 
-const bufferToBase64 = buff =>
-  btoa(new Uint8Array(buff).reduce((data, byte) => data + String.fromCharCode(byte), ''));
-
-const base64ToBuffer = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(null));
+const bufferToBase64 = buff => {
+  if (typeof window !== 'undefined') {
+    return btoa(String.fromCharCode(...new Uint8Array(buff)));
+  } else {
+    return Buffer.from(buff).toString('base64');
+  }
+};
+const base64ToBuffer = b64 => {
+  if (typeof window !== 'undefined') {
+    return Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  } else {
+    return new Uint8Array(Buffer.from(b64, 'base64'));
+  }
+};
 
 const importKey = async key =>
   webcrypto.subtle.importKey('raw', encoder.encode(key), 'PBKDF2', false, ['deriveKey']);

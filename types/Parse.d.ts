@@ -235,7 +235,7 @@ declare const Parse: {
     Hooks: any;
     Parse: any;
     /**
-     * @member {EventuallyQueue} Parse.EventuallyQueue
+     * @property {EventuallyQueue} Parse.EventuallyQueue
      * @static
      */
     EventuallyQueue: EventuallyQueue;
@@ -274,47 +274,37 @@ declare const Parse: {
      */
     getServerHealth(): Promise<any>;
     /**
-     * @member {string} Parse.applicationId
+     * @property {string} Parse.applicationId
      * @static
      */
     applicationId: any;
     /**
-     * @member {string} Parse.javaScriptKey
+     * @property {string} Parse.javaScriptKey
      * @static
      */
     javaScriptKey: any;
     /**
-     * @member {string} Parse.masterKey
+     * @property {string} Parse.masterKey
      * @static
      */
     masterKey: any;
     /**
-     * @member {string} Parse.maintenanceKey
+     * @property {string} Parse.maintenanceKey
      * @static
      */
     maintenanceKey: any;
     /**
-     * @member {string} Parse.serverURL
+     * @property {string} Parse.serverURL
      * @static
      */
     serverURL: any;
     /**
-     * @member {string} Parse.serverAuthToken
-     * @static
-     */
-    serverAuthToken: any;
-    /**
-     * @member {string} Parse.serverAuthType
-     * @static
-     */
-    serverAuthType: any;
-    /**
-     * @member {ParseLiveQuery} Parse.LiveQuery
+     * @property {ParseLiveQuery} Parse.LiveQuery
      * @static
      */
     LiveQuery: ParseLiveQuery;
     /**
-     * @member {string} Parse.liveQueryServerURL
+     * @property {string} Parse.liveQueryServerURL
      * @static
      */
     liveQueryServerURL: any;
@@ -324,15 +314,31 @@ declare const Parse: {
      */
     secret: any;
     /**
-     * @member {boolean} Parse.idempotency
+     * @property {boolean} Parse.idempotency
      * @static
      */
     idempotency: any;
     /**
-     * @member {boolean} Parse.allowCustomObjectId
+     * @property {boolean} Parse.allowCustomObjectId
      * @static
      */
     allowCustomObjectId: any;
+    /**
+     * Setting this property to `true` enables enhanced logging for `Parse.Object`
+     * in Node.js environments. Specifically, it will log:
+     *
+     * ```
+     * ParseObject: className: <CLASS_NAME>, id: <OBJECT_ID>
+     * Attributes: <OBJECT_ATTRIBUTES>
+     * ```
+     *
+     * @warning This should not be enabled in production environments as this may
+     * expose sensitive information in server logs.
+     *
+     * @property {boolean} Parse.nodeLogging
+     * @static
+     */
+    nodeLogging: any;
     _request(...args: any[]): any;
     _ajax(...args: any[]): any;
     _decode(_: any, value: any): any;

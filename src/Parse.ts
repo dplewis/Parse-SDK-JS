@@ -77,7 +77,7 @@ const Parse = {
   Parse: undefined,
 
   /**
-   * @member {EventuallyQueue} Parse.EventuallyQueue
+   * @property {EventuallyQueue} Parse.EventuallyQueue
    * @static
    */
   set EventuallyQueue(queue: EventuallyQueue) {
@@ -172,7 +172,7 @@ const Parse = {
   },
 
   /**
-   * @member {string} Parse.applicationId
+   * @property {string} Parse.applicationId
    * @static
    */
   set applicationId(value) {
@@ -183,7 +183,7 @@ const Parse = {
   },
 
   /**
-   * @member {string} Parse.javaScriptKey
+   * @property {string} Parse.javaScriptKey
    * @static
    */
   set javaScriptKey(value) {
@@ -194,7 +194,7 @@ const Parse = {
   },
 
   /**
-   * @member {string} Parse.masterKey
+   * @property {string} Parse.masterKey
    * @static
    */
   set masterKey(value) {
@@ -205,7 +205,7 @@ const Parse = {
   },
 
   /**
-   * @member {string} Parse.maintenanceKey
+   * @property {string} Parse.maintenanceKey
    * @static
    */
   set maintenanceKey(value) {
@@ -216,7 +216,7 @@ const Parse = {
   },
 
   /**
-   * @member {string} Parse.serverURL
+   * @property {string} Parse.serverURL
    * @static
    */
   set serverURL(value) {
@@ -227,29 +227,7 @@ const Parse = {
   },
 
   /**
-   * @member {string} Parse.serverAuthToken
-   * @static
-   */
-  set serverAuthToken(value) {
-    CoreManager.set('SERVER_AUTH_TOKEN', value);
-  },
-  get serverAuthToken() {
-    return CoreManager.get('SERVER_AUTH_TOKEN');
-  },
-
-  /**
-   * @member {string} Parse.serverAuthType
-   * @static
-   */
-  set serverAuthType(value) {
-    CoreManager.set('SERVER_AUTH_TYPE', value);
-  },
-  get serverAuthType() {
-    return CoreManager.get('SERVER_AUTH_TYPE');
-  },
-
-  /**
-   * @member {ParseLiveQuery} Parse.LiveQuery
+   * @property {ParseLiveQuery} Parse.LiveQuery
    * @static
    */
   set LiveQuery(liveQuery: ParseLiveQuery) {
@@ -260,7 +238,7 @@ const Parse = {
   },
 
   /**
-   * @member {string} Parse.liveQueryServerURL
+   * @property {string} Parse.liveQueryServerURL
    * @static
    */
   set liveQueryServerURL(value) {
@@ -282,7 +260,7 @@ const Parse = {
   },
 
   /**
-   * @member {boolean} Parse.idempotency
+   * @property {boolean} Parse.idempotency
    * @static
    */
   set idempotency(value) {
@@ -293,7 +271,7 @@ const Parse = {
   },
 
   /**
-   * @member {boolean} Parse.allowCustomObjectId
+   * @property {boolean} Parse.allowCustomObjectId
    * @static
    */
   set allowCustomObjectId(value) {
@@ -301,6 +279,28 @@ const Parse = {
   },
   get allowCustomObjectId() {
     return CoreManager.get('ALLOW_CUSTOM_OBJECT_ID');
+  },
+
+  /**
+   * Setting this property to `true` enables enhanced logging for `Parse.Object`
+   * in Node.js environments. Specifically, it will log:
+   *
+   * ```
+   * ParseObject: className: <CLASS_NAME>, id: <OBJECT_ID>
+   * Attributes: <OBJECT_ATTRIBUTES>
+   * ```
+   *
+   * @warning This should not be enabled in production environments as this may
+   * expose sensitive information in server logs.
+   *
+   * @property {boolean} Parse.nodeLogging
+   * @static
+   */
+  set nodeLogging(value) {
+    CoreManager.set('NODE_LOGGING', value);
+  },
+  get nodeLogging() {
+    return CoreManager.get('NODE_LOGGING');
   },
 
   _request(...args) {
@@ -376,15 +376,16 @@ CoreManager.setRESTController(RESTController);
 
 if (process.env.PARSE_BUILD === 'node') {
   Parse.initialize = Parse._initialize;
-  Parse.Cloud = Parse.Cloud || ({} as any);
+  Parse.Cloud = { ...(Parse.Cloud || ({} as any)) };
   (Parse.Cloud as any).useMasterKey = function () {
     CoreManager.set('USE_MASTER_KEY', true);
   };
   Parse.Hooks = Hooks;
 }
-
+if (process.env.PARSE_BUILD === 'browser') {
+  (globalThis as any).Parse = Parse;
+}
 // For legacy requires, of the form `var Parse = require('parse').Parse`
 Parse.Parse = Parse;
 
-module.exports = Parse;
 export default Parse;

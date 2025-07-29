@@ -23,6 +23,7 @@ export type FileSource = {
     uri: string;
     type: string | undefined;
 };
+export declare function b64Digit(number: number): string;
 /**
  * A Parse.File is a local representation of a file that is saved to the Parse
  * cloud.
@@ -44,7 +45,7 @@ declare class ParseFile {
      *     an alphanumeric character, and consist of alphanumeric characters,
      *     periods, spaces, underscores, or dashes.
      * @param data {Array} The data for the file, as either:
-     *     1. an Array of byte value Numbers, or
+     *     1. an Array of byte value Numbers or Uint8Array.
      *     2. an Object like { base64: "..." } with a base64-encoded String.
      *     3. an Object like { uri: "..." } with a uri String.
      *     4. a File object selected with a file upload control. (3) only works
@@ -74,9 +75,23 @@ declare class ParseFile {
      * Data is present if initialized with Byte Array, Base64 or Saved with Uri.
      * Data is cleared if saved with File object selected with a file upload control
      *
+     * @param {object} options
+     * @param {function} [options.progress] callback for download progress
+     * <pre>
+     * const parseFile = new Parse.File(name, file);
+     * parseFile.getData({
+     *   progress: (progressValue, loaded, total) => {
+     *     if (progressValue !== null) {
+     *       // Update the UI using progressValue
+     *     }
+     *   }
+     * });
+     * </pre>
      * @returns {Promise} Promise that is resolve with base64 data
      */
-    getData(): Promise<string>;
+    getData(options?: {
+        progress?: () => void;
+    }): Promise<string>;
     /**
      * Gets the name of the file. Before save is called, this is the filename
      * given by the user. After save is called, that name gets prefixed with a
@@ -117,12 +132,12 @@ declare class ParseFile {
      *     be used for this request.
      *   <li>sessionToken: A valid session token, used for making a request on
      *     behalf of a specific user.
-     *   <li>progress: In Browser only, callback for upload progress. For example:
+     *   <li>progress: callback for upload progress. For example:
      * <pre>
      * let parseFile = new Parse.File(name, file);
      * parseFile.save({
-     *   progress: (progressValue, loaded, total, { type }) => {
-     *     if (type === "upload" && progressValue !== null) {
+     *   progress: (progressValue, loaded, total) => {
+     *     if (progressValue !== null) {
      *       // Update the UI using progressValue
      *     }
      *   }

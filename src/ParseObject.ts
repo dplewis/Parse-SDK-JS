@@ -186,6 +186,13 @@ class ParseObject<T extends Attributes = Attributes> {
         throw new Error("Can't create an invalid Parse Object");
       }
     }
+    if (CoreManager.get('NODE_LOGGING')) {
+      this[Symbol.for('nodejs.util.inspect.custom')] = function () {
+        return `ParseObject: className: ${this.className}, id: ${
+          this.id
+        }\nAttributes: ${JSON.stringify(this.attributes, null, 2)}`;
+      };
+    }
   }
 
   /**
@@ -507,6 +514,9 @@ class ParseObject<T extends Attributes = Attributes> {
 
   static _getRequestOptions(options: RequestOptions & FullOptions & { json?: boolean } = {}) {
     const requestOptions: RequestOptions & FullOptions & { json?: boolean } = {};
+    if (Object.prototype.toString.call(options) !== '[object Object]') {
+      throw new Error('request options must be of type Object');
+    }
     const { hasOwn } = Object;
     if (hasOwn(options, 'useMasterKey')) {
       requestOptions.useMasterKey = !!options.useMasterKey;
@@ -1012,7 +1022,7 @@ class ParseObject<T extends Attributes = Attributes> {
    */
   op<K extends AttributeKey<T>>(attr: K): Op | undefined {
     const pending = this._getPendingOps();
-    for (let i = pending.length; i--;) {
+    for (let i = 0; i < pending.length; i += 1) {
       if (pending[i][attr]) {
         return pending[i][attr];
       }
@@ -2552,7 +2562,6 @@ const DefaultController = {
                     const status = responses[index]._status;
                     delete responses[index]._status;
                     delete responses[index]._headers;
-                    delete responses[index]._xhr;
                     mapIdForPin[objectId] = obj._localId;
                     obj._handleSaveResponse(responses[index].success, status);
                   } else {
@@ -2620,7 +2629,6 @@ const DefaultController = {
             const status = response._status;
             delete response._status;
             delete response._headers;
-            delete response._xhr;
             targetCopy._handleSaveResponse(response, status);
           },
           error => {

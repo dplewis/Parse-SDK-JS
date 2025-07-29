@@ -17,7 +17,7 @@ global.indexedDB = require('./test_helpers/mockIndexedDB');
 const CoreManager = require('../CoreManager').default;
 const ParseLiveQuery = require('../ParseLiveQuery').default;
 const EventuallyQueue = require('../EventuallyQueue');
-const Parse = require('../Parse');
+const Parse = require('../Parse').default;
 
 CoreManager.setEventEmitter(require('events').EventEmitter);
 
@@ -70,16 +70,6 @@ describe('Parse module', () => {
     Parse.liveQueryServerURL = 'https://example.com';
     expect(CoreManager.get('LIVEQUERY_SERVER_URL')).toBe('https://example.com');
     expect(Parse.liveQueryServerURL).toBe('https://example.com');
-  });
-
-  it('can set auth type and token', () => {
-    Parse.serverAuthType = 'bearer';
-    expect(CoreManager.get('SERVER_AUTH_TYPE')).toBe('bearer');
-    expect(Parse.serverAuthType).toBe('bearer');
-
-    Parse.serverAuthToken = 'some_token';
-    expect(CoreManager.get('SERVER_AUTH_TOKEN')).toBe('some_token');
-    expect(Parse.serverAuthToken).toBe('some_token');
   });
 
   it('can set idempotency', () => {
@@ -199,6 +189,13 @@ describe('Parse module', () => {
     Parse.allowCustomObjectId = false;
   });
 
+  it('can set nodeLogging', () => {
+    expect(Parse.nodeLogging).toBe(false);
+    Parse.nodeLogging = true;
+    expect(CoreManager.get('NODE_LOGGING')).toBe(true);
+    Parse.nodeLogging = false;
+  });
+
   it('getServerHealth', () => {
     const controller = {
       request: jest.fn(),
@@ -258,7 +255,7 @@ describe('Parse module', () => {
       jest.spyOn(console, 'log').mockImplementationOnce(() => {});
       expect(Parse.IndexedDB).toBeUndefined();
       process.env.PARSE_BUILD = 'browser';
-      const ParseInstance = require('../Parse');
+      const ParseInstance = require('../Parse').default;
       ParseInstance.initialize('test', 'test');
       expect(ParseInstance.IndexedDB).toBeDefined();
       CoreManager.setStorageController(ParseInstance.IndexedDB);

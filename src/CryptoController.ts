@@ -63,14 +63,21 @@ const CryptoController = {
   },
 
   async decrypt(encryptedJSON: string, parseSecret: any): Promise<string> {
-    const buffer = base64ToBuffer(encryptedJSON);
-    const salt = buffer.slice(0, 16);
-    const iv = buffer.slice(16, 16 + 12);
-    const data = buffer.slice(16 + 12);
-    const key = await importKey(parseSecret);
-    const aesKey = await deriveKey(key, salt, ['decrypt']);
-    const decrypted = await webcrypto.subtle.decrypt({ name: 'AES-GCM', iv }, aesKey, data);
-    return decoder.decode(decrypted);
+    try {
+      const buffer = base64ToBuffer(encryptedJSON);
+      if (buffer.length < 28) { // minimum: 16 salt + 12 IV
+        throw new Error('Invalid encrypted data format');
+      }
+      const salt = buffer.slice(0, 16);
+      const iv = buffer.slice(16, 16 + 12);
+      const data = buffer.slice(16 + 12);
+      const key = await importKey(parseSecret);
+      const aesKey = await deriveKey(key, salt, ['decrypt']);
+      const decrypted = await webcrypto.subtle.decrypt({ name: 'AES-GCM', iv }, aesKey, data);
+      return decoder.decode(decrypted);
+    } catch (error) {
+      throw new Error(`Decryption failed: ${error.message}`);
+    }
   },
 };
 

@@ -1,3 +1,10 @@
+## [7.0.2-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.0.1...7.0.2-alpha.1) (2025-10-25)
+
+
+### Bug Fixes
+
+* `Parse.Query` throws error when no response header ([#2754](https://github.com/parse-community/Parse-SDK-JS/issues/2754)) ([492de3e](https://github.com/parse-community/Parse-SDK-JS/commit/492de3e2da705bf1845e1ef68181689fd3a378a5))
+
 ## [7.0.1-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.0.0...7.0.1-alpha.1) (2025-10-15)
 
 

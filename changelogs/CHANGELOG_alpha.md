@@ -1,3 +1,10 @@
+# [7.1.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.0.2...7.1.0-alpha.1) (2025-12-01)
+
+
+### Features
+
+* Add Node 24 support ([#2808](https://github.com/parse-community/Parse-SDK-JS/issues/2808)) ([2794b73](https://github.com/parse-community/Parse-SDK-JS/commit/2794b73929c6d8b4876ed7a83eeda4e3d041b118))
+
 ## [7.0.2-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.0.1...7.0.2-alpha.1) (2025-10-25)
 
 

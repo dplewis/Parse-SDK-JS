@@ -1,3 +1,10 @@
+## [7.1.1-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.1.0...7.1.1-alpha.1) (2025-12-01)
+
+
+### Performance Improvements
+
+* Replace `uuid` dependency with native `crypto.randomUUID()` API ([#2810](https://github.com/parse-community/Parse-SDK-JS/issues/2810)) ([e06b8a7](https://github.com/parse-community/Parse-SDK-JS/commit/e06b8a728de36e14de92233366a324a01f38266c))
+
 # [7.1.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.0.2...7.1.0-alpha.1) (2025-12-01)
 
 

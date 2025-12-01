@@ -14,8 +14,11 @@ if (process.env.PARSE_BUILD === 'weapp') {
     s[8] = s[13] = s[18] = s[23] = '-';
     return s.join('');
   };
+} else if (process.env.PARSE_BUILD === 'browser') {
+  // Use native crypto.randomUUID() from the Web Crypto API in browsers
+  uuid = () => globalThis.crypto.randomUUID();
 } else {
-  // Use crypto.randomUUID() for Node, React Native, and browser builds
+  // Use Node.js crypto.randomUUID() for Node and React Native builds
   uuid = require('crypto').randomUUID;
 }
 

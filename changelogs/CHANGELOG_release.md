@@ -1,3 +1,10 @@
+## [7.1.2](https://github.com/parse-community/Parse-SDK-JS/compare/7.1.1...7.1.2) (2025-12-01)
+
+
+### Bug Fixes
+
+* Missing dependencies in transpiled browser code ([#2812](https://github.com/parse-community/Parse-SDK-JS/issues/2812)) ([c7359bb](https://github.com/parse-community/Parse-SDK-JS/commit/c7359bbfcd40000a4a8df0626ee5237437270b44))
+
 ## [7.1.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.1.0...7.1.1) (2025-12-01)
 
 

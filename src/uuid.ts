@@ -14,13 +14,9 @@ if (process.env.PARSE_BUILD === 'weapp') {
     s[8] = s[13] = s[18] = s[23] = '-';
     return s.join('');
   };
-} else if (process.env.PARSE_BUILD === 'node' || process.env.PARSE_BUILD === 'react-native') {
-  // Use Node.js built-in crypto.randomUUID() for Node and React Native builds
-  // React Native tests run in Node.js environment, and uuid v13 is ESM-only
-  uuid = require('crypto').randomUUID;
 } else {
-  // Use uuid package for browser builds
-  uuid = require('uuid').v4;
+  // Use crypto.randomUUID() for Node, React Native, and browser builds
+  uuid = require('crypto').randomUUID;
 }
 
 export default uuid;

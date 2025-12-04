@@ -1,3 +1,10 @@
+## [7.1.3-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.1.2...7.1.3-alpha.1) (2025-12-04)
+
+
+### Bug Fixes
+
+* Security upgrade jws ([#2822](https://github.com/parse-community/Parse-SDK-JS/issues/2822)) ([7d38c06](https://github.com/parse-community/Parse-SDK-JS/commit/7d38c068a275cfde3bbde9a8a0572bb41c78667f))
+
 ## [7.1.2-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.1.1...7.1.2-alpha.1) (2025-12-01)
 
 

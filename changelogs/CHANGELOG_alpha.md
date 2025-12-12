@@ -1,3 +1,15 @@
+# [8.0.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.1.3-alpha.1...8.0.0-alpha.1) (2025-12-12)
+
+
+### Code Refactoring
+
+* Bump vite from 6.4.1 to 7.2.4 ([#2829](https://github.com/parse-community/Parse-SDK-JS/issues/2829)) ([edec316](https://github.com/parse-community/Parse-SDK-JS/commit/edec3168905ff4c52696029743aac2fa82df412a))
+
+
+### BREAKING CHANGES
+
+* This release increases the minimum required Node versions to `20.19.0`, `22.12.0`, and removes support for Node `18.x`, `19.x`. ([edec316](edec316))
+
 ## [7.1.3-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.1.2...7.1.3-alpha.1) (2025-12-04)
 
 

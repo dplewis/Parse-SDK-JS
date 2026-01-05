@@ -1,3 +1,10 @@
+## [8.0.1-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.0...8.0.1-alpha.1) (2026-01-05)
+
+
+### Bug Fixes
+
+* TypeScript type resolution errors for `parse/node` and `parse/react-native` subpaths ([#2849](https://github.com/parse-community/Parse-SDK-JS/issues/2849)) ([de684e5](https://github.com/parse-community/Parse-SDK-JS/commit/de684e5f84ea2cfce0cce13d995cea3134b119ac))
+
 # [8.0.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/7.1.3-alpha.1...8.0.0-alpha.1) (2025-12-12)
 
 

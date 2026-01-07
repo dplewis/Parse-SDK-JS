@@ -904,7 +904,6 @@ async function test_cancel_query() {
   query.cancel();
 }
 
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents -- object is intentionally included for testing Exclude<FieldType, object>. */
 type FieldType =
   | string
   | number
@@ -917,7 +916,7 @@ type FieldType =
   | Parse.Pointer
   | Parse.Polygon
   | Parse.Relation;
-/* eslint-enable @typescript-eslint/no-redundant-type-constituents */
+
 async function test_schema(
   anyField: FieldType,
   notString: Exclude<FieldType, string>,
@@ -2046,8 +2045,11 @@ function testQuery() {
     // $ExpectType ParseObject<Attributes>
     await queryUntyped.get('objectId');
 
-    // $ExpectType ParseObject<Attributes>[]
+    // $ExpectType ParseObject<Attributes>[] | { results: ParseObject<Attributes>[]; count: number; }
     await queryUntyped.find();
+
+    // $ExpectType ParseObject<Attributes>[] | { results: ParseObject<Attributes>[]; count: number; }
+    await queryUntyped.findAll();
 
     // $ExpectType string[]
     await queryTyped.distinct('example');
@@ -2058,7 +2060,7 @@ function testQuery() {
     // $ExpectType ParseObject<{ example: string; }>
     await queryTyped.get('objectId');
 
-    // $ExpectType ParseObject<{ example: string; }>[]
+    // $ExpectType ParseObject<{ example: string; }>[] | { results: ParseObject<{ example: string; }>[]; count: number; }
     await queryTyped.find();
 
     // $ExpectType ParseObject<{ example: string; }> | undefined

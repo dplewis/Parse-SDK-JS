@@ -76,7 +76,7 @@ declare const AnonymousUtils: {
         getAuthType(): string;
         getAuthData(): {
             authData: {
-                id: `${string}-${string}-${string}-${string}-${string}`;
+                id: string;
             };
         };
     };

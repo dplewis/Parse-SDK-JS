@@ -1,2 +1,2 @@
-declare const uuid: () => `${string}-${string}-${string}-${string}-${string}`;
+declare const uuid: () => string;
 export default uuid;

@@ -1,4 +1,4 @@
-const uuid = () => {
+const uuid = (): string => {
   if (typeof crypto === 'undefined' || typeof crypto.randomUUID !== 'function') {
     throw new Error(
       'crypto.randomUUID is not available. ' +

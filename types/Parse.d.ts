@@ -33,7 +33,7 @@ declare const Parse: {
             getAuthType(): string;
             getAuthData(): {
                 authData: {
-                    id: `${string}-${string}-${string}-${string}-${string}`;
+                    id: string;
                 };
             };
         };

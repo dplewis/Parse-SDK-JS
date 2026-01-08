@@ -161,4 +161,17 @@ describe('Browser', () => {
     expect(uuid2).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
     expect(uuid1).not.toEqual(uuid2);
   });
+
+  it('throw error if randomUUID is not available', () => {
+    const tmp = global.crypto;
+    delete global.crypto;
+    try {
+      const uuidv4 = require('../uuid').default;
+      uuidv4();
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e.message).toBe('crypto.randomUUID is not available. For React Native, import "react-native-random-uuid"');
+    }
+    global.crypto = tmp;
+  });
 });

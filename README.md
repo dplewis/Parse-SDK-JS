@@ -94,9 +94,6 @@ const Parse = require('parse/react-native.js');
 // On React Native >= 0.50 and Parse >= 1.11.0, set the Async
 const AsyncStorage = require('@react-native-async-storage/async-storage');
 Parse.setAsyncStorage(AsyncStorage);
-
-// On Parse > 8.0.0 Polyfill crypto.randomUUID
-import 'react-native-random-uuid';
 ```
 
 For WeChat miniprogram, include `'parse/weapp'`:

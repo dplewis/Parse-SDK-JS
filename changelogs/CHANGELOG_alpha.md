@@ -1,3 +1,10 @@
+## [8.0.2-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.1...8.0.2-alpha.1) (2026-01-24)
+
+
+### Bug Fixes
+
+* Add server-side Cloud Code types for parse/node ([#2855](https://github.com/parse-community/Parse-SDK-JS/issues/2855)) ([98626b6](https://github.com/parse-community/Parse-SDK-JS/commit/98626b6003d2576825d149bfd505a5af66406c2c))
+
 ## [8.0.1-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.0...8.0.1-alpha.1) (2026-01-05)
 
 

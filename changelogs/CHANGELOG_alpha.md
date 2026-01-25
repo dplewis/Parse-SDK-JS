@@ -1,3 +1,10 @@
+## [8.0.2-alpha.2](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.2-alpha.1...8.0.2-alpha.2) (2026-01-25)
+
+
+### Bug Fixes
+
+* Missing export fields cause module resolution errors when used as Parse Server dependency ([#2882](https://github.com/parse-community/Parse-SDK-JS/issues/2882)) ([85877dc](https://github.com/parse-community/Parse-SDK-JS/commit/85877dc78980e31791e45e834e5f3e4f65f280d3))
+
 ## [8.0.2-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.1...8.0.2-alpha.1) (2026-01-24)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "parse",
-  "version": "8.0.2-alpha.1",
+  "version": "8.0.2-alpha.2",
   "description": "Parse JavaScript SDK",
   "homepage": "https://parseplatform.org",
   "keywords": [
@@ -59,7 +59,7 @@
     },
     "./dist/*": "./dist/*",
     "./lib/*": "./lib/*",
-    "./lib/node/promiseUtils": "./lib/node/promiseUtils.js",          
+    "./lib/node/promiseUtils": "./lib/node/promiseUtils.js",
     "./lib/node/RESTController": "./lib/node/RESTController.js"
   },
   "browser": {

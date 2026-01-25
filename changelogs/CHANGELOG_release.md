@@ -1,3 +1,11 @@
+## [8.0.2](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.1...8.0.2) (2026-01-25)
+
+
+### Bug Fixes
+
+* Add server-side Cloud Code types for parse/node ([#2855](https://github.com/parse-community/Parse-SDK-JS/issues/2855)) ([98626b6](https://github.com/parse-community/Parse-SDK-JS/commit/98626b6003d2576825d149bfd505a5af66406c2c))
+* Missing export fields cause module resolution errors when used as Parse Server dependency ([#2882](https://github.com/parse-community/Parse-SDK-JS/issues/2882)) ([85877dc](https://github.com/parse-community/Parse-SDK-JS/commit/85877dc78980e31791e45e834e5f3e4f65f280d3))
+
 ## [8.0.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.0...8.0.1) (2026-01-15)
 
 

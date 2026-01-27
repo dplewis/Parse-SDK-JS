@@ -170,7 +170,7 @@ describe('Browser', () => {
       uuidv4();
       expect(true).toBe(false);
     } catch (e) {
-      expect(e.message).toBe('crypto.randomUUID is not available. For React Native, import "react-native-random-uuid"');
+      expect(e.message).toBe("crypto.randomUUID is not available in this environment. Use a UUID polyfill or environment-specific implementation (for example, in React Native you can import \"react-native-random-uuid\").");
     } finally {
       global.crypto = tmp;
     }

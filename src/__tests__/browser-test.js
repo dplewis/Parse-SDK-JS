@@ -171,7 +171,8 @@ describe('Browser', () => {
       expect(true).toBe(false);
     } catch (e) {
       expect(e.message).toBe('crypto.randomUUID is not available. For React Native, import "react-native-random-uuid"');
+    } finally {
+      global.crypto = tmp;
     }
-    global.crypto = tmp;
   });
 });

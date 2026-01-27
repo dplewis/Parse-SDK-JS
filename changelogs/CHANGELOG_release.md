@@ -1,3 +1,10 @@
+## [8.0.3](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.2...8.0.3) (2026-01-27)
+
+
+### Bug Fixes
+
+* Missing Node.js type signature for `Parse.initialize` with `masterKey`, `maintenanceKey` ([#2884](https://github.com/parse-community/Parse-SDK-JS/issues/2884)) ([ce8c907](https://github.com/parse-community/Parse-SDK-JS/commit/ce8c907d7f83c22a3c3bb13205f952e7ef37eca8))
+
 ## [8.0.2](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.1...8.0.2) (2026-01-25)
 
 

@@ -163,6 +163,7 @@ describe('Browser', () => {
   });
 
   it('throw error if randomUUID is not available', () => {
+    jest.resetModules();
     const tmp = global.crypto;
     delete global.crypto;
     try {

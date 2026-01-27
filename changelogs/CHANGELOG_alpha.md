@@ -1,3 +1,10 @@
+## [8.0.4-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.3...8.0.4-alpha.1) (2026-01-27)
+
+
+### Bug Fixes
+
+* `ws` package causes React-Native build failure ([#2857](https://github.com/parse-community/Parse-SDK-JS/issues/2857)) ([2b0b76b](https://github.com/parse-community/Parse-SDK-JS/commit/2b0b76b3d6fbd6ae236d3db6b92f4fbc2c98871f))
+
 ## [8.0.3-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.2...8.0.3-alpha.1) (2026-01-27)
 
 

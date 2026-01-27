@@ -166,14 +166,10 @@ describe('Browser', () => {
     jest.resetModules();
     const tmp = global.crypto;
     delete global.crypto;
-    try {
-      const uuidv4 = require('../uuid').default;
-      uuidv4();
-      expect(true).toBe(false);
-    } catch (e) {
-      expect(e.message).toBe("crypto.randomUUID is not available in this environment. Use a UUID polyfill or environment-specific implementation (for example, in React Native you can import \"react-native-random-uuid\").");
-    } finally {
-      global.crypto = tmp;
-    }
+    const uuidv4 = require('../uuid').default;
+    expect(() => uuidv4()).toThrow(
+      'crypto.randomUUID is not available in this environment. Use a UUID polyfill or environment-specific implementation (for example, in React Native you can import "react-native-random-uuid").'
+    );
+    global.crypto = tmp;
   });
 });

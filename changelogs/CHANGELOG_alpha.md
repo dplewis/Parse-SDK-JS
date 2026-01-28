@@ -1,3 +1,31 @@
+## [8.0.4-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.3...8.0.4-alpha.1) (2026-01-27)
+
+
+### Bug Fixes
+
+* `ws` package causes React-Native build failure ([#2857](https://github.com/parse-community/Parse-SDK-JS/issues/2857)) ([2b0b76b](https://github.com/parse-community/Parse-SDK-JS/commit/2b0b76b3d6fbd6ae236d3db6b92f4fbc2c98871f))
+
+## [8.0.3-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.2...8.0.3-alpha.1) (2026-01-27)
+
+
+### Bug Fixes
+
+* Missing Node.js type signature for `Parse.initialize` with `masterKey`, `maintenanceKey` ([#2884](https://github.com/parse-community/Parse-SDK-JS/issues/2884)) ([ce8c907](https://github.com/parse-community/Parse-SDK-JS/commit/ce8c907d7f83c22a3c3bb13205f952e7ef37eca8))
+
+## [8.0.2-alpha.2](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.2-alpha.1...8.0.2-alpha.2) (2026-01-25)
+
+
+### Bug Fixes
+
+* Missing export fields cause module resolution errors when used as Parse Server dependency ([#2882](https://github.com/parse-community/Parse-SDK-JS/issues/2882)) ([85877dc](https://github.com/parse-community/Parse-SDK-JS/commit/85877dc78980e31791e45e834e5f3e4f65f280d3))
+
+## [8.0.2-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.1...8.0.2-alpha.1) (2026-01-24)
+
+
+### Bug Fixes
+
+* Add server-side Cloud Code types for parse/node ([#2855](https://github.com/parse-community/Parse-SDK-JS/issues/2855)) ([98626b6](https://github.com/parse-community/Parse-SDK-JS/commit/98626b6003d2576825d149bfd505a5af66406c2c))
+
 ## [8.0.1-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.0...8.0.1-alpha.1) (2026-01-05)
 
 

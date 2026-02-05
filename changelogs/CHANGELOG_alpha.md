@@ -1,3 +1,10 @@
+# [8.1.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.4-alpha.1...8.1.0-alpha.1) (2026-02-05)
+
+
+### Features
+
+* Add `LiveQuerySubscription.find()` to execute a query based on a LiveQuery subscription ([#2735](https://github.com/parse-community/Parse-SDK-JS/issues/2735)) ([82b40da](https://github.com/parse-community/Parse-SDK-JS/commit/82b40da2096eeab7b0994eb6af51774e5a992b4e))
+
 ## [8.0.4-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.3...8.0.4-alpha.1) (2026-01-27)
 
 

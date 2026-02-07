@@ -633,6 +633,21 @@ async function test_cloud_functions() {
     }
   });
 
+  ParseNode.Cloud.beforeSave('MyCustomClass', (request): void => {
+    request.object;
+  });
+
+  // Tests to allow for Parse.Object subclasses with non-optional constructor params.
+  class ArgObject extends Parse.Object<{ a: string }> {
+    constructor(arg: { a: string }) {
+      super('ArgObject', arg);
+    }
+  }
+  ParseNode.Cloud.beforeSave(ArgObject, request => {
+    // $ExpectType ArgObject
+    request.object;
+  });
+
   ParseNode.Cloud.beforeFind('MyCustomClass', request => {
     request.query;
     request.user;

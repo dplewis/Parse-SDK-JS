@@ -1,3 +1,10 @@
+## [8.1.1-alpha.3](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.2...8.1.1-alpha.3) (2026-02-07)
+
+
+### Bug Fixes
+
+* Cloud trigger type errors for void returns and subclass constructors ([#2904](https://github.com/parse-community/Parse-SDK-JS/issues/2904)) ([de9f56d](https://github.com/parse-community/Parse-SDK-JS/commit/de9f56d77cca9d86c7035136834673cc0d1dfb17))
+
 ## [8.1.1-alpha.2](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.1...8.1.1-alpha.2) (2026-02-07)
 
 

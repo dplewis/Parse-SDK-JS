@@ -1,3 +1,14 @@
+# [8.1.0](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.3...8.1.0) (2026-02-05)
+
+
+### Bug Fixes
+
+* `ws` package causes React-Native build failure ([#2857](https://github.com/parse-community/Parse-SDK-JS/issues/2857)) ([2b0b76b](https://github.com/parse-community/Parse-SDK-JS/commit/2b0b76b3d6fbd6ae236d3db6b92f4fbc2c98871f))
+
+### Features
+
+* Add `LiveQuerySubscription.find()` to execute a query based on a LiveQuery subscription ([#2735](https://github.com/parse-community/Parse-SDK-JS/issues/2735)) ([82b40da](https://github.com/parse-community/Parse-SDK-JS/commit/82b40da2096eeab7b0994eb6af51774e5a992b4e))
+
 ## [8.0.3](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.2...8.0.3) (2026-01-27)
 
 

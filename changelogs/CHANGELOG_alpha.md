@@ -1,3 +1,10 @@
+## [8.1.1-alpha.6](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.5...8.1.1-alpha.6) (2026-02-11)
+
+
+### Bug Fixes
+
+* `Parse.serverURL` not accessible via global `Parse` scope ([#2917](https://github.com/parse-community/Parse-SDK-JS/issues/2917)) ([4e78681](https://github.com/parse-community/Parse-SDK-JS/commit/4e78681881320a0b8ec383955b47d693cb8add9c))
+
 ## [8.1.1-alpha.5](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.4...8.1.1-alpha.5) (2026-02-11)
 
 

@@ -1888,6 +1888,8 @@ function testQuery() {
       attribute2: number;
       attribute3: AnotherSubClass;
       attribute4: string[];
+      attribute5?: AnotherSubClass[];
+      attribute6?: string[];
     }> {}
     const query = new Parse.Query(MySubClass);
 
@@ -1997,6 +1999,22 @@ function testQuery() {
     // $ExpectType ParseQuery<MySubClass>
     query.equalTo('attribute4', ['a_string_value']);
 
+    
+    // Optional object[] (e.g. prop?: ClassName[] ): allow matching a single element (array contains object), and allow matching the full array
+    // $ExpectType ParseQuery<MySubClass>
+    query.equalTo('attribute5', new AnotherSubClass());
+    // $ExpectType ParseQuery<MySubClass>
+    query.equalTo('attribute5', [new AnotherSubClass()]);
+    // Since there is no `$ExpectNotError` thing, this line is instead used to at least prove that there is no regression for type safety for `Array of object` fields
+    // $ExpectError
+    query.equalTo('attribute5', new MySubClass());
+
+    // Optional string[] (e.g. prop?: string[] ): allow matching a single element (array contains string), and allow matching the full array
+    // $ExpectType ParseQuery<MySubClass>
+    query.equalTo('attribute6', 'a_string_value');
+    // $ExpectType ParseQuery<MySubClass>
+    query.equalTo('attribute6', ['a_string_value']);
+
     // $ExpectType ParseQuery<MySubClass>
     query.notEqualTo('attribute4', 'a_string_value');
     // $ExpectType ParseQuery<MySubClass>
@@ -2010,6 +2028,12 @@ function testQuery() {
     query.equalTo('attribute4', [5]);
     // $ExpectError
     query.notEqualTo('attribute4', [5]);
+
+    // Optional string[]: reject invalid element types
+    // $ExpectError
+    query.equalTo('attribute6', 5);
+    // $ExpectError
+    query.notEqualTo('attribute6', 5);
 
     // $ExpectType ParseQuery<MySubClass>
     query.exists('attribute1');

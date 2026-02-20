@@ -5,6 +5,15 @@ import ParseError from './ParseError';
 import { resolvingPromise } from './promiseUtils';
 import { polyfillFetch } from './Xhr.weapp';
 
+/** Base options for all Parse requests that go through _getRequestOptions */
+export interface BaseRequestOptions {
+  useMasterKey?: boolean;
+  useMaintenanceKey?: boolean;
+  sessionToken?: string;
+  installationId?: string;
+  context?: Record<string, unknown>;
+}
+
 export interface RequestOptions {
   useMasterKey?: boolean;
   useMaintenanceKey?: boolean;
@@ -150,6 +159,9 @@ const RESTController = {
         };
         if (data) {
           fetchOptions.body = data;
+          if (typeof ReadableStream !== 'undefined' && data instanceof ReadableStream) {
+            fetchOptions.duplex = 'half';
+          }
         }
         const response = await fetch(url, fetchOptions);
         const { status } = response;
@@ -206,7 +218,9 @@ const RESTController = {
           });
         } else if (status >= 500 || status === 0) {
           // retry on 5XX or library error
-          if (++attempts < CoreManager.get('REQUEST_ATTEMPT_LIMIT')) {
+          // ReadableStream bodies cannot be retried because they are consumed by the first fetch
+          const isStream = typeof ReadableStream !== 'undefined' && data instanceof ReadableStream;
+          if (!isStream && ++attempts < CoreManager.get('REQUEST_ATTEMPT_LIMIT')) {
             // Exponentially-growing random delay
             const delay = Math.round(Math.random() * 125 * Math.pow(2, attempts));
             setTimeout(dispatch, delay);

@@ -1,3 +1,59 @@
+# [8.2.0-alpha.2](https://github.com/parse-community/Parse-SDK-JS/compare/8.2.0-alpha.1...8.2.0-alpha.2) (2026-02-20)
+
+
+### Features
+
+* Add request header `X-Parse-Upload-Mode` to identify file upload as binary data via `Buffer`, `Readable`, `ReadableStream` ([#2927](https://github.com/parse-community/Parse-SDK-JS/issues/2927)) ([a66bb06](https://github.com/parse-community/Parse-SDK-JS/commit/a66bb06116f5d4f944372feafef8d630de1fae77))
+
+# [8.2.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.6...8.2.0-alpha.1) (2026-02-20)
+
+
+### Features
+
+* Add support for file upload as binary data via `Buffer`, `Readable`, `ReadableStream` ([#2925](https://github.com/parse-community/Parse-SDK-JS/issues/2925)) ([e42caf6](https://github.com/parse-community/Parse-SDK-JS/commit/e42caf65ff7c5ea16043e7eac6ac92c13638aca3))
+
+## [8.1.1-alpha.6](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.5...8.1.1-alpha.6) (2026-02-11)
+
+
+### Bug Fixes
+
+* `Parse.serverURL` not accessible via global `Parse` scope ([#2917](https://github.com/parse-community/Parse-SDK-JS/issues/2917)) ([4e78681](https://github.com/parse-community/Parse-SDK-JS/commit/4e78681881320a0b8ec383955b47d693cb8add9c))
+
+## [8.1.1-alpha.5](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.4...8.1.1-alpha.5) (2026-02-11)
+
+
+### Bug Fixes
+
+* Type error in `Parse.Query.equalTo` when matching optional array ([#2901](https://github.com/parse-community/Parse-SDK-JS/issues/2901)) ([8c96da9](https://github.com/parse-community/Parse-SDK-JS/commit/8c96da9d507dfd61c907f88861e5233807e7ba36))
+
+## [8.1.1-alpha.4](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.3...8.1.1-alpha.4) (2026-02-09)
+
+
+### Bug Fixes
+
+* Missing or incorrect type exports ([#2909](https://github.com/parse-community/Parse-SDK-JS/issues/2909)) ([3caa4ec](https://github.com/parse-community/Parse-SDK-JS/commit/3caa4ec995e0cc02082e55e9873e12b3bc10393f))
+
+## [8.1.1-alpha.3](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.2...8.1.1-alpha.3) (2026-02-07)
+
+
+### Bug Fixes
+
+* Cloud trigger type errors for void returns and subclass constructors ([#2904](https://github.com/parse-community/Parse-SDK-JS/issues/2904)) ([de9f56d](https://github.com/parse-community/Parse-SDK-JS/commit/de9f56d77cca9d86c7035136834673cc0d1dfb17))
+
+## [8.1.1-alpha.2](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.1...8.1.1-alpha.2) (2026-02-07)
+
+
+### Bug Fixes
+
+* `Parse.Object.createWithoutData` doesn't preserve object subclass ([#2907](https://github.com/parse-community/Parse-SDK-JS/issues/2907)) ([01dc94d](https://github.com/parse-community/Parse-SDK-JS/commit/01dc94d6647d2711d3a865c20935604b24083ed1))
+
+## [8.1.1-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.0...8.1.1-alpha.1) (2026-02-07)
+
+
+### Bug Fixes
+
+* `Parse.Query.and/or/nor` loosing custom class types ([#2903](https://github.com/parse-community/Parse-SDK-JS/issues/2903)) ([89fdb07](https://github.com/parse-community/Parse-SDK-JS/commit/89fdb076580f3a9f2fb0106270a6879526eaaacf))
+
 # [8.1.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.0.4-alpha.1...8.1.0-alpha.1) (2026-02-05)
 
 

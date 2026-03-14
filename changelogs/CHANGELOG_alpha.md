@@ -1,3 +1,10 @@
+## [8.5.1-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.5.0...8.5.1-alpha.1) (2026-03-14)
+
+
+### Bug Fixes
+
+* Security upgrade undici ([#2947](https://github.com/parse-community/Parse-SDK-JS/issues/2947)) ([025c404](https://github.com/parse-community/Parse-SDK-JS/commit/025c404149815111b201856b2c95c830b0529993))
+
 # [8.5.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.4.0...8.5.0-alpha.1) (2026-03-04)
 
 

@@ -1,3 +1,80 @@
+## [8.6.1-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.6.0...8.6.1-alpha.1) (2026-07-13)
+
+
+### Bug Fixes
+
+* Bump ws from 8.20.0 to 8.21.0 ([#3068](https://github.com/parse-community/Parse-SDK-JS/issues/3068)) ([1b0fd5d](https://github.com/parse-community/Parse-SDK-JS/commit/1b0fd5dbfaf2a830ffba0a19c407b7a060ff616e))
+
+# [8.6.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.5.1-alpha.1...8.6.0-alpha.1) (2026-04-17)
+
+
+### Features
+
+* Add `rawValues` and `rawFieldNames` options to aggregate queries ([#3021](https://github.com/parse-community/Parse-SDK-JS/issues/3021)) ([17ceef1](https://github.com/parse-community/Parse-SDK-JS/commit/17ceef1d15af9d3c38a7404488d95439a261c8b1))
+
+## [8.5.1-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.5.0...8.5.1-alpha.1) (2026-03-14)
+
+
+### Bug Fixes
+
+* Security upgrade undici ([#2947](https://github.com/parse-community/Parse-SDK-JS/issues/2947)) ([025c404](https://github.com/parse-community/Parse-SDK-JS/commit/025c404149815111b201856b2c95c830b0529993))
+
+# [8.5.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.4.0...8.5.0-alpha.1) (2026-03-04)
+
+
+### Features
+
+* Add `Parse.File` option `maxUploadSize` to override the Parse Server option `maxUploadSize` per file upload ([#2940](https://github.com/parse-community/Parse-SDK-JS/issues/2940)) ([80cab9b](https://github.com/parse-community/Parse-SDK-JS/commit/80cab9b16cf826fa1414bff5f04dbfb7ff18c4d3))
+
+# [8.4.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.3.0...8.4.0-alpha.1) (2026-03-04)
+
+
+### Features
+
+* Add support for `Parse.File.setDirectory`, `setMetadata`, `setTags` with stream-based file upload ([#2937](https://github.com/parse-community/Parse-SDK-JS/issues/2937)) ([18ded83](https://github.com/parse-community/Parse-SDK-JS/commit/18ded83e69692e67ca0aeec86f62ec24e7e4407e))
+
+# [8.3.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.2.0...8.3.0-alpha.1) (2026-02-25)
+
+
+### Features
+
+* Add support for `Parse.File.setDirectory()` with master key to save file in directory ([#2929](https://github.com/parse-community/Parse-SDK-JS/issues/2929)) ([1923db0](https://github.com/parse-community/Parse-SDK-JS/commit/1923db0a4cb08394266137f99f7183218c3e3ebd))
+
+# [8.2.0-alpha.2](https://github.com/parse-community/Parse-SDK-JS/compare/8.2.0-alpha.1...8.2.0-alpha.2) (2026-02-20)
+
+
+### Features
+
+* Add request header `X-Parse-Upload-Mode` to identify file upload as binary data via `Buffer`, `Readable`, `ReadableStream` ([#2927](https://github.com/parse-community/Parse-SDK-JS/issues/2927)) ([a66bb06](https://github.com/parse-community/Parse-SDK-JS/commit/a66bb06116f5d4f944372feafef8d630de1fae77))
+
+# [8.2.0-alpha.1](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.6...8.2.0-alpha.1) (2026-02-20)
+
+
+### Features
+
+* Add support for file upload as binary data via `Buffer`, `Readable`, `ReadableStream` ([#2925](https://github.com/parse-community/Parse-SDK-JS/issues/2925)) ([e42caf6](https://github.com/parse-community/Parse-SDK-JS/commit/e42caf65ff7c5ea16043e7eac6ac92c13638aca3))
+
+## [8.1.1-alpha.6](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.5...8.1.1-alpha.6) (2026-02-11)
+
+
+### Bug Fixes
+
+* `Parse.serverURL` not accessible via global `Parse` scope ([#2917](https://github.com/parse-community/Parse-SDK-JS/issues/2917)) ([4e78681](https://github.com/parse-community/Parse-SDK-JS/commit/4e78681881320a0b8ec383955b47d693cb8add9c))
+
+## [8.1.1-alpha.5](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.4...8.1.1-alpha.5) (2026-02-11)
+
+
+### Bug Fixes
+
+* Type error in `Parse.Query.equalTo` when matching optional array ([#2901](https://github.com/parse-community/Parse-SDK-JS/issues/2901)) ([8c96da9](https://github.com/parse-community/Parse-SDK-JS/commit/8c96da9d507dfd61c907f88861e5233807e7ba36))
+
+## [8.1.1-alpha.4](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.3...8.1.1-alpha.4) (2026-02-09)
+
+
+### Bug Fixes
+
+* Missing or incorrect type exports ([#2909](https://github.com/parse-community/Parse-SDK-JS/issues/2909)) ([3caa4ec](https://github.com/parse-community/Parse-SDK-JS/commit/3caa4ec995e0cc02082e55e9873e12b3bc10393f))
+
 ## [8.1.1-alpha.3](https://github.com/parse-community/Parse-SDK-JS/compare/8.1.1-alpha.2...8.1.1-alpha.3) (2026-02-07)
 
 

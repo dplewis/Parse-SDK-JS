@@ -8,28 +8,35 @@ import OfflineQuery from './OfflineQuery';
 import { DEFAULT_PIN } from './LocalDatastoreUtils';
 
 import type LiveQuerySubscription from './LiveQuerySubscription';
-import type { RequestOptions, FullOptions } from './RESTController';
-import type { Pointer } from './ParseObject';
+import type { RequestOptions, BaseRequestOptions } from './RESTController';
+import type { Pointer, BaseAttributes } from './ParseObject';
 
-type BatchOptions = FullOptions & {
+export interface BatchOptions extends BaseRequestOptions {
   batchSize?: number;
-  useMasterKey?: boolean;
-  useMaintenanceKey?: boolean;
-  sessionToken?: string;
-  context?: Record<string, any>;
-  json?: boolean;
-};
-
-export type WhereClause = Record<string, any>;
-
-interface QueryOptions {
-  useMasterKey?: boolean;
-  sessionToken?: string;
-  context?: Record<string, any>;
   json?: boolean;
 }
 
-interface FullTextQueryOptions {
+export type WhereClause = Record<string, any>;
+
+export interface QueryOptions extends BaseRequestOptions {
+  json?: boolean;
+}
+
+export type FindOptions = QueryOptions;
+
+/** CountOptions - no json since count() returns a number, not objects */
+export type CountOptions = BaseRequestOptions;
+
+export type GetOptions = QueryOptions;
+
+export type FirstOptions = QueryOptions;
+
+export interface AggregateOptions extends QueryOptions {
+  rawValues?: boolean;
+  rawFieldNames?: boolean;
+}
+
+export interface FullTextOptions {
   language?: string;
   caseSensitive?: boolean;
   diacriticSensitive?: boolean;
@@ -52,12 +59,6 @@ export interface QueryJSON {
   includeReadPreference?: string;
   subqueryReadPreference?: string;
   comment?: string;
-}
-
-interface BaseAttributes {
-  createdAt: Date;
-  objectId: string;
-  updatedAt: Date;
 }
 
 /**
@@ -646,7 +647,7 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * @returns {Promise} A promise that is resolved with the result when
    * the query completes.
    */
-  get(objectId: string, options?: QueryOptions): Promise<T> {
+  get(objectId: string, options?: GetOptions): Promise<T> {
     this.equalTo('objectId', objectId as any);
 
     const firstOptions = ParseObject._getRequestOptions(options);
@@ -675,7 +676,7 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * @returns {Promise} A promise that is resolved with the results when
    * the query completes.
    */
-  find(options?: QueryOptions): Promise<T[]> {
+  find(options?: FindOptions): Promise<T[]> {
     const findOptions = ParseObject._getRequestOptions(options);
     this._setRequestTask(findOptions);
 
@@ -759,7 +760,7 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * @returns {Promise} A promise that is resolved with the count when
    * the query completes.
    */
-  count(options?: { useMasterKey?: boolean; sessionToken?: string }): Promise<number> {
+  count(options?: CountOptions): Promise<number> {
     options = options || {};
 
     const findOptions = ParseObject._getRequestOptions(options);
@@ -800,9 +801,27 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * Executes an aggregate query and returns aggregate results
    *
    * @param {(Array|object)} pipeline Array or Object of stages to process query
+   * @param {object} options Valid options are:<ul>
+   *   <li>useMasterKey: In Cloud Code and Node only, causes the Master Key to
+   *       be used for this request. Defaults to `true` when not provided, for
+   *       backward compatibility.
+   *   <li>sessionToken: A valid session token, used for making a request on
+   *       behalf of a specific user.
+   *   <li>context: A dictionary that is accessible in Cloud Code triggers.
+   *   <li>rawValues: When `true`, disables schema-based value transformation
+   *       in the pipeline. Pipeline values are interpreted using MongoDB
+   *       Extended JSON (EJSON), so typed values such as `{ $date: '...' }`,
+   *       `{ $oid: '...' }`, `{ $numberDecimal: '...' }`, etc. are converted
+   *       to their corresponding BSON types by the server. Requires Parse
+   *       Server 9.9.0+
+   *   <li>rawFieldNames: When `true`, disables automatic field-name
+   *       transformation (e.g. `createdAt` → `_created_at`) in the pipeline.
+   *       Users write native MongoDB field names directly. Requires Parse
+   *       Server 9.9.0+
+   * </ul>
    * @returns {Promise} A promise that is resolved with the query completes.
    */
-  aggregate(pipeline: any): Promise<any[]> {
+  aggregate(pipeline: any, options?: AggregateOptions): Promise<any[]> {
     if (!Array.isArray(pipeline) && typeof pipeline !== 'object') {
       throw new Error('Invalid pipeline must be Array or Object');
     }
@@ -812,13 +831,22 @@ class ParseQuery<T extends ParseObject = ParseObject> {
       }
       pipeline.unshift({ $match: this._where });
     }
-    const params = {
+    const params: Record<string, any> = {
       pipeline,
       hint: this._hint,
       explain: this._explain,
       readPreference: this._readPreference,
     };
-    const aggregateOptions = { useMasterKey: true };
+    if (options?.rawValues !== undefined) {
+      params.rawValues = options.rawValues;
+    }
+    if (options?.rawFieldNames !== undefined) {
+      params.rawFieldNames = options.rawFieldNames;
+    }
+    const aggregateOptions = ParseObject._getRequestOptions(options);
+    if (aggregateOptions.useMasterKey === undefined) {
+      aggregateOptions.useMasterKey = true;
+    }
     this._setRequestTask(aggregateOptions);
 
     const controller = CoreManager.getQueryController();
@@ -843,7 +871,7 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * @returns {Promise} A promise that is resolved with the object when
    * the query completes.
    */
-  first(options: QueryOptions = {}): Promise<T | undefined> {
+  first(options: FirstOptions = {}): Promise<T | undefined> {
     const findOptions = ParseObject._getRequestOptions(options);
     this._setRequestTask(findOptions);
 
@@ -1152,9 +1180,9 @@ class ParseQuery<T extends ParseObject = ParseObject> {
     key: K,
     value:
       | T['attributes'][K]
-      | (T['attributes'][K] extends ParseObject
+      | (NonNullable<T['attributes'][K]> extends ParseObject
           ? Pointer
-          : T['attributes'][K] extends (infer E)[]
+          : NonNullable<T['attributes'][K]> extends (infer E)[]
             ? E
             : never)
   ): this {
@@ -1181,9 +1209,9 @@ class ParseQuery<T extends ParseObject = ParseObject> {
     key: K,
     value:
       | T['attributes'][K]
-      | (T['attributes'][K] extends ParseObject
+      | (NonNullable<T['attributes'][K]> extends ParseObject
           ? Pointer
-          : T['attributes'][K] extends (infer E)[]
+          : NonNullable<T['attributes'][K]> extends (infer E)[]
             ? E
             : never)
   ): this {
@@ -1521,7 +1549,7 @@ class ParseQuery<T extends ParseObject = ParseObject> {
   fullText<K extends keyof T['attributes'] | keyof BaseAttributes>(
     key: K,
     value: string,
-    options?: FullTextQueryOptions
+    options?: FullTextOptions
   ): this {
     options = options || {};
 
@@ -1924,6 +1952,11 @@ class ParseQuery<T extends ParseObject = ParseObject> {
    * Restricts the fields of the returned Parse.Objects to include only the
    * provided keys.  If this is called multiple times, then all of the keys
    * specified in each of the calls will be included.
+   *
+   * When selecting `authData` on `Parse.User`, only auth data of currently
+   * configured auth providers is returned. Auth data of providers that are no
+   * longer configured is not included. To return all auth data regardless of
+   * the provider configuration, do not select `authData`.
    *
    * @param {...string|Array<string>} keys The name(s) of the key(s) to include.
    * @returns {Parse.Query} Returns the query, so you can chain this call.
